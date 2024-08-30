@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "myhouse24"
+version = "0.1.0"
+description = ""
+authors = ["ant100pshnik <mypochtav@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.1"
+django-environ = "^0.11.2"
+psycopg2-binary = "^2.9.9"
+pillow = "^10.4.0"
+django-recaptcha = "^4.0.0"
+django-extensions = "^3.2.3"
+celery = "^5.4.0"
+redis = "^5.0.8"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

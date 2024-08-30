@@ -1,0 +1,91 @@
+{% extends 'authentication/base_authentication.html' %}
+{% load static %}
+{% block title %}
+    Вхід в панель управління
+{% endblock %}
+{% block css %}
+{% endblock %}
+{% block form %}
+    <p class="login-box-msg">Вхід в панель управління</p>
+    <form id="login-form" method="post">
+        {% csrf_token %}
+        <div class="form-group has-feedback">
+            {{ form.email }}
+            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+        </div>
+        <div class="form-group has-feedback">
+            {{ form.password }}
+            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+        </div>
+        <div class="checkbox">
+            {{ form.remember_me }}
+            <label>Запaм'ятати мене</label></div>
+        <div>
+            {{ form.captcha }}
+        </div>
+        <div>
+            <button id="submit-button" type="submit" class="btn btn-primary btn-block" name="login-button">Ввійти
+            </button>
+        </div>
+    </form>
+    <div class="text-center" id="forgot-password">
+        <a href="{% url 'authentication_password_reset' %}">Забули пароль?</a>
+    </div>
+{% endblock form %}
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            const $form = $('#login-form');
+            const $button = $('#submit-button');
+
+            $form.on('focus blur keyup', 'input', function () {
+                validateForm();
+            });
+
+            const validateForm = function () {
+                const isValid = $form.validate({
+                    rules: {
+                        email: {
+                            required: true,
+                            email: false,
+                            valid_email: true
+                        },
+
+                        password: {
+                            required: true,
+                            minlength: 5,
+                        },
+
+                    },
+                    messages: {
+                        email: {
+                            required: "Вкажіть електронну пошту",
+                        },
+                        password: {
+                            required: "Вкажіть пароль",
+                            minlength: "Пароль дуже короткий"
+                        },
+
+                    },
+                    errorElement: 'small',
+                    errorPlacement: function (error, element) {
+                        error.css({'color': 'red'});
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function (element) {
+                        $(element).closest('.form-group').addClass('has-error');
+                    },
+                    unhighlight: function (element) {
+                        $(element).closest('.form-group').removeClass('has-error');
+                    }
+                }).checkForm();
+
+                if (isValid) {
+                    $button.prop('disabled', false);
+                } else {
+                    $button.prop('disabled', 'disabled');
+                }
+            }
+        })
+    </script>
+{% endblock js %}
