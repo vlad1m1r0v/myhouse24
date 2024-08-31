@@ -11,7 +11,7 @@ class AuthenticationAdminLoginView(FormView):
     template_name = 'authentication/adminlte/login.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
+        if request.user.is_authenticated and request.user.get_all_permissions():
             return redirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
 
@@ -28,7 +28,6 @@ class AuthenticationAdminLoginView(FormView):
             if not form.cleaned_data.get('remember_me'):
                 self.request.session.set_expiry(0)
 
-            messages.success(self.request, 'Адміністратор успішно увійшов в систему')
             return redirect(redirect_url)
 
         messages.error(self.request, 'Неправильний логін або пароль')
@@ -42,6 +41,7 @@ class AuthenticationAdminLoginView(FormView):
 
         for perm, url in permission_to_url.items():
             if self.request.user.has_perm(f'{perm}'):
+                messages.success(self.request, 'Адміністратор успішно увійшов в систему')
                 return url
 
         messages.error(self.request, 'В адміністратора немає права доступу до жодної зі сторінок')
@@ -49,4 +49,3 @@ class AuthenticationAdminLoginView(FormView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
-
