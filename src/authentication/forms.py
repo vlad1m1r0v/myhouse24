@@ -46,7 +46,6 @@ class AuthenticationPasswordResetForm(PasswordResetForm):
     email = forms.EmailField(widget=forms.TextInput(
         attrs={
             'class': 'form-control',
-            'id': 'email',
             'placeholder': 'Електронна пошта'
         }
     ))
