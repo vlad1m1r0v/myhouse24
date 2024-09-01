@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     telegram = models.CharField(max_length=50, null=True, blank=True)
     viber = models.CharField(max_length=50, null=True, blank=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='new')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     about_me = models.TextField(blank=True, null=True)
 
     USERNAME_FIELD = "email"

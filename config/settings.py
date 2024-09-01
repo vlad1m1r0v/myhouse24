@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # packages
     'django_recaptcha',
     'django_extensions',
+    'ajax_datatable',
     # applications
     'src.authentication.apps.AuthenticationConfig',
     'src.system_settings.apps.SystemSettingsConfig'

@@ -73,6 +73,11 @@
         .skin-black-light .main-header li.user-header {
             background-color: orange;
         }
+
+        .user-header i.img-circle {
+            font-size: 78px;
+            border: 2px #fff solid;
+        }
     </style>
     {% block css %}
     {% endblock css %}
@@ -102,7 +107,7 @@
                     <!-- Notifications: style can be found in dropdown.less -->
                     <li class="dropdown notifications-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-bell-o"></i>
+                            <i class="fa fa-child fa-lg"></i>
                             <span class="label label-warning">10</span>
                         </a>
                         <ul class="dropdown-menu">
@@ -145,43 +150,28 @@
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="https://placehold.co/800?text=Avatar&font=roboto" class="user-image"
-                                 alt="User Image">
-                            <span class="hidden-xs">Alexander Pierce</span>
+                            <i class="fa fa-user-circle text-purple"></i>
+                            <span class="hidden-xs">{{ user.first_name }} {{ user.last_name }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="https://placehold.co/800?text=Avatar&font=roboto" class="img-circle"
-                                     alt="User Image">
+                                <i class="fa fa-user-circle text-purple bg-gray-light img-circle"></i>
 
                                 <p>
-                                    Alexander Pierce - Web Developer
-                                    <small>Member since Nov. 2012</small>
+                                    {{ user.first_name }} {{ user.last_name }} ({{ user.groups.first.name }})
                                 </p>
-                            </li>
-                            <!-- Menu Body -->
-                            <li class="user-body">
-                                <div class="row">
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Followers</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Sales</a>
-                                    </div>
-                                    <div class="col-xs-4 text-center">
-                                        <a href="#">Friends</a>
-                                    </div>
-                                </div>
-                                <!-- /.row -->
                             </li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    <a href="#" class="btn btn-default btn-flat">Профіль</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    <form method="post" action="{% url 'authentication_adminlte_logout' %}">
+                                        {% csrf_token %}
+                                        <button class="btn btn-default btn-flat">Вийти</button>
+                                    </form>
                                 </div>
                             </li>
                         </ul>

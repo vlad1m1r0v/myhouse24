@@ -1,12 +1,13 @@
 from django.urls import path, reverse_lazy
 
 from src.authentication.forms import AuthenticationPasswordResetForm, AuthenticationSetPasswordForm
-from src.authentication.views import AuthenticationAdminLoginView
+from src.authentication.views import AuthenticationAdminLoginView, AuthenticationAdminLogoutView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('authentication/adminlte/login/', AuthenticationAdminLoginView.as_view(),
          name='authentication_adminlte_login'),
+    path('authentication/adminlte/logout/', AuthenticationAdminLogoutView.as_view(), name='authentication_adminlte_logout'),
     path('authentication/password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name="authentication/password_reset/password_reset_form.html",
