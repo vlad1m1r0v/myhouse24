@@ -5,4 +5,8 @@ function restructure_datatable() {
     ;
 
     $('table').css({'font-size': '14px'});
+
+    $('th.sorting, th.sorting_asc, th.sorting_desc').css({'color': '#337ab7'});
+
+    $("th>input[type='text']").addClass('form-control');
 }
