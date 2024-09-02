@@ -1,9 +1,10 @@
 from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 
 from src.system_settings.models import PaymentItem
 
@@ -26,6 +27,11 @@ class AdminPaymentItemsDatatableView(AjaxDatatableView):
     column_defs = [
         {'name': 'name', 'title': 'Назва', 'visible': True, },
         {'name': 'type', 'title': 'Прихід / Витрата', 'visible': True, },
+        {'name': 'update_or_delete',
+         'title': '',
+         'placeholder': True, 'visible': True,
+         'searchable': False,
+         'orderable': False, },
     ]
 
     def customize_row(self, row, obj):
@@ -33,4 +39,21 @@ class AdminPaymentItemsDatatableView(AjaxDatatableView):
             row['type'] = f"<p class='text-green'>{obj.get_type_display()}</p>"
         else:
             row['type'] = f"<p class='text-red'>{obj.get_type_display()}</p>"
-        return
+
+        row['update_or_delete'] = \
+            f"""
+        <div class="btn-group pull-right">
+            <a class="btn btn-default btn-sm" title="Редагувати">
+                <i class="fa fa-pencil"></i>
+            </a> 
+            <button class="btn btn-default btn-sm delete-button" data-href={reverse('adminlte_payment_items_delete', kwargs={'pk': obj.id})} title="Видалити">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
+        """
+
+
+class AdminPaymentItemsDeleteView(View):
+    def delete(self, request, *args, **kwargs):
+        PaymentItem.objects.get(pk=self.kwargs['pk']).delete()
+        return JsonResponse(status=200, data={'success': True})

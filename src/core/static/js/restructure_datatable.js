@@ -8,5 +8,9 @@ function restructure_datatable() {
 
     $('th.sorting, th.sorting_asc, th.sorting_desc').css({'color': '#337ab7'});
 
+    $('td').css({'vertical-align': 'middle'});
+
+    $('td>p').css({'margin': 0})
+
     $("th>input[type='text']").addClass('form-control');
 }
