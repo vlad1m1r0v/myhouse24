@@ -1,11 +1,13 @@
 from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.urls import reverse
-from django.views.generic import TemplateView, View
+from django.urls import reverse, reverse_lazy
+from django.views.generic import TemplateView, View, CreateView
 
+from src.system_settings.forms import AdminPaymentItemForm
 from src.system_settings.models import PaymentItem
 
 
@@ -57,3 +59,16 @@ class AdminPaymentItemsDeleteView(View):
     def delete(self, request, *args, **kwargs):
         PaymentItem.objects.get(pk=self.kwargs['pk']).delete()
         return JsonResponse(status=200, data={'success': True})
+
+
+class AdminPaymentItemCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
+    model = PaymentItem
+    template_name = 'system_settings/payment_items/create_payment_item.html'
+    form_class = AdminPaymentItemForm
+    permission_required = ('authentication.payment_items',)
+    success_url = reverse_lazy('adminlte_payment_items_list')
+    success_message = 'Статтю платежу успішно створено'
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до статей платежів')
+        return redirect(reverse('authentication_adminlte_login'))

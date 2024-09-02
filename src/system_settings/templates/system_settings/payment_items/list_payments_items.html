@@ -38,7 +38,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right margin-bottom">
-                <a class="btn btn-success">Додати статтю</a>
+                <a href="{% url 'adminlte_payment_items_create' %}" class="btn btn-success">Додати статтю</a>
             </div>
         </div>
     </div>
@@ -60,6 +60,8 @@
     <script type="text/javascript" src="{% static 'ajax_datatable/js/utils.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/initialize_datatable.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/restructure_datatable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/adjust_rows_datatable.js' %}"></script>
+
     <script>
         $(document).ready(function () {
             const $datatable = $('#datatable');
@@ -75,6 +77,10 @@
             $datatable.on('initComplete', function () {
                 restructure_datatable();
             });
+
+            $datatable.on('drawCallback', function () {
+                adjust_rows();
+            })
         })
 
         $(document).on('click', '.delete-button', async function () {
