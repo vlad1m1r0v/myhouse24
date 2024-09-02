@@ -5,7 +5,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, View, CreateView
+from django.views.generic import TemplateView, View, CreateView, UpdateView
 
 from src.system_settings.forms import AdminPaymentItemForm
 from src.system_settings.models import PaymentItem
@@ -45,7 +45,7 @@ class AdminPaymentItemsDatatableView(AjaxDatatableView):
         row['update_or_delete'] = \
             f"""
         <div class="btn-group pull-right">
-            <a class="btn btn-default btn-sm" title="Редагувати">
+            <a class="btn btn-default btn-sm" href={reverse('adminlte_payment_items_update', kwargs={'pk': obj.id})} title="Редагувати">
                 <i class="fa fa-pencil"></i>
             </a> 
             <button class="btn btn-default btn-sm delete-button" data-href={reverse('adminlte_payment_items_delete', kwargs={'pk': obj.id})} title="Видалити">
@@ -68,6 +68,19 @@ class AdminPaymentItemCreateView(SuccessMessageMixin, PermissionRequiredMixin, C
     permission_required = ('authentication.payment_items',)
     success_url = reverse_lazy('adminlte_payment_items_list')
     success_message = 'Статтю платежу успішно створено'
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до статей платежів')
+        return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminPaymentItemUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
+    model = PaymentItem
+    template_name = 'system_settings/payment_items/create_payment_item.html'
+    form_class = AdminPaymentItemForm
+    permission_required = ('authentication.payment_items',)
+    success_url = reverse_lazy('adminlte_payment_items_list')
+    success_message = 'Статтю платежу успішно оновлено'
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до статей платежів')

@@ -15,4 +15,7 @@ urlpatterns = [
     path('adminlte/system-settings/payment-items/create/',
          views.AdminPaymentItemCreateView.as_view(),
          name='adminlte_payment_items_create'),
+    path('adminlte/system-settings/payment-items/<int:pk>/update/',
+         views.AdminPaymentItemUpdateView.as_view(),
+         name='adminlte_payment_items_update'),
 ]
