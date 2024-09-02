@@ -222,8 +222,11 @@
                         <li><a><i class="fa fa-user"></i> <span>Ролі</span></a></li>
                         <li><a><i class="fa fa-user-plus"></i> <span>Користувачі</span></a>
                         </li>
-                        <li><a><i class="fa fa-credit-card"></i> <span>Платіжні реквізити</span></a>
-                        </li>
+                        {% if perms.authentication.payment_information %}
+                            <li><a href="{% url 'adminlte_payment_credential' %}"><i class="fa fa-credit-card"></i>
+                                <span>Платіжні реквізити</span></a>
+                            </li>
+                        {% endif %}
                         {% if perms.authentication.payment_items %}
                             <li><a href="{% url 'adminlte_payment_items_list' %}"><i class="fa fa-list-ol"></i> <span>Статті платежів</span></a>
                             </li>
