@@ -220,7 +220,9 @@
                         <li><a><i class="fa fa-briefcase"></i> <span>Послуги</span></a></li>
                         <li><a><i class="fa fa-money"></i> <span>Тарифи</span></a></li>
                         <li><a><i class="fa fa-user"></i> <span>Ролі</span></a></li>
-                        <li><a><i class="fa fa-user-plus"></i> <span>Користувачі</span></a>
+                        {% if perms.authentication.users %}
+                            <li><a href="{% url 'adminlte_users_list' %}"><i class="fa fa-user-plus"></i> <span>Користувачі</span></a>
+                        {% endif %}
                         </li>
                         {% if perms.authentication.payment_information %}
                             <li><a href="{% url 'adminlte_payment_credential' %}"><i class="fa fa-credit-card"></i>

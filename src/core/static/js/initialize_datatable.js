@@ -3,6 +3,7 @@ AjaxDatatableViewUtils.init({
     language: {
         "emptyTable": "Пуста таблиця в Базі Даних",
         "info": "Показано з _START_ до _END_ запис серед _TOTAL_ результатів",
+        "infoEmpty": "Не знайдено збігів",
         "lengthMenu": "Показати _MENU_ записів на сторінку",
         "loadingRecords": "Пошук записів в Базі Даних",
         "processing": "Результат опрацьовується",

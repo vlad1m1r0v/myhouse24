@@ -1,12 +1,16 @@
 from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import Value, Subquery, OuterRef
+from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, View, CreateView, UpdateView, FormView
+from django.views.generic import TemplateView, View, CreateView, UpdateView, FormView, DetailView
 
+from src.authentication.models import CustomUser, STATUS_CHOICES
 from src.system_settings.forms import AdminPaymentItemForm, AdminPaymentCredentialForm
 from src.system_settings.models import PaymentItem, PaymentCredential
 
@@ -22,14 +26,14 @@ class AdminPaymentItemsView(PermissionRequiredMixin, TemplateView, ):
 
 class AdminPaymentItemsDatatableView(AjaxDatatableView):
     model = PaymentItem
-    title = 'Payment Items'
+    title = 'Статті платежів'
     length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
     search_values_separator = '+'
 
     column_defs = [
         {'name': 'name', 'title': 'Назва', 'visible': True, },
         {'name': 'type', 'title': 'Прихід / Витрата', 'visible': True, },
-        {'name': 'update_or_delete',
+        {'name': 'button_group',
          'title': '',
          'placeholder': True, 'visible': True,
          'searchable': False,
@@ -42,17 +46,17 @@ class AdminPaymentItemsDatatableView(AjaxDatatableView):
         else:
             row['type'] = f"<p class='text-red'>{obj.get_type_display()}</p>"
 
-        row['update_or_delete'] = \
+        row['button_group'] = \
             f"""
-        <div class="btn-group pull-right">
-            <a class="btn btn-default btn-sm" href={reverse('adminlte_payment_items_update', kwargs={'pk': obj.id})} title="Редагувати">
-                <i class="fa fa-pencil"></i>
-            </a> 
-            <button class="btn btn-default btn-sm delete-button" data-href={reverse('adminlte_payment_items_delete', kwargs={'pk': obj.id})} title="Видалити">
-                <i class="fa fa-trash"></i>
-            </button>
-        </div>
-        """
+            <div class="btn-group pull-right">
+                <a class="btn btn-default btn-sm" href={reverse('adminlte_payment_items_update', kwargs={'pk': obj.id})} title="Редагувати">
+                    <i class="fa fa-pencil"></i>
+                </a> 
+                <button class="btn btn-default btn-sm delete-button" data-href={reverse('adminlte_payment_items_delete', kwargs={'pk': obj.id})} title="Видалити">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            """
 
 
 class AdminPaymentItemsDeleteView(View):
@@ -76,7 +80,7 @@ class AdminPaymentItemCreateView(SuccessMessageMixin, PermissionRequiredMixin, C
 
 class AdminPaymentItemUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
     model = PaymentItem
-    template_name = 'system_settings/payment_items/create_payment_item.html'
+    template_name = 'system_settings/payment_items/update_payment_item.html'
     form_class = AdminPaymentItemForm
     permission_required = ('authentication.payment_items',)
     success_url = reverse_lazy('adminlte_payment_items_list')
@@ -111,3 +115,101 @@ class AdminPaymentCredentialView(SuccessMessageMixin, PermissionRequiredMixin, F
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до платіжних реквізитів')
         return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminUsersView(PermissionRequiredMixin, TemplateView):
+    permission_required = ('authentication.users',)
+    template_name = 'system_settings/users/list_users.html'
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до користувачів')
+        return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminUsersDatatableView(AjaxDatatableView):
+    model = CustomUser
+    title = 'Користувачі'
+    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
+    search_values_separator = '+'
+
+    column_defs = [
+        {'name': 'id', 'title': '#', 'visible': True, },
+        {'name': 'full_name', 'title': 'Користувач', 'visible': True, },
+        {'name': 'role',
+         'title': 'Роль',
+         'visible': True,
+         'choices': [(group.name, group.name) for group in Group.objects.all()],
+         },
+        {'name': 'phone_number', 'title': 'Номер телефону', 'visible': True},
+        {'name': 'email', 'title': 'Електронна пошта', 'visible': True},
+        {'name': 'status',
+         'title': 'Статус',
+         'visible': True,
+         'choices': STATUS_CHOICES,
+         },
+        {'name': 'button_group',
+         'title': '',
+         'placeholder': True, 'visible': True,
+         'searchable': False,
+         'orderable': False,
+         },
+    ]
+
+    def get_initial_queryset(self, request=None):
+        return self.model.objects.annotate(
+            full_name=Concat('first_name', Value(' '), 'last_name')
+        ).annotate(
+            role=Coalesce(
+                Subquery(
+                    Group.objects.filter(user=OuterRef('pk')).values('name')[:1]
+                ),
+                Value(None)
+            )
+        )
+
+    def customize_row(self, row, obj):
+        if obj.status == 'new':
+            row['status'] = f"<small class='label label-warning'>{obj.get_status_display()}</small>"
+        elif obj.status == 'active':
+            row['status'] = f"<small class='label label-success'>{obj.get_status_display()}</small>"
+        else:
+            row['status'] = f"<small class='label label-danger'>{obj.get_status_display()}</small>"
+
+        row['button_group'] = \
+            f"""
+            <div class="btn-group pull-right">
+                <a class="btn btn-default btn-sm" title='Надіслати запрошення'>
+                    <i class="fa fa-repeat"></i>
+                </a>
+                 <a class="btn btn-default btn-sm" title="Редагувати">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <button class="btn btn-default btn-sm">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            """
+
+
+class AdminUserDetailView(PermissionRequiredMixin, DetailView):
+    model = CustomUser
+    permission_required = ('authentication.users',)
+    template_name = 'system_settings/users/detail_user.html'
+    context_object_name = 'user'
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(CustomUser, pk=self.kwargs.get('pk'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.get_object()
+        context['role'] = user.groups.first() if user.groups.exists() else None
+        return context
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до користувачів')
+        return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminUserUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
+    ...

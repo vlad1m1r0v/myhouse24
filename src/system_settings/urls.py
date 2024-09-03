@@ -21,4 +21,13 @@ urlpatterns = [
     path('adminlte/system-settings/payment-credential/',
          views.AdminPaymentCredentialView.as_view(),
          name='adminlte_payment_credential'),
+    path('adminlte/system-settings/users/',
+         views.AdminUsersView.as_view(),
+         name='adminlte_users_list'),
+    path('adminlte/system-settings/users/datatable/',
+         views.AdminUsersDatatableView.as_view(),
+         name='adminlte_users_datatable'),
+    path('adminlte/system-settings/users/<int:pk>/',
+         views.AdminUserDetailView.as_view(),
+         name='adminlte_user_detail'),
 ]

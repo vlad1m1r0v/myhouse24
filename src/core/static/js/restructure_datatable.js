@@ -8,8 +8,18 @@ function restructure_datatable() {
 
     $('th.sorting, th.sorting_asc, th.sorting_desc').css({'color': '#337ab7'});
 
-     $('td').css({'vertical-align': 'middle'});
+    $('td').css({'vertical-align': 'middle'});
 
 
     $("th>input[type='text']").addClass('form-control');
+
+    $("th>select").select2({
+        placeholder: '',
+        width: '100%',
+        dropdownAutoWidth: true,
+        minimumResultsForSearch: -1
+    });
+
+
+
 }

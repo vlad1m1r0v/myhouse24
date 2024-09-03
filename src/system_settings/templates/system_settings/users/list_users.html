@@ -1,10 +1,12 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% block title %}
-    Статті платежів
+    Користувачі
 {% endblock title %}
 {% block css %}
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
     <link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet"/>
     <style>
         .box {
@@ -21,24 +23,29 @@
             scrollbar-width: none;
         }
 
+        th:nth-child(3) {
+            width: 100px;
+            min-width: 100px;
+        }
+
         th:last-child {
-            width: 80px;
-            min-width: 80px;
+            width: 100px;
+            min-width: 100px;
         }
     </style>
 {% endblock css %}
 {% block header %}
-    Cтатті платежів
+    Користувачі
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li class="active">Cтатті платежів</li>
+    <li class="active">Користувачі</li>
 {% endblock breadcrumb %}
 {% block content %}
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right margin-bottom">
-                <a href="{% url 'adminlte_payment_items_create' %}" class="btn btn-success">Додати статтю</a>
+                <a class="btn btn-success">Додати користувача</a>
             </div>
         </div>
     </div>
@@ -62,13 +69,14 @@
     <script type="text/javascript" src="{% static 'js/initialize_datatable.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/restructure_datatable.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/adjust_rows_datatable.js' %}"></script>
+
     <script>
         $(document).ready(function () {
             const $datatable = $('#datatable');
 
             AjaxDatatableViewUtils.initialize_table(
                 $datatable,
-                "{% url 'adminlte_payment_items_datatable' %}",
+                "{% url 'adminlte_users_datatable' %}",
                 {
                     scrollX: false,
                 }
@@ -81,35 +89,10 @@
             $datatable.on('drawCallback', function () {
                 adjust_rows();
             })
-        })
-
-        $(document).on('click', '.delete-button', async function () {
-            const $button = $(this);
-
-            const result = await Swal.fire({
-                title: "Ви дійсно хочете видалити цей об'єкт?",
-                icon: "question",
-                showDenyButton: true,
-                confirmButtonText: "Видалити",
-                denyButtonText: "Відмінити"
-            });
-
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: $button.attr('data-href'),
-                    method: "DELETE", headers: {
-                        "X-CSRFToken": "{{ csrf_token }}"
-                    },
-                    success: function () {
-                        Swal.fire("Об'єкт успішно видалено", "", "success");
-                        $button.closest('tr').remove();
-                    }
-                });
-            }
         });
 
-        $(document).on('click', 'tbody tr td:not(:last-child)', function() {
-            window.location.assign($(this).closest('tr').find('.btn').attr('href'));
+        $(document).on('click', 'tbody tr td:not(:last-child)', function () {
+            window.location.href = $(this).closest('tr').find('td').first().text();
         })
     </script>
 {% endblock js %}
