@@ -1,5 +1,3 @@
-from cProfile import label
-
 from django import forms
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
@@ -38,7 +36,7 @@ class AdminPaymentCredentialForm(forms.ModelForm):
         fields = ('name', 'information')
 
 
-class UserUpdateForm(forms.ModelForm):
+class AdminUserForm(forms.ModelForm):
     first_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         label='Ім\'я')
@@ -47,14 +45,19 @@ class UserUpdateForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         label='Прізвище')
 
+    phone_number = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label='Номер телефону')
+
+
     role = forms.ModelChoiceField(
         widget=forms.Select(attrs={'class': 'form-control'}),
         queryset=Group.objects.all(),
-        required=False,
-        label="Роль"
+        label="Роль",
+        empty_label=None
     )
 
-    type = forms.ChoiceField(
+    status = forms.ChoiceField(
         choices=STATUS_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'}),
         label='Статус')
@@ -64,7 +67,7 @@ class UserUpdateForm(forms.ModelForm):
         label='Електронна пошта'
     )
 
-    password = forms.CharField(
+    new_password = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': 'Новий пароль', 'class': 'form-control'}),
         required=False,
         label="Новий пароль"
@@ -77,7 +80,7 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'email', 'role', 'password', 'repeat_password']
+        fields = ['first_name', 'last_name', 'phone_number', 'email', 'role', 'status', 'new_password', 'repeat_password']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.get('instance')
@@ -88,12 +91,12 @@ class UserUpdateForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get('password')
+        new_password = cleaned_data.get('new_password')
         repeat_password = cleaned_data.get('repeat_password')
 
-        if password or repeat_password:
-            if password != repeat_password:
-                raise forms.ValidationError("Паролі не співпадають.")
+        if new_password or repeat_password:
+            if new_password != repeat_password:
+                raise forms.ValidationError("Паролі не співпадають")
 
         return cleaned_data
 
@@ -101,7 +104,7 @@ class UserUpdateForm(forms.ModelForm):
         user = super().save(commit=False)
         selected_group = self.cleaned_data.get('role')
 
-        password = self.cleaned_data.get('password')
+        password = self.cleaned_data.get('new_password')
         if password:
             user.password = make_password(password)
 

@@ -1,0 +1,86 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Користувач
+{% endblock title %}
+{% block css %}
+    <style>
+    </style>
+{% endblock css %}
+{% block header %}
+    Користувач
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i>Головна</a></li>
+    <li><a href="{% url 'adminlte_users_list' %}">Користувачі</a></li>
+    <li><a href="{% url 'adminlte_user_detail' pk=form.instance.id %}">Користувач</a></li>
+    <li class="active">Редагування</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">{{ form.first_name.label }}</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.last_name.label }}</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.phone_number.label }}</label>
+                            {{ form.phone_number }}
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.role.label }}</label>
+                            {{ form.role }}
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.status.label }}</label>
+                            {{ form.status }}
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label class="control-label">{{ form.email.label }}</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.new_password.label }}</label>
+                            <div class="input-group">
+                                {{ form.new_password }}
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        Згенерувати пароль
+                                    </button>
+                                    <button type="button" class="btn btn-primary">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.repeat_password.label }}</label>
+                            {{ form.repeat_password }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-right">
+                        <a href="{% url 'adminlte_users_list' %}" class="btn btn-default">Відмінити</a>
+                        <button type="submit" class="btn btn-success">Редагувати</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+    </script>
+{% endblock js %}

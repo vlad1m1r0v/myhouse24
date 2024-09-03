@@ -1,5 +1,6 @@
 from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
@@ -11,7 +12,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, View, CreateView, UpdateView, FormView, DetailView
 
 from src.authentication.models import CustomUser, STATUS_CHOICES
-from src.system_settings.forms import AdminPaymentItemForm, AdminPaymentCredentialForm
+from src.system_settings.forms import AdminPaymentItemForm, AdminPaymentCredentialForm, AdminUserForm
 from src.system_settings.models import PaymentItem, PaymentCredential
 
 
@@ -181,7 +182,7 @@ class AdminUsersDatatableView(AjaxDatatableView):
                 <a class="btn btn-default btn-sm" title='Надіслати запрошення'>
                     <i class="fa fa-repeat"></i>
                 </a>
-                 <a class="btn btn-default btn-sm" title="Редагувати">
+                 <a href={reverse('adminlte_user_update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
                     <i class="fa fa-pencil"></i>
                 </a>
                 <button class="btn btn-default btn-sm">
@@ -212,4 +213,27 @@ class AdminUserDetailView(PermissionRequiredMixin, DetailView):
 
 
 class AdminUserUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
-    ...
+    model = CustomUser
+    permission_required = ('authentication.users',)
+    form_class = AdminUserForm
+    template_name = 'system_settings/users/update_user.html'
+    success_url = reverse_lazy('adminlte_users_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, "Дані користувача успішно оновлено")
+
+        if form.instance == self.request.user:
+            update_session_auth_hash(self.request, form.instance)
+
+        return response
+
+
+def form_invalid(self, form):
+    messages.error(self.request, "Помилка при оновленні данних користувача")
+    return super().form_invalid(form)
+
+
+def handle_no_permission(self):
+    messages.error(self.request, 'У Вас немає доступу до користувачів')
+    return redirect(reverse('authentication_adminlte_login'))

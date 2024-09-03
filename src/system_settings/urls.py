@@ -30,4 +30,7 @@ urlpatterns = [
     path('adminlte/system-settings/users/<int:pk>/',
          views.AdminUserDetailView.as_view(),
          name='adminlte_user_detail'),
+    path('adminlte/system-settings/users/<int:pk>/update/',
+         views.AdminUserUpdateView.as_view(),
+         name='adminlte_user_update'),
 ]
