@@ -232,6 +232,18 @@ class AdminUserUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateVi
         messages.error(self.request, "Помилка при оновленні данних користувача")
         return super().form_invalid(form)
 
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до користувачів')
+        return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminUserCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
+    model = CustomUser
+    template_name = 'system_settings/users/create_user.html'
+    form_class = AdminUserForm
+    permission_required = ('authentication.users',)
+    success_url = reverse_lazy('adminlte_users_list')
+    success_message = 'Новий користувач успішно створений'
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до користувачів')

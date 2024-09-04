@@ -33,4 +33,7 @@ urlpatterns = [
     path('adminlte/system-settings/users/<int:pk>/update/',
          views.AdminUserUpdateView.as_view(),
          name='adminlte_user_update'),
+    path('adminlte/system-settings/users/create/',
+         views.AdminUserCreateView.as_view(),
+         name='adminlte_user_create'),
 ]

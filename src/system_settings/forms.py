@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
+from django.db import transaction
 
 from src.authentication.models import CustomUser, STATUS_CHOICES
 from src.system_settings.models import PaymentItem, TYPE_CHOICES, PaymentCredential
@@ -49,7 +50,6 @@ class AdminUserForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         label='Номер телефону')
 
-
     role = forms.ModelChoiceField(
         widget=forms.Select(attrs={'class': 'form-control'}),
         queryset=Group.objects.all(),
@@ -80,7 +80,8 @@ class AdminUserForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'phone_number', 'email', 'role', 'status', 'new_password', 'repeat_password']
+        fields = ['first_name', 'last_name', 'phone_number', 'email', 'role', 'status', 'new_password',
+                  'repeat_password']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.get('instance')
@@ -88,6 +89,13 @@ class AdminUserForm(forms.ModelForm):
 
         if user and user.groups.exists():
             self.fields['role'].initial = user.groups.first()
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if (CustomUser.objects.filter(email=email)
+                .exclude(pk=self.instance.pk if self.instance else None).exists()):
+            raise forms.ValidationError("Користувач з такою електронною поштою вже існує")
+        return email
 
     def clean(self):
         cleaned_data = super().clean()
@@ -100,6 +108,7 @@ class AdminUserForm(forms.ModelForm):
 
         return cleaned_data
 
+    @transaction.atomic
     def save(self, commit=True):
         user = super().save(commit=False)
         selected_group = self.cleaned_data.get('role')
@@ -108,11 +117,13 @@ class AdminUserForm(forms.ModelForm):
         if password:
             user.password = make_password(password)
 
-        user.groups.clear()
-        if selected_group:
-            user.groups.add(selected_group)
+        if self.instance.pk:
+            user.groups.clear()
 
         if commit:
             user.save()
+
+        if selected_group:
+            user.groups.add(selected_group)
 
         return user
