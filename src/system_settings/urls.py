@@ -36,4 +36,7 @@ urlpatterns = [
     path('adminlte/system-settings/users/create/',
          views.AdminUserCreateView.as_view(),
          name='adminlte_user_create'),
+    path('adminlte/system-settings/users/<int:pk>/delete/',
+         views.AdminUserDeleteView.as_view(),
+         name='adminlte_user_delete'),
 ]

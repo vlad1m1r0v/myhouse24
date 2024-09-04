@@ -10,6 +10,17 @@ function restructure_datatable() {
 
     $('td').css({'vertical-align': 'middle'});
 
+    const $table = $(`#datatable`);
+
+    const $wrapper = $('<div></div>');
+
+    $wrapper.css({
+        'overflow-x': 'auto',
+        'width': '100%',
+        'scrollbar-width': 'none'
+    })
+
+    $table.wrap($wrapper);
 
     $("th>input[type='text']").addClass('form-control');
 
@@ -19,7 +30,6 @@ function restructure_datatable() {
         dropdownAutoWidth: true,
         minimumResultsForSearch: -1
     });
-
 
 
 }

@@ -60,10 +60,16 @@ class AdminPaymentItemsDatatableView(AjaxDatatableView):
             """
 
 
-class AdminPaymentItemsDeleteView(View):
+class AdminPaymentItemsDeleteView(PermissionRequiredMixin, View):
+    permission_required = ('authentication.payment_items',)
+
     def delete(self, request, *args, **kwargs):
         PaymentItem.objects.get(pk=self.kwargs['pk']).delete()
         return JsonResponse(status=200, data={'success': True})
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до статей платежів')
+        return redirect(reverse('authentication_adminlte_login'))
 
 
 class AdminPaymentItemCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
@@ -185,7 +191,7 @@ class AdminUsersDatatableView(AjaxDatatableView):
                  <a href={reverse('adminlte_user_update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <button {'disabled' if self.request.user.id == obj.id else ''} class="btn btn-default btn-sm">
+                <button {'disabled' if self.request.user.id == obj.id else ''} {'data-href='+reverse('adminlte_user_delete', kwargs={'pk': obj.id}) if self.request.user.id != obj.id else ''} class="btn btn-default btn-sm delete-button">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>
@@ -244,6 +250,18 @@ class AdminUserCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateVi
     permission_required = ('authentication.users',)
     success_url = reverse_lazy('adminlte_users_list')
     success_message = 'Новий користувач успішно створений'
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до користувачів')
+        return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminUserDeleteView(PermissionRequiredMixin, View):
+    permission_required = ('authentication.users',)
+
+    def delete(self, request, *args, **kwargs):
+        CustomUser.objects.get(pk=self.kwargs['pk']).delete()
+        return JsonResponse(status=200, data={'success': True})
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до користувачів')
