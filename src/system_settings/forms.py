@@ -1,11 +1,12 @@
 from django import forms
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
 from django.db import transaction
 
 from src.authentication.models import CustomUser, STATUS_CHOICES
 from src.system_settings.models import PaymentItem, TYPE_CHOICES, PaymentCredential
-
+from src.system_settings.tasks import send_password_update_notification
 
 class AdminPaymentItemForm(forms.ModelForm):
     type = forms.ChoiceField(
@@ -116,6 +117,17 @@ class AdminUserForm(forms.ModelForm):
         password = self.cleaned_data.get('new_password')
         if password:
             user.password = make_password(password)
+
+            send_password_update_notification.delay(
+                subject_template_name='system_settings/users/password_change_subject.txt',
+                email_template_name='system_settings/users/password_change_notification.html',
+                context={
+                    'email': user.email,
+                    'password': password,
+                },
+                from_email=settings.EMAIL_HOST_USER,
+                to_email=user.email
+            )
 
         if self.instance.pk:
             user.groups.clear()
