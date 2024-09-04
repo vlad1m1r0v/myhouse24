@@ -19,7 +19,7 @@
 {% block content %}
     <div class="box">
         <div class="box-body">
-            <form method="post">
+            <form id="user-form" method="post">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
@@ -35,14 +35,14 @@
                             <label class="control-label">{{ form.phone_number.label }}</label>
                             {{ form.phone_number }}
                         </div>
-                        <div class="form-group">
-                            <label class="control-label">{{ form.role.label }}</label>
-                            {{ form.role }}
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label">{{ form.status.label }}</label>
-                            {{ form.status }}
-                        </div>
+                            <div class="form-group" {% if request.user.id == form.instance.id %}style="display: none"{% endif %}>
+                                <label class="control-label">{{ form.role.label }}</label>
+                                {{ form.role }}
+                            </div>
+                            <div class="form-group" {% if request.user.id == form.instance.id %}style="display: none"{% endif %}>
+                                <label class="control-label">{{ form.status.label }}</label>
+                                {{ form.status }}
+                            </div>
                     </div>
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
@@ -54,10 +54,10 @@
                             <div class="input-group">
                                 {{ form.new_password }}
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default" type="button">
+                                    <button id="generate-password-button" class="btn btn-default" type="button">
                                         Згенерувати пароль
                                     </button>
-                                    <button type="button" class="btn btn-primary">
+                                    <button id="show-password-button" type="button" class="btn btn-primary">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </span>
@@ -72,7 +72,7 @@
                 <div class="row">
                     <div class="col-xs-12 text-right">
                         <a href="{% url 'adminlte_users_list' %}" class="btn btn-default">Відмінити</a>
-                        <button type="submit" class="btn btn-success">Редагувати</button>
+                        <button id="submit-button" type="submit" class="btn btn-success">Редагувати</button>
                     </div>
                 </div>
 
@@ -81,6 +81,146 @@
     </div>
 {% endblock content %}
 {% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Extend JQuery Validation methods-->
+    <script src="{% static 'js/validation.js' %}"></script>
+    <!--Input Mask-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
     <script>
+        function generate_strong_password() {
+            const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const lowercase = "abcdefghijklmnopqrstuvwxyz";
+            const digits = "0123456789";
+            const special_chars = "!@#$%^&*()_+{}:<>?[];,.";
+
+            const get_random_char = (str) => str[Math.floor(Math.random() * str.length)];
+
+            let password = [
+                get_random_char(uppercase),
+                get_random_char(digits),
+                get_random_char(lowercase),
+                get_random_char(special_chars)
+            ];
+
+            const all_chars = uppercase + lowercase + digits + special_chars;
+
+            while (password.length < 8) {
+                password.push(get_random_char(all_chars));
+            }
+
+            password = password.sort(() => Math.random() - 0.5);
+
+            return password.join('');
+        }
+
+        $(document).ready(function () {
+            $('#id_phone_number').inputmask('+38(099)-999-99-99');
+
+            $('#generate-password-button').on('click', function () {
+                const generated_password = generate_strong_password();
+                $('#id_new_password').val(generated_password);
+                $('#id_repeat_password').val(generated_password);
+            })
+
+            $('#show-password-button').on('click', function () {
+                $('#id_new_password').attr('type', (_, attr) => attr === 'password' ? 'text' : 'password');
+                $('#id_repeat_password').attr('type', (_, attr) => attr === 'password' ? 'text' : 'password');
+            })
+
+            const $form = $('#user-form');
+            const $button = $('#submit-button');
+
+            $form.on('focus blur keyup select', 'input,select', function () {
+                validateForm();
+            });
+
+            const validateForm = function () {
+                const isValid = $form.validate({
+                    rules: {
+                        first_name: {
+                            required: true,
+                            minlength: 2,
+                            maxlength: 20,
+                        },
+                        last_name: {
+                            required: true,
+                            minlength: 3,
+                            maxlength: 20,
+                        },
+                        phone_number: {
+                            required: true,
+                            phone_ua: true,
+                        },
+                        role: {
+                            required: true,
+                        },
+                        status: {
+                            required: true,
+                        },
+                        email: {
+                            required: true,
+                            email: false,
+                            valid_email: true,
+                        },
+                        new_password: {
+                            minlength: 8,
+                            strong_password: true,
+                        },
+                        repeat_password: {
+                            equalTo: '#id_new_password',
+                        }
+                    },
+                    messages: {
+                        first_name: {
+                            required: "Вкажіть ім'я",
+                            minlength: "Ім'я повинне містити щонайменше 2 символи",
+                            maxlength: "Ім'я не повинне перевищувати 20 символів",
+                        },
+                        last_name: {
+                            required: "Вкажіть прізвище",
+                            minlength: "Прізвище повинне містити щонайменше 3 символи",
+                            maxlength: "Прізвище не повинне перевищувати 20 символів",
+                        },
+                        phone_number: {
+                            required: "Вкажіть номер телефону",
+                        },
+                        role: {
+                            required: "Вкажіть роль",
+                        },
+                        status: {
+                            required: "Вкажіть статус"
+                        },
+                        email: {
+                            required: "Вкажіть електронну пошту",
+                        },
+                        new_password: {
+                            minlength: "Пароль повинен містити хоча б 8 символів",
+                        },
+                        repeat_password: {
+                            equalTo: "Паролі не співпадають"
+                        }
+                    },
+                    errorElement: 'small',
+                    errorPlacement: function (error, element) {
+                        error.css({'color': 'red'});
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function (element) {
+                        $(element).closest('.form-group').addClass('has-error');
+                    },
+                    unhighlight: function (element) {
+                        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                    }
+                }).checkForm();
+
+
+                if (isValid) {
+                    $button.prop('disabled', false);
+                } else {
+                    $button.prop('disabled', 'disabled');
+                }
+            }
+        });
     </script>
 {% endblock js %}

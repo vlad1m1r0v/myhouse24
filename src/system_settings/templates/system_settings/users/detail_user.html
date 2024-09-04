@@ -33,19 +33,19 @@
                         <tbody>
                         <tr>
                             <td>Користувач</td>
-                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                            <td>{{ user.first_name|default_if_none:"&nbsp;" }} {{ user.last_name|default_if_none:"&nbsp;" }}</td>
                         </tr>
                         <tr>
                             <td>Роль</td>
-                            <td>{{ role }}</td>
+                            <td>{{ role|default_if_none:"&nbsp;" }}</td>
                         </tr>
                         <tr>
                             <td>Номер телефону</td>
-                            <td>{{ user.phone_number }}</td>
+                            <td>{{ user.phone_number|default_if_none:"&nbsp;" }}</td>
                         </tr>
                         <tr>
                             <td>Електронна пошта</td>
-                            <td>{{ user.email }}</td>
+                            <td>{{ user.email|default_if_none:"&nbsp;" }}</td>
                         </tr>
                         <tr>
                             <td>Статус</td>

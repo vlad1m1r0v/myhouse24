@@ -15,3 +15,12 @@ $.validator.addMethod(
     },
     "Пароль повинен містити щонайменше одну велику літеру та одну цифру"
 );
+
+$.validator.addMethod(
+    "phone_ua",
+    function (value, element) {
+        const phoneRegex = /^\+38\(0\d{2}\)-\d{3}-\d{2}-\d{2}$/;
+        return this.optional(element) || phoneRegex.test(value);
+    },
+    "Вкажіть коректний номер телефону"
+);
