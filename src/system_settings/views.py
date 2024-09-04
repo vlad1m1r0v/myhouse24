@@ -185,7 +185,7 @@ class AdminUsersDatatableView(AjaxDatatableView):
                  <a href={reverse('adminlte_user_update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <button class="btn btn-default btn-sm">
+                <button {'disabled' if self.request.user.id == obj.id else ''} class="btn btn-default btn-sm">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>
@@ -228,12 +228,11 @@ class AdminUserUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateVi
 
         return response
 
+    def form_invalid(self, form):
+        messages.error(self.request, "Помилка при оновленні данних користувача")
+        return super().form_invalid(form)
 
-def form_invalid(self, form):
-    messages.error(self.request, "Помилка при оновленні данних користувача")
-    return super().form_invalid(form)
 
-
-def handle_no_permission(self):
-    messages.error(self.request, 'У Вас немає доступу до користувачів')
-    return redirect(reverse('authentication_adminlte_login'))
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до користувачів')
+        return redirect(reverse('authentication_adminlte_login'))
