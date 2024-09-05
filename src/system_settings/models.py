@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group, Permission
 from django.db import models
 
 TYPE_CHOICES = [
@@ -15,3 +16,10 @@ class PaymentCredential(models.Model):
     information = models.TextField()
 
 
+class GroupPermissionProxy(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'

@@ -55,7 +55,6 @@ class AuthenticationAdminLoginView(FormView):
 
 
 class AuthenticationAdminLogoutView(View):
-
     def post(self, request, *args, **kwargs):
         logout(request)
         messages.success(request, 'Адміністратор  успішно вийшов із системи')

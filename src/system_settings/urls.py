@@ -39,4 +39,7 @@ urlpatterns = [
     path('adminlte/system-settings/users/<int:pk>/delete/',
          views.AdminUserDeleteView.as_view(),
          name='adminlte_user_delete'),
+    path('adminlte/system-settings/permissions/',
+         views.AdminGroupPermissionsView.as_view(),
+         name='adminlte_permissions'),
 ]
