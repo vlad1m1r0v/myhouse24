@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import LogoutView
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, View
 from django.shortcuts import redirect
@@ -37,6 +36,7 @@ class AuthenticationAdminLoginView(FormView):
 
     def get_success_url(self):
         permission_to_url = {
+            'authentication.roles': reverse('adminlte_permissions'),
             'authentication.users': reverse('adminlte_users_list'),
             'authentication.payment_information': reverse('adminlte_payment_credential'),
             'authentication.payment_items': reverse('adminlte_payment_items_list')

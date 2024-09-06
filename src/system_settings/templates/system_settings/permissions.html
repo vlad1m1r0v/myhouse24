@@ -74,16 +74,13 @@
                                     {% elif group_id == 3 %} Бухгалтер
                                     {% elif group_id == 4 %} Електрик
                                     {% elif group_id == 5 %} Сантехнік
-                                    {% else %} Невідома роль
                                     {% endif %}
                                 </td>
                                 {% for form in forms %}
-                                    {% for hidden in form.hidden_fields %}
-                                        {{ hidden }}
-                                    {% endfor %}
                                     <td>
-                                        {{ form.group_id }}
-                                        {{ form.permission_id }}
+                                        {% for hidden in form.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
                                         {{ form.checkbox }}
                                     </td>
                                 {% endfor %}
