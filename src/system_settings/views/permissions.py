@@ -2,7 +2,6 @@ from itertools import groupby
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.db import connection
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -11,7 +10,7 @@ from src.system_settings.forms import AdminGroupPermissionFormSet
 
 
 
-class AdminGroupPermissionsView(PermissionRequiredMixin, SuccessMessageMixin, TemplateView):
+class AdminGroupPermissionsView(PermissionRequiredMixin, TemplateView):
     template_name = 'system_settings/permissions.html'
     permission_required = ('authentication.roles',)
 
