@@ -43,7 +43,16 @@ class AdminServicesView(PermissionRequiredMixin, TemplateView):
             service_formset.save()
             messages.success(self.request, 'Послуги і одиниці вимірювання успішно оновлено')
         else:
-            messages.error(self.request, 'Виникли певні помилки при оновленні послуг чи одиниць вимірювань')
+            for form_errors in unit_formset.errors:
+                for error_list in form_errors.values():
+                    for error in error_list:
+                        messages.error(self.request, error)
+
+            for form_errors in service_formset.errors:
+                for error_list in form_errors.values():
+                    for error in error_list:
+                        messages.error(self.request, error)
+
         return redirect(reverse('adminlte_services'))
 
     def handle_no_permission(self):

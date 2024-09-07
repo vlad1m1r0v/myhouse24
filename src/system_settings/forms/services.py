@@ -47,6 +47,18 @@ class AdminServiceForm(forms.ModelForm):
         model = Service
         fields = ['name', 'show_in_counters', 'unit']
 
+    def clean(self):
+        unit = self.cleaned_data.get('unit')
+
+        if unit:
+            name = self.cleaned_data.get('name')
+
+            if not name:
+                raise forms.ValidationError("Не можна додавати послугу не вказавши її ім'я")
+
+            if len(name) < 5:
+                raise forms.ValidationError("Назва послуги має містити хоча б 5 символів")
+
 AdminServiceFormSet = forms.modelformset_factory(
     model=Service,
     form=AdminServiceForm,
