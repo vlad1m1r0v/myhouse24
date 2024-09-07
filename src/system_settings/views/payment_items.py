@@ -1,5 +1,6 @@
 from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
@@ -17,6 +18,7 @@ class AdminPaymentItemsView(PermissionRequiredMixin, TemplateView, ):
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до статей платежів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
 
 
@@ -64,6 +66,7 @@ class AdminPaymentItemsDeleteView(PermissionRequiredMixin, View):
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до статей платежів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
 
 
@@ -77,6 +80,7 @@ class AdminPaymentItemCreateView(SuccessMessageMixin, PermissionRequiredMixin, C
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до статей платежів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
 
 
@@ -90,4 +94,5 @@ class AdminPaymentItemUpdateView(SuccessMessageMixin, PermissionRequiredMixin, U
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до статей платежів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))

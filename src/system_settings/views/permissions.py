@@ -1,6 +1,7 @@
 from itertools import groupby
 
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import connection
 from django.shortcuts import redirect
@@ -75,4 +76,5 @@ class AdminGroupPermissionsView(PermissionRequiredMixin, TemplateView):
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до управління дозволами')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))

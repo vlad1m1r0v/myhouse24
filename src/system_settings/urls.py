@@ -42,4 +42,7 @@ urlpatterns = [
     path('adminlte/system-settings/permissions/',
          views.AdminGroupPermissionsView.as_view(),
          name='adminlte_permissions'),
+    path('adminlte/system-settings/services/',
+         views.AdminServicesView.as_view(),
+         name='adminlte_services')
 ]

@@ -15,3 +15,5 @@ from .users import (AdminUsersView,
                     AdminUserDeleteView)
 
 from .permissions import AdminGroupPermissionsView
+
+from .services import AdminServicesView

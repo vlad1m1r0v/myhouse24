@@ -15,11 +15,21 @@ class PaymentCredential(models.Model):
     name = models.CharField(max_length=50)
     information = models.TextField()
 
+class MeasurementUnit(models.Model):
+    unit = models.CharField(max_length=50)
 
-class GroupPermissionProxy(models.Model):
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.unit
 
-    class Meta:
-        managed = False
-        db_table = 'auth_group_permissions'
+class Service(models.Model):
+    name = models.CharField(max_length=50)
+    unit = models.ForeignKey(MeasurementUnit, on_delete=models.CASCADE, related_name='services')
+    show_in_counters = models.BooleanField(default=False)
+
+class Tariff(models.Model):
+    name = models.CharField(max_length=50)
+    description = models.TextField()
+    services = models.ManyToManyField(Service)
+    updated_at = models.DateTimeField(auto_now=True)
+
+

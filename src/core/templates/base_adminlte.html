@@ -217,10 +217,13 @@
                 <li class="treeview"><a href="#!"><i class="fa fa-cogs"></i> <span>Налаштування системи</span> <span
                         class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                     <ul class="treeview-menu">
-                        <li><a><i class="fa fa-briefcase"></i> <span>Послуги</span></a></li>
+                        {% if perms.authentication.services %}
+                            <li><a href="{% url 'adminlte_services' %}"><i class="fa fa-briefcase"></i> <span>Послуги</span></a></li>
+                        {% endif %}
                         <li><a><i class="fa fa-money"></i> <span>Тарифи</span></a></li>
                         {% if perms.authentication.roles %}
-                            <li><a href="{% url 'adminlte_permissions' %}"><i class="fa fa-user"></i> <span>Ролі</span></a></li>
+                            <li><a href="{% url 'adminlte_permissions' %}"><i class="fa fa-user"></i> <span>Ролі</span></a>
+                            </li>
                         {% endif %}
                         {% if perms.authentication.users %}
                             <li><a href="{% url 'adminlte_users_list' %}"><i class="fa fa-user-plus"></i> <span>Користувачі</span></a>

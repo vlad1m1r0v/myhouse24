@@ -1,6 +1,6 @@
 from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
@@ -21,6 +21,7 @@ class AdminUsersView(PermissionRequiredMixin, TemplateView):
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до користувачів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
 
 
@@ -106,6 +107,7 @@ class AdminUserDetailView(PermissionRequiredMixin, DetailView):
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до користувачів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
 
 
@@ -131,6 +133,7 @@ class AdminUserUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateVi
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до користувачів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
 
 
@@ -144,6 +147,7 @@ class AdminUserCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateVi
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до користувачів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
 
 
@@ -156,4 +160,5 @@ class AdminUserDeleteView(PermissionRequiredMixin, View):
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до користувачів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))

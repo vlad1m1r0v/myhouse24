@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
@@ -32,4 +33,5 @@ class AdminPaymentCredentialView(SuccessMessageMixin, PermissionRequiredMixin, F
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до платіжних реквізитів')
+        logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
