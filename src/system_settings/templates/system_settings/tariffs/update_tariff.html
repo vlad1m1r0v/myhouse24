@@ -1,0 +1,108 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Тариф: {{ tariff.instance.name }}
+{% endblock title %}
+{% block css %}
+    <style>
+    </style>
+{% endblock css %}
+{% block header %}
+    Тариф: {{ tariff.instance.name }}
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i>Головна</a></li>
+    <li><a href="{% url 'adminlte_tariffs_list' %}">Тарифи</a></li>
+    <li><a href="{% url 'adminlte_tariffs_detail' pk=tariff.instance.id %}">{{ tariff.instance.name }}</a></li>
+    <li class="active">Редагування</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-body">
+            <form>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-7">
+                        <div class="form-group">
+                            <label>{{ tariff.name.label }}</label>
+                            {{ tariff.name }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ tariff.description.label }}</label>
+                            {{ tariff.description }}
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-lg-7">
+                        {{ services.management_form }}
+                        {% for service in services %}
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group">
+                                        <label for="{{ service.service.id_for_label }}">{{ service.service.label }}</label>
+                                        <select name="{{ service.service.html_name }}"
+                                                id="{{ service.service.id_for_label }}"
+                                                class="form-control">
+                                            <option>Виберіть...</option>
+                                            {% for option in service.service.field.queryset %}
+                                                <option value="{{ option.id }}"
+                                                        data-unit="{{ option.unit }}"
+                                                        {% if option.id == service.instance.service.id %}selected{% endif %}>
+                                                    {{ option.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="form-group">
+                                        <label>{{ service.price.label }}</label>
+                                        {{ service.price }}
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-2">
+                                    <div class="form-group">
+                                        <label>Валюта</label>
+                                        <input class="form-control" value="грн" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="form-group">
+                                        <label>Одиниця</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control unit-display" disabled
+                                                   value="Виберіть...">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default form-row-remove-btn">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+        function update_unit_display(el) {
+            const selected_option = el.find('option:selected');
+            const unit = selected_option.data('unit');
+            el.closest('.row').find('.unit-display').val(unit ?? 'Виреріть...');
+        }
+
+        $(document).ready(function () {
+            $('select[name$="service"]').each(function () {
+                update_unit_display($(this));
+            });
+
+            $('form').on('change', 'select[name$="service"]', function () {
+                console.log('changed');
+                update_unit_display($(this));
+            });
+        });
+    </script>
+{% endblock js %}

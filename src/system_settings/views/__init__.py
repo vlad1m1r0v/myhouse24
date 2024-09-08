@@ -20,4 +20,5 @@ from .services import AdminServicesView
 
 from .tariffs import (AdminTariffsView,
                       AdminTariffsDatatableView,
-                      AdminTariffDetailView)
+                      AdminTariffDetailView,
+                      AdminTariffUpdateView)
