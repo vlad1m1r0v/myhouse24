@@ -83,7 +83,7 @@ class AdminUsersDatatableView(AjaxDatatableView):
                  <a href={reverse('adminlte_user_update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <button {'disabled' if self.request.user.id == obj.id else ''} {'data-href=' + reverse('adminlte_user_delete', kwargs={'pk': obj.id}) if self.request.user.id != obj.id else ''} class="btn btn-default btn-sm delete-button">
+                <button {'disabled' if self.request.user.id == obj.id else ''} {'data-href=' + reverse('adminlte_user_delete', kwargs={'pk': obj.id}) if self.request.user.id != obj.id else ''} class="btn btn-default btn-sm delete-button"  title="Видалити">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>

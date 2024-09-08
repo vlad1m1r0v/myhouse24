@@ -44,5 +44,14 @@ urlpatterns = [
          name='adminlte_permissions'),
     path('adminlte/system-settings/services/',
          views.AdminServicesView.as_view(),
-         name='adminlte_services')
+         name='adminlte_services'),
+    path('adminlte/system-settings/tariffs/',
+         views.AdminTariffsView.as_view(),
+         name='adminlte_tariffs_list'),
+    path('adminlte/system-settings/tariffs/datatable/',
+         views.AdminTariffsDatatableView.as_view(),
+         name='adminlte_tariffs_datatable'),
+    path('adminlte/system-settings/tariffs/<int:pk>/',
+         views.AdminTariffDetailView.as_view(),
+         name='adminlte_tariffs_detail')
 ]

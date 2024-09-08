@@ -17,3 +17,7 @@ from .users import (AdminUsersView,
 from .permissions import AdminGroupPermissionsView
 
 from .services import AdminServicesView
+
+from .tariffs import (AdminTariffsView,
+                      AdminTariffsDatatableView,
+                      AdminTariffDetailView)

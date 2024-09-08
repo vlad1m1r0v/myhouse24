@@ -218,9 +218,12 @@
                         class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                     <ul class="treeview-menu">
                         {% if perms.authentication.services %}
-                            <li><a href="{% url 'adminlte_services' %}"><i class="fa fa-briefcase"></i> <span>Послуги</span></a></li>
+                            <li><a href="{% url 'adminlte_services' %}"><i class="fa fa-briefcase"></i>
+                                <span>Послуги</span></a></li>
                         {% endif %}
-                        <li><a><i class="fa fa-money"></i> <span>Тарифи</span></a></li>
+                        {% if perms.authentication.tariffs %}
+                            <li><a href="{% url 'adminlte_tariffs_list' %}"><i class="fa fa-money"></i> <span>Тарифи</span></a></li>
+                        {% endif %}
                         {% if perms.authentication.roles %}
                             <li><a href="{% url 'adminlte_permissions' %}"><i class="fa fa-user"></i> <span>Ролі</span></a>
                             </li>
