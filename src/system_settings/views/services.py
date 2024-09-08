@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from src.system_settings.forms import AdminMeasurementUnitFormSet, AdminServiceFormSet
-from src.system_settings.models import MeasurementUnit, Service
+from src.system_settings.models import MeasurementUnit, Service, TariffService
 
 
 class AdminServicesView(PermissionRequiredMixin, TemplateView):
@@ -28,7 +28,11 @@ class AdminServicesView(PermissionRequiredMixin, TemplateView):
         )
 
         context['service_formset'] = AdminServiceFormSet(
-            queryset=Service.objects.all(),
+            queryset=Service.objects.annotate(
+                can_delete=~Exists(
+                    TariffService.objects.filter(service_id=OuterRef('pk'))
+                )
+            ),
             prefix='service'
         )
 

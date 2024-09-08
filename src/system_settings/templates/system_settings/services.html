@@ -47,12 +47,14 @@
                                                     <label>{{ form.unit.label }}</label>
                                                     <div class="input-group">
                                                         {{ form.unit }}
-                                                        <div style="display:none">
-                                                            {{ form.DELETE }}
-                                                        </div>
+                                                        {% if not form.instance.pk or form.instance.can_delete %}
+                                                            <div style="display:none">
+                                                                {{ form.DELETE }}
+                                                            </div>
+                                                        {% endif %}
                                                         <span class="input-group-btn">
                                                                 <button type="button"
-                                                                        class="btn btn-default delete-service-button">
+                                                                        class="btn btn-default delete-service-button {% if form.instance.pk and not form.instance.can_delete %}disabled{% endif %}">
                                                                     <i class="fa fa-trash"></i>
                                                                 </button>
                                                         </span>
@@ -159,7 +161,7 @@
             $total_forms.attr('value', count + 1);
         });
 
-        $(document).on('click', '.delete-unit-button:not(.disabled), .delete-service-button', function () {
+        $(document).on('click', '.delete-unit-button:not(.disabled), .delete-service-button:not(.disabled)', function () {
             const $row = $(this).closest('.row');
             $row.find('input[type="checkbox"]').attr('checked', true);
             $row.hide();
