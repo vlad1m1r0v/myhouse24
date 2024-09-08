@@ -70,7 +70,7 @@
                     <tbody>
                     {% for service in tariff.services.all %}
                     <tr role="row">
-                        <td>{{ service.id }}</td>
+                        <td>{{ forloop.counter}}</td>
                         <td>{{ service.service.name }}</td>
                         <td>{{ service.service.unit }}</td>
                         <td>{{ service.price }}</td>
