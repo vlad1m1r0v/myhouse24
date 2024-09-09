@@ -2,9 +2,10 @@ from ajax_datatable.views import AjaxDatatableView
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, View
 
 from src.system_settings.forms import AdminTariffForm, AdminTariffServiceFormSet
 from src.system_settings.models import Tariff
@@ -44,7 +45,7 @@ class AdminTariffsDatatableView(AjaxDatatableView):
                  <a href={reverse('adminlte_tariff_update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <button class="btn btn-default btn-sm delete-button">
+                <button data-href={reverse('adminlte_tariff_delete', kwargs={'pk': obj.id})} class="btn btn-default btn-sm delete-button">
                     <i class="fa fa-trash" title="Видалити"></i>
                 </button>
             </div>
@@ -113,8 +114,22 @@ class AdminTariffCreateView(PermissionRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['tariff'] = AdminTariffForm()
-        context['services'] = AdminTariffServiceFormSet(prefix='service')
+        tariff_id = self.request.GET.get('tariff_id', None)
+
+        if tariff_id:
+            tariff = Tariff.objects.get(pk=tariff_id)
+
+            form = AdminTariffForm(instance=tariff)
+            formset = AdminTariffServiceFormSet(
+                instance=tariff,
+                prefix='service'
+            )
+        else:
+            form = AdminTariffForm()
+            formset = AdminTariffServiceFormSet(prefix='service')
+
+        context['tariff'] = form
+        context['services'] = formset
 
         return context
 
@@ -135,7 +150,21 @@ class AdminTariffCreateView(PermissionRequiredMixin, TemplateView):
                     for error in error_list:
                         messages.error(self.request, error)
 
-            return self.render_to_response(self.get_context_data(tariff=tariff, services=services))
+            return self.render_to_response(self.get_context_data(tariff=form, services=formset))
+
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до тарифів')
+        logout(self.request)
+        return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminTariffDeleteView(PermissionRequiredMixin, View):
+    permission_required = ('authentication.tariffs',)
+
+    def delete(self, request, *args, **kwargs):
+        Tariff.objects.get(pk=self.kwargs['pk']).delete()
+        return JsonResponse(status=200, data={'success': True})
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до тарифів')

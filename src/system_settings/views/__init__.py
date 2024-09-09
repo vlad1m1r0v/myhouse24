@@ -22,4 +22,5 @@ from .tariffs import (AdminTariffsView,
                       AdminTariffsDatatableView,
                       AdminTariffDetailView,
                       AdminTariffUpdateView,
-                      AdminTariffCreateView)
+                      AdminTariffCreateView,
+                      AdminTariffDeleteView)

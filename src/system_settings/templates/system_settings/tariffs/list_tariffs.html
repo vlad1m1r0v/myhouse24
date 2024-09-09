@@ -100,6 +100,31 @@
             })
         });
 
+        $(document).on('click', '.delete-button', async function () {
+            const $button = $(this);
+
+            const result = await Swal.fire({
+                title: "Ви дійсно хочете видалити цей об'єкт?",
+                icon: "question",
+                showDenyButton: true,
+                confirmButtonText: "Видалити",
+                denyButtonText: "Відмінити"
+            });
+
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: $button.attr('data-href'),
+                    method: "DELETE", headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    success: function () {
+                        Swal.fire("Об'єкт успішно видалено", "", "success");
+                        $button.closest('tr').remove();
+                    }
+                });
+            }
+        });
+
         $(document).on('click', 'tbody tr td:not(:last-child)', function () {
             const row_id = $(this).closest('tr').attr('id');
             window.location.href = String(row_id.match(/\d+/)[0]);
