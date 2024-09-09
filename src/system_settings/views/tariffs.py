@@ -39,7 +39,7 @@ class AdminTariffsDatatableView(AjaxDatatableView):
         row['button_group'] = \
             f"""
             <div class="btn-group pull-right">
-                <a class="btn btn-default btn-sm" title='Копіювати'>
+                <a href={reverse('adminlte_tariff_create')}?tariff_id={obj.id} class="btn btn-default btn-sm" title='Копіювати'>
                     <i class="fa fa-clone"></i>
                 </a>
                  <a href={reverse('adminlte_tariff_update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
