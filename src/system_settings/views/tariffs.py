@@ -119,10 +119,15 @@ class AdminTariffCreateView(PermissionRequiredMixin, TemplateView):
         if tariff_id:
             tariff = Tariff.objects.get(pk=tariff_id)
 
-            form = AdminTariffForm(instance=tariff)
+            form = AdminTariffForm(
+                initial={
+                    'name': tariff.name,
+                    'description': tariff.description
+                },
+                instance=tariff)
             formset = AdminTariffServiceFormSet(
                 instance=tariff,
-                prefix='service'
+                prefix='service',
             )
         else:
             form = AdminTariffForm()
@@ -151,7 +156,6 @@ class AdminTariffCreateView(PermissionRequiredMixin, TemplateView):
                         messages.error(self.request, error)
 
             return self.render_to_response(self.get_context_data(tariff=form, services=formset))
-
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до тарифів')

@@ -20,7 +20,6 @@
         <div class="box-body">
             <form id="tariff-form" method="post">
                 {% csrf_token %}
-                {{ tariff.id }}
                 <div class="row">
                     <div class="col-xs-12 col-lg-7">
                         <div class="form-group">
@@ -35,9 +34,6 @@
                     <div id="services" class="col-xs-12 col-lg-7">
                         {{ services.management_form }}
                         {% for service in services %}
-                            {% for hidden in service.hidden_fields %}
-                                {{ hidden }}
-                            {% endfor %}
                             <div class="row">
                                 <div class="col-xs-6 col-md-4">
                                     <div class="form-group">
@@ -112,6 +108,8 @@
     <script>
         const $form = $('#tariff-form');
         const $button = $('button[type=submit]');
+
+        $('#id_service-INITIAL_FORMS').attr('value', 0);
 
         $form.on('focus blur keyup', 'textarea,input', function () {
             validate_form();
