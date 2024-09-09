@@ -1,0 +1,203 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Новий тариф
+{% endblock title %}
+{% block css %}
+    <style>
+    </style>
+{% endblock css %}
+{% block header %}
+    Новий тариф
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i>Головна</a></li>
+    <li><a href="{% url 'adminlte_tariffs_list' %}">Тарифи</a></li>
+    <li class="active">Новий тариф</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-body">
+            <form id="tariff-form" method="post">
+                {% csrf_token %}
+                {{ tariff.id }}
+                <div class="row">
+                    <div class="col-xs-12 col-lg-7">
+                        <div class="form-group">
+                            <label>{{ tariff.name.label }}</label>
+                            {{ tariff.name }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ tariff.description.label }}</label>
+                            {{ tariff.description }}
+                        </div>
+                    </div>
+                    <div id="services" class="col-xs-12 col-lg-7">
+                        {{ services.management_form }}
+                        {% for service in services %}
+                            {% for hidden in service.hidden_fields %}
+                                {{ hidden }}
+                            {% endfor %}
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4">
+                                    <div class="form-group">
+                                        <label for="{{ service.service.id_for_label }}">{{ service.service.label }}</label>
+                                        <select name="{{ service.service.html_name }}"
+                                                id="{{ service.service.id_for_label }}"
+                                                class="form-control">
+                                            <option value>Виберіть...</option>
+                                            {% for option in service.service.field.queryset %}
+                                                <option value="{{ option.id }}"
+                                                        data-unit="{{ option.unit }}"
+                                                        {% if option.id == service.instance.service.id %}selected{% endif %}>
+                                                    {{ option.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="form-group">
+                                        <label>{{ service.price.label }}</label>
+                                        {{ service.price }}
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-2">
+                                    <div class="form-group">
+                                        <label>Валюта</label>
+                                        <input class="form-control" value="грн" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-3">
+                                    <div class="form-group">
+                                        <label>Одиниця</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control unit-display" disabled
+                                                   value="Виберіть...">
+                                            <div style="display:none">
+                                                {{ service.DELETE }}
+                                            </div>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default delete-service-button">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <button id="add-service-button"
+                                type="button"
+                                class="btn btn-default btn-hover-change">
+                            Додати послугу
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <div class="form-group">
+                            <a href="{% url 'adminlte_tariffs_list' %}" class="btn btn-default">Відмінити</a>
+                            <button type="submit" class="btn btn-success">Створити</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script>
+        const $form = $('#tariff-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus blur keyup', 'textarea,input', function () {
+            validate_form();
+        });
+
+        const validate_form = function () {
+            const is_valid = $form.validate({
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 10,
+                        maxlength: 100,
+                    },
+                    description: {
+                        required: true,
+                        minlength: 100,
+                    }
+                },
+                messages: {
+                    name: {
+                        required: "Вкажіть назву",
+                        minlength: "Назва повинна містити щонайменше 10 символів",
+                        maxlength: "Назва не повинна перевищувати 100 символів",
+                    },
+                    description: {
+                        required: "Вкажіть інформацію",
+                        minlength: "Інформація повинна містити щонайменше 100 символів"
+                    }
+                },
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
+        const $service_extra_form = $('#services > .row:last-of-type');
+        const $service_form_clone = $service_extra_form.clone(true);
+        $service_extra_form.hide();
+
+        $('#add-service-button').on('click', function () {
+            const $total_forms = $('#id_service-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $service_form_clone.prop('outerHTML');
+            const regex = /service-(\d+)-/g;
+            const form = form_markup.replace(regex, `service-${count}-`);
+
+            $('#services #add-service-button').before(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $(document).on('click', '.delete-service-button:not(.disabled)', function () {
+            const $row = $(this).closest('.row');
+            $row.find('input[type="checkbox"]').attr('checked', true);
+            $row.hide();
+        });
+
+        function update_unit_display(el) {
+            const selected_option = el.find('option:selected');
+            const unit = selected_option.data('unit');
+            el.closest('.row').find('.unit-display').val(unit ?? 'Виреріть...');
+        }
+
+        $(document).ready(function () {
+            $('select[name$="service"]').each(function () {
+                update_unit_display($(this));
+            });
+
+            $('form').on('change', 'select[name$="service"]', function () {
+                update_unit_display($(this));
+            });
+        });
+    </script>
+{% endblock js %}

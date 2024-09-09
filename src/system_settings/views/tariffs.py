@@ -104,3 +104,40 @@ class AdminTariffUpdateView(PermissionRequiredMixin, TemplateView):
         messages.error(self.request, 'У Вас немає доступу до тарифів')
         logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminTariffCreateView(PermissionRequiredMixin, TemplateView):
+    permission_required = ('authentication.tariffs',)
+    template_name = 'system_settings/tariffs/create_tariff.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['tariff'] = AdminTariffForm()
+        context['services'] = AdminTariffServiceFormSet(prefix='service')
+
+        return context
+
+    def post(self, *args, **kwargs):
+        form = AdminTariffForm(self.request.POST)
+        formset = AdminTariffServiceFormSet(self.request.POST, prefix='service')
+
+        if form.is_valid() and formset.is_valid():
+            tariff = form.save()
+            formset.instance = tariff
+            formset.save()
+
+            messages.success(self.request, 'Тариф успішно створено')
+            return redirect(reverse('adminlte_tariffs_list'))
+        else:
+            for form_errors in formset.errors:
+                for error_list in form_errors.values():
+                    for error in error_list:
+                        messages.error(self.request, error)
+
+            return self.render_to_response(self.get_context_data(tariff=tariff, services=services))
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до тарифів')
+        logout(self.request)
+        return redirect(reverse('authentication_adminlte_login'))

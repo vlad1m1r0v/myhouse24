@@ -57,4 +57,7 @@ urlpatterns = [
     path('adminlte/system-settings/tariffs/<int:pk>/update/',
          views.AdminTariffUpdateView.as_view(),
          name='adminlte_tariff_update'),
+    path('adminlte/system-settings/tariffs/create/',
+         views.AdminTariffCreateView.as_view(),
+         name='adminlte_tariff_create')
 ]
