@@ -76,10 +76,29 @@ class AdminTariffUpdateView(PermissionRequiredMixin, TemplateView):
 
         context['tariff'] = AdminTariffForm(instance=tariff)
         context['services'] = AdminTariffServiceFormSet(
-            queryset=tariff.services.all()
+            instance=tariff,
+            prefix='service'
         )
 
         return context
+
+    def post(self, *args, **kwargs):
+        instance = Tariff.objects.get(pk=self.kwargs['pk'])
+        tariff = AdminTariffForm(self.request.POST, instance=instance)
+        services = AdminTariffServiceFormSet(self.request.POST, instance=instance, prefix='service')
+
+        if tariff.is_valid() and services.is_valid():
+            tariff.save()
+            services.save()
+            messages.success(self.request, 'Інформацію про тариф успішно оновлено')
+            return redirect(reverse('adminlte_tariffs_list'))
+        else:
+            for form_errors in services.errors:
+                for error_list in form_errors.values():
+                    for error in error_list:
+                        messages.error(self.request, error)
+
+            return self.render_to_response(self.get_context_data(tariff=tariff, services=services))
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до тарифів')
