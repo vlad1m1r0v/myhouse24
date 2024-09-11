@@ -49,14 +49,11 @@ class AdminServiceForm(forms.ModelForm):
 
     def clean(self):
         unit = self.cleaned_data.get('unit')
+        name = self.cleaned_data.get('name')
 
-        if unit:
-            name = self.cleaned_data.get('name')
-
-            if not name:
-                raise forms.ValidationError("Не можна додавати послугу не вказавши її ім'я")
-
-            if len(name) < 5:
+        if bool(unit) != bool(name):
+            raise forms.ValidationError('Не вказано назву або одиницю вимірювання')
+        elif name and len(name) < 5:
                 raise forms.ValidationError("Назва послуги має містити хоча б 5 символів")
 
 AdminServiceFormSet = forms.modelformset_factory(
