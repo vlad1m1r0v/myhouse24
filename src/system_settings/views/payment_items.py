@@ -65,9 +65,7 @@ class AdminPaymentItemsDeleteView(PermissionRequiredMixin, View):
         return JsonResponse(status=200, data={'success': True})
 
     def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до статей платежів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
+        return JsonResponse(status=403,data={'success': False, 'message': 'У Вас немає доступу до статей платежів'})
 
 
 class AdminPaymentItemCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
