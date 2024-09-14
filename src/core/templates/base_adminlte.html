@@ -201,19 +201,21 @@
                     <span>Заявки виклику майстра</span></a></li>
                 <li><a><i class="fa fa-dashboard"></i>
                     <span>Показники лічильників</span></a></li>
-                <li class="treeview"><a href="#!"><i class="fa fa-desktop"></i> <span>Управління сайтом</span> <span
-                        class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
-                    <ul class="treeview-menu">
-                        <li><a><i class="fa fa-circle-o"></i>
-                            <span>Головна сторінка</span></a></li>
-                        <li><a><i class="fa fa-circle-o"></i> <span>Про нас</span></a></li>
-                        <li><a><i class="fa fa-circle-o"></i> <span>Послуги</span></a>
-                        </li>
-                        <li><a><i class="fa fa-circle-o"></i> <span>Тарифи</span></a></li>
-                        <li><a><i class="fa fa-circle-o"></i> <span>Контакти</span></a>
-                        </li>
-                    </ul>
-                </li>
+                {% if perms.authentication.website_management %}
+                    <li class="treeview"><a href="#!"><i class="fa fa-desktop"></i> <span>Управління сайтом</span> <span
+                            class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+                        <ul class="treeview-menu">
+                            <li><a href="{% url 'adminlte_website_management_home' %}"><i class="fa fa-circle-o"></i>
+                                <span>Головна сторінка</span></a></li>
+                            <li><a><i class="fa fa-circle-o"></i> <span>Про нас</span></a></li>
+                            <li><a><i class="fa fa-circle-o"></i> <span>Послуги</span></a>
+                            </li>
+                            <li><a><i class="fa fa-circle-o"></i> <span>Тарифи</span></a></li>
+                            <li><a><i class="fa fa-circle-o"></i> <span>Контакти</span></a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
                 <li class="treeview"><a href="#!"><i class="fa fa-cogs"></i> <span>Налаштування системи</span> <span
                         class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
                     <ul class="treeview-menu">
@@ -222,7 +224,8 @@
                                 <span>Послуги</span></a></li>
                         {% endif %}
                         {% if perms.authentication.tariffs %}
-                            <li><a href="{% url 'adminlte_tariffs_list' %}"><i class="fa fa-money"></i> <span>Тарифи</span></a></li>
+                            <li><a href="{% url 'adminlte_tariffs_list' %}"><i class="fa fa-money"></i>
+                                <span>Тарифи</span></a></li>
                         {% endif %}
                         {% if perms.authentication.roles %}
                             <li><a href="{% url 'adminlte_permissions' %}"><i class="fa fa-user"></i> <span>Ролі</span></a>
@@ -501,6 +504,8 @@
 <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
 <!-- Bootstrap WYSIHTML5 -->
 <script src="{% static 'plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js' %}"></script>
+<!--WYSIHTML5 UA Locale-->
+<script src="{% static 'plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.ua-UA.js' %}"></script>
 <!-- Slimscroll -->
 <script src="{% static 'bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
 <!-- FastClick -->

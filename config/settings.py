@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'ajax_datatable',
     # applications
     'src.authentication.apps.AuthenticationConfig',
-    'src.system_settings.apps.SystemSettingsConfig'
+    'src.system_settings.apps.SystemSettingsConfig',
+    'src.website_management.apps.WebsiteManagementConfig'
 ]
 
 MIDDLEWARE = [
