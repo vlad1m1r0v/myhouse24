@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_recaptcha',
     'django_extensions',
     'ajax_datatable',
+    'django_cleanup.apps.CleanupConfig',
     # applications
     'src.authentication.apps.AuthenticationConfig',
     'src.system_settings.apps.SystemSettingsConfig',

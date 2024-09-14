@@ -40,7 +40,8 @@ class AuthenticationAdminLoginView(FormView):
             'authentication.roles': reverse('adminlte_permissions'),
             'authentication.users': reverse('adminlte_users_list'),
             'authentication.payment_information': reverse('adminlte_payment_credential'),
-            'authentication.payment_items': reverse('adminlte_payment_items_list')
+            'authentication.payment_items': reverse('adminlte_payment_items_list'),
+            'authentication.website_management': reverse('adminlte_website_management_home'),
         }
 
         for perm, url in permission_to_url.items():

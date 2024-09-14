@@ -15,7 +15,7 @@ class SEOModel(models.Model):
 class MainPage(SEOModel):
     title = models.CharField()
     description = models.TextField()
-    show_app_links = models.BooleanField()
+    show_app_links = models.BooleanField(null=False, default=False)
 
 
 class MainPageSlide(models.Model):
