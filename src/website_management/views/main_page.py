@@ -18,7 +18,6 @@ class AdminMainPageView(TemplateView):
             prefix='slides',
         )
 
-
         (obj, _) = MainPage.objects.get_or_create(pk=1)
         context['main_page'] = AdminMainPageForm(instance=obj)
 
