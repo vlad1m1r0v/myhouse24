@@ -3,3 +3,10 @@ from .main_page import (
     AdminMainPageBlockFormSet,
     AdminMainPageSlideFormSet
 )
+
+from .about_us_page import (
+    AdminAboutUsPageForm,
+    AdminAboutUsGalleryFormSet,
+    AdminAboutUsAdditionalGalleryFormSet,
+    AdminAboutUsDocumentFormSet
+)

@@ -1,0 +1,20 @@
+.scrolling-wrapper {
+  overflow-x: scroll;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrolling-wrapper::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+.scrolling-wrapper > div {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+
+.scrolling-wrapper > div:last-child {
+  margin-right: 0;
+}

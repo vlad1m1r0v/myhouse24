@@ -68,6 +68,7 @@ class AdminMainPageForm(forms.ModelForm):
             attrs={
                 'class': 'form-control',
                 'rows': 6,
+                'style': 'resize: none;'
             }
         ),
         label='SEO опис'
@@ -79,6 +80,7 @@ class AdminMainPageForm(forms.ModelForm):
             attrs={
                 'class': 'form-control',
                 'rows': 6,
+                'style': 'resize: none;'
             }
         ),
         label='SEO ключові слова'

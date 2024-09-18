@@ -40,7 +40,8 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    <!--Fix small font in Sweet Alert confirmation buttons-->
+    <link rel="stylesheet" href="{% static 'css/adjust_swal2.css' %}">
     <!-- Google Font -->
     <link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -207,7 +208,7 @@
                         <ul class="treeview-menu">
                             <li><a href="{% url 'adminlte_website_management_home' %}"><i class="fa fa-circle-o"></i>
                                 <span>Головна сторінка</span></a></li>
-                            <li><a><i class="fa fa-circle-o"></i> <span>Про нас</span></a></li>
+                            <li><a href="{% url 'adminlte_website_management_about_us' %}"><i class="fa fa-circle-o"></i> <span>Про нас</span></a></li>
                             <li><a><i class="fa fa-circle-o"></i> <span>Послуги</span></a>
                             </li>
                             <li><a><i class="fa fa-circle-o"></i> <span>Тарифи</span></a></li>

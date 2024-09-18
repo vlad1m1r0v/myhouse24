@@ -21,7 +21,29 @@ class MainPage(SEOModel):
 class MainPageSlide(models.Model):
     image = models.ImageField(upload_to=get_upload_path)
 
+
 class MainPageBlock(models.Model):
     image = models.ImageField(upload_to=get_upload_path)
     title = models.CharField()
     description = models.TextField()
+
+
+class AboutUsPage(SEOModel):
+    director_photo = models.ImageField(upload_to=get_upload_path)
+    title = models.CharField()
+    description = models.TextField()
+    additional_title = models.CharField()
+    additional_description = models.TextField()
+
+
+class AboutUsGallery(models.Model):
+    image = models.ImageField(upload_to=get_upload_path)
+
+
+class AboutUsAdditionalGallery(models.Model):
+    image = models.ImageField(upload_to=get_upload_path)
+
+
+class AboutUsDocument(models.Model):
+    title = models.CharField()
+    file = models.FileField(upload_to=get_upload_path)
