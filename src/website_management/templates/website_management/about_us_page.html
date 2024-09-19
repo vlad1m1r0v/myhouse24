@@ -6,7 +6,7 @@
 {% block css %}
     <link rel="stylesheet" href={% static 'css/scrolling_wrapper.css' %}>
     <style>
-        img + label {
+        img:not(.fa) + label {
             margin-top: 15px;
         }
 
@@ -201,7 +201,18 @@
                                     <button type="button"
                                             class="delete-document-button pull-right text-red form-row-remove-btn"><i
                                             class="fa fa-trash"></i></button>
-                                    <i class="fa fa-file-o fa-3x pull-left" style="width: 32px;" aria-hidden="true"></i>
+                                    {% if document.instance.extension == 'pdf' %}
+                                        <i class="fa fa-file-pdf-o fa-3x pull-left" style="width: 32px;"
+                                           aria-hidden="true"></i>
+                                    {% elif document.instance.extension == 'jpg' %}
+                                        <img class="fa fa-3x pull-left"
+                                             style="width: 32px; height: 42px;"
+                                             src="{{ document.instance.file.url }}"
+                                             alt="Document">
+                                    {% else %}
+                                        <i class="fa fa-file-o fa-3x pull-left" style="width: 32px;"
+                                           aria-hidden="true"></i>
+                                    {% endif %}
                                     <label>{{ document.file.label }}</label>
                                     {{ document.file }}
                                 </div>

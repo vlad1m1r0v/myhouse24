@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 
 from src.core.utils import get_upload_path
@@ -47,3 +49,7 @@ class AboutUsAdditionalGallery(models.Model):
 class AboutUsDocument(models.Model):
     title = models.CharField()
     file = models.FileField(upload_to=get_upload_path)
+
+    def extension(self):
+        name, rest = os.path.splitext(self.file.name)
+        return rest[1:]
