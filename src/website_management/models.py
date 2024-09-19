@@ -53,3 +53,13 @@ class AboutUsDocument(models.Model):
     def extension(self):
         name, rest = os.path.splitext(self.file.name)
         return rest[1:]
+
+
+class ServicesPage(SEOModel):
+    pass
+
+
+class ServicesPageBlock(models.Model):
+    image = models.ImageField(upload_to=get_upload_path)
+    title = models.CharField()
+    description = models.TextField()

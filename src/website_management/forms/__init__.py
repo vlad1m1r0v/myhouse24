@@ -10,3 +10,8 @@ from .about_us_page import (
     AdminAboutUsAdditionalGalleryFormSet,
     AdminAboutUsDocumentFormSet
 )
+
+from .services_page import (
+    AdminServicesPageForm,
+    AdminServicesPageBlockFormSet
+)

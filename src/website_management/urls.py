@@ -9,4 +9,7 @@ urlpatterns = [
     path('adminlte/website-management/about-us/',
          views.AdminAboutUsPageView.as_view(),
          name='adminlte_website_management_about_us'),
+    path('adminlte/website-management/services/',
+         views.AdminServicesPageView.as_view(),
+         name='adminlte_website_management_services'),
 ]
