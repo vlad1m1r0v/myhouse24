@@ -24,3 +24,12 @@ $.validator.addMethod(
     },
     "Вкажіть коректний номер телефону"
 );
+
+$.validator.addMethod(
+    "map_iframe",
+    function (value, element) {
+        const mapIframeRegex = /<iframe\s*src="https:\/\/www\.google\.com\/maps\/embed\?[^"]+"\s*[^>]*><\/iframe>/i;
+        return this.optional(element) || mapIframeRegex.test(value);
+    },
+    "Вкажіть коректний код карти"
+);

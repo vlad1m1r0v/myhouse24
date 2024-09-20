@@ -20,3 +20,6 @@ from .tariffs_page import (
     AdminTariffsPageForm,
     AdminTariffsPageBlockFormSet
 )
+
+
+from .contacts_page import AdminContactsPageForm

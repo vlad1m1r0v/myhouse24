@@ -15,4 +15,7 @@ urlpatterns = [
     path('adminlte/website-management/tariffs/',
          views.AdminTariffsPageView.as_view(),
          name='adminlte_website_management_tariffs'),
+    path('adminlte/website-management/contacts/',
+         views.AdminContactsPageView.as_view(),
+         name='adminlte_website_management_contacts'),
 ]
