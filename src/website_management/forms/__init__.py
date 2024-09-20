@@ -15,3 +15,8 @@ from .services_page import (
     AdminServicesPageForm,
     AdminServicesPageBlockFormSet
 )
+
+from .tariffs_page import (
+    AdminTariffsPageForm,
+    AdminTariffsPageBlockFormSet
+)

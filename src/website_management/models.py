@@ -63,3 +63,13 @@ class ServicesPageBlock(models.Model):
     image = models.ImageField(upload_to=get_upload_path)
     title = models.CharField()
     description = models.TextField()
+
+
+class TariffsPage(SEOModel):
+    title = models.CharField()
+    description = models.TextField()
+
+
+class TariffsPageBlock(models.Model):
+    image = models.ImageField(upload_to=get_upload_path)
+    title = models.CharField()
