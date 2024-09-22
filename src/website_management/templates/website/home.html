@@ -60,7 +60,7 @@
                     {{ page.description|safe }}
                 </div>
                 <div class="d-flex my-2 align-items-center">
-                    <a class="btn btn-primary">Детальніше</a>
+                    <a href="{% url 'website_about_us' %}" class="btn btn-primary">Детальніше</a>
                     {% if page.show_app_links %}
                         <div class="ms-auto">
                             <a href="https://play.google.com/store/apps" class="text-decoration-none me-2">Google Play
