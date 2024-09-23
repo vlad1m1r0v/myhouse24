@@ -1,18 +1,18 @@
 from django.core.paginator import Paginator
 from django.views.generic import TemplateView
 
-from src.website_management.models import ServicesPage, ServicesPageBlock
+from src.website_management.models import TariffsPage, TariffsPageBlock
 
 
-class WebsiteServicesView(TemplateView):
-    template_name = 'website/services.html'
+class WebsiteTariffsView(TemplateView):
+    template_name = 'website/tariffs.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['page'] = ServicesPage.objects.first()
+        context['page'] = TariffsPage.objects.first()
 
-        services = ServicesPageBlock.objects.all()
+        services = TariffsPageBlock.objects.all()
         paginator = Paginator(services, per_page=10)
         page_number = self.request.GET.get("page")
         page_obj = paginator.get_page(page_number)
