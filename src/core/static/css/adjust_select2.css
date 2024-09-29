@@ -17,3 +17,7 @@
     background-color: #00a65a !important;
     color: white;
 }
+
+ .select2-container * {
+    border-radius: 0 !important;
+}
