@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     # applications
     'src.authentication.apps.AuthenticationConfig',
     'src.system_settings.apps.SystemSettingsConfig',
-    'src.website_management.apps.WebsiteManagementConfig'
+    'src.website_management.apps.WebsiteManagementConfig',
+    'src.houses.apps.HousesConfig'
 ]
 
 MIDDLEWARE = [

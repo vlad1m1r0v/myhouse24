@@ -1,0 +1,192 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Новий дім
+{% endblock title %}
+{% block css %}
+    <style>
+        #images img {
+            width: 100%;
+            aspect-ratio: auto;
+            margin-bottom: 30px;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Новий дім
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li>Домівки</li>
+    <li class="active">Новий дім</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <!--Name, Address and Image Inputs-->
+                    <div class="col-xs-12 col-lg-4">
+                        <div class="form-group">
+                            <label>{{ house.name.label }}</label>
+                            {{ house.name }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ house.address.label }}</label>
+                            {{ house.address }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ house.image_1.label }}</label>
+                            {{ house.image_1 }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ house.image_2.label }}</label>
+                            {{ house.image_2 }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ house.image_3.label }}</label>
+                            {{ house.image_3 }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ house.image_4.label }}</label>
+                            {{ house.image_4 }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ house.image_5.label }}</label>
+                            {{ house.image_5 }}
+                        </div>
+                    </div>
+                    <!--Image Placeholder-->
+                    <div class="col-xs-12 col-lg-8" id="images">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <img src="https://placehold.co/522x350" alt="Primary House Image">
+                            </div>
+                            <div class="col-xs-6 col-md-3">
+                                <img src="https://placehold.co/248x160" alt="Secondary House Image">
+                            </div>
+                            <div class="col-xs-6 col-md-3">
+                                <img src="https://placehold.co/248x160" alt="Secondary House Image">
+                            </div>
+                            <div class="col-xs-6 col-md-3">
+                                <img src="https://placehold.co/248x160" alt="Secondary House Image">
+                            </div>
+                            <div class="col-xs-6 col-md-3">
+                                <img src="https://placehold.co/248x160" alt="Secondary House Image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Tabs-->
+                <div class="row">
+                    <div class="col-xs-12 col-lg-8">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#sections" data-toggle="tab" aria-expanded="true">Секції</a></li>
+                                <li>
+                                    <a href="#floors" data-toggle="tab" aria-expanded="false">Поверхи</a>
+                                </li>
+                                <li>
+                                    <a href="#users" data-toggle="tab" aria-expanded="false">Користувачі</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane clearfix active" id="sections">
+                                    {{ sections.management_form }}
+                                    {% for section in sections %}
+                                        <div class="form-group">
+                                            <label>{{ section.name.label }}</label>
+                                            <div class="input-group">
+                                                {{ section.name }}
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-danger delete-section-button">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <button class="btn btn-success pull-right add-section-button" type="button">
+                                        Додати
+                                    </button>
+                                </div>
+                                <div class="tab-pane clearfix" id="floors">
+                                    {{ floors.management_form }}
+                                    {% for floor in floors %}
+                                        <div class="form-group">
+                                            <label>{{ floor.name.label }}</label>
+                                            <div class="input-group">
+                                                {{ floor.name }}
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-danger delete-floor-button">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <button class="btn btn-success pull-right add-floor-button" type="button">
+                                        Додати
+                                    </button>
+                                </div>
+                                <div class="tab-pane clearfix" id="users">
+                                    {{ users.management_form }}
+                                    {% for user in users %}
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-7">
+                                                <div class="form-group">
+                                                    <label for="{{ user.user.id_for_label }}">{{ user.user.label }}</label>
+                                                    <select name="{{ user.user.html_name }}"
+                                                            id="{{ user.user.id_for_label }}"
+                                                            class="form-control">
+                                                        <option value>Виберіть...</option>
+                                                        {% for option in user.user.field.queryset %}
+                                                            <option value="{{ option.id }}"
+                                                                    data-role="{{ option.groups.first.name }}">
+                                                                {{ option.full_name }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-5">
+                                                <div class="form-group">
+                                                    <label>Роль</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" disabled>
+                                                        <span class="input-group-btn">
+                                                            <button type="button"
+                                                                    class="btn btn-danger delete-user-button">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <button class="btn btn-success pull-right add-user-button" type="button">
+                                        Додати
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Submit and Cancel buttons-->
+                <div class="col-xs-12 text-right">
+                    <div class="form-group">
+                        <a class="btn btn-default">Відмінити</a>
+                        <button type="submit" class="btn btn-success">Зберегти</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+    </script>
+{% endblock js %}
