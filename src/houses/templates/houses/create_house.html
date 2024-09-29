@@ -7,8 +7,15 @@
     <style>
         #images img {
             width: 100%;
-            aspect-ratio: auto;
             margin-bottom: 30px;
+        }
+
+        #primary-image {
+            aspect-ratio: 522 / 350;
+        }
+
+        .secondary-image {
+            aspect-ratio: 248 / 160;
         }
     </style>
 {% endblock css %}
@@ -61,19 +68,23 @@
                     <div class="col-xs-12 col-lg-8" id="images">
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
-                                <img src="https://placehold.co/522x350" alt="Primary House Image">
+                                <img id="primary-image" src="https://placehold.co/522x350" alt="Primary House Image">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                                <img src="https://placehold.co/248x160" alt="Secondary House Image">
+                                <img class="secondary-image" src="https://placehold.co/248x160"
+                                     alt="Secondary House Image">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                                <img src="https://placehold.co/248x160" alt="Secondary House Image">
+                                <img class="secondary-image" src="https://placehold.co/248x160"
+                                     alt="Secondary House Image">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                                <img src="https://placehold.co/248x160" alt="Secondary House Image">
+                                <img class="secondary-image" src="https://placehold.co/248x160"
+                                     alt="Secondary House Image">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                                <img src="https://placehold.co/248x160" alt="Secondary House Image">
+                                <img class="secondary-image" src="https://placehold.co/248x160"
+                                     alt="Secondary House Image">
                             </div>
                         </div>
                     </div>
@@ -93,13 +104,17 @@
                                 </li>
                             </ul>
                             <div class="tab-content">
+                                <!--Sections-->
                                 <div class="tab-pane clearfix active" id="sections">
                                     {{ sections.management_form }}
                                     {% for section in sections %}
-                                        <div class="form-group">
+                                        <div class="form-group section">
                                             <label>{{ section.name.label }}</label>
                                             <div class="input-group">
                                                 {{ section.name }}
+                                                <div style="display:none">
+                                                    {{ section.DELETE }}
+                                                </div>
                                                 <span class="input-group-btn">
                                                     <button type="button" class="btn btn-danger delete-section-button">
                                                         <i class="fa fa-trash"></i>
@@ -108,33 +123,39 @@
                                             </div>
                                         </div>
                                     {% endfor %}
-                                    <button class="btn btn-success pull-right add-section-button" type="button">
+                                    <button id="add-section-button" class="btn btn-success pull-right" type="button">
                                         Додати
                                     </button>
                                 </div>
+                                <!--Floors-->
                                 <div class="tab-pane clearfix" id="floors">
                                     {{ floors.management_form }}
                                     {% for floor in floors %}
-                                        <div class="form-group">
+                                        <div class="form-group floor">
                                             <label>{{ floor.name.label }}</label>
                                             <div class="input-group">
                                                 {{ floor.name }}
+                                                <div style="display:none">
+                                                    {{ floor.DELETE }}
+                                                </div>
                                                 <span class="input-group-btn">
-                                                    <button type="button" class="btn btn-danger delete-floor-button">
+                                                    <button type="button"
+                                                            class="btn btn-danger delete-floor-button">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
                                                 </span>
                                             </div>
                                         </div>
                                     {% endfor %}
-                                    <button class="btn btn-success pull-right add-floor-button" type="button">
+                                    <button id="add-floor-button" class="btn btn-success pull-right" type="button">
                                         Додати
                                     </button>
                                 </div>
+                                <!--Users-->
                                 <div class="tab-pane clearfix" id="users">
                                     {{ users.management_form }}
                                     {% for user in users %}
-                                        <div class="row">
+                                        <div class="row user">
                                             <div class="col-xs-12 col-sm-7">
                                                 <div class="form-group">
                                                     <label for="{{ user.user.id_for_label }}">{{ user.user.label }}</label>
@@ -155,7 +176,11 @@
                                                 <div class="form-group">
                                                     <label>Роль</label>
                                                     <div class="input-group">
-                                                        <input type="text" class="form-control" disabled>
+                                                        <input class="form-control role-display" type="text"
+                                                               value="Виберіть..." disabled>
+                                                        <div style="display:none">
+                                                            {{ user.DELETE }}
+                                                        </div>
                                                         <span class="input-group-btn">
                                                             <button type="button"
                                                                     class="btn btn-danger delete-user-button">
@@ -167,7 +192,7 @@
                                             </div>
                                         </div>
                                     {% endfor %}
-                                    <button class="btn btn-success pull-right add-user-button" type="button">
+                                    <button id="add-user-button" class="btn btn-success pull-right" type="button">
                                         Додати
                                     </button>
                                 </div>
@@ -188,5 +213,103 @@
 {% endblock content %}
 {% block js %}
     <script>
+        // Sections
+        const $section_extra_form = $('#sections .section').last();
+        const $section_form_clone = $section_extra_form.clone(true);
+        $section_extra_form.hide();
+
+        $('#add-section-button').on('click', function () {
+            const $total_forms = $('#id_housesection-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $section_form_clone.prop('outerHTML');
+            const regex = /housesection-(\d+)-/g;
+            const form = form_markup.replace(regex, `housesection-${count}-`);
+
+            $('#sections #add-section-button').before(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $(document).on('click', '.delete-section-button', function () {
+            const $section = $(this).closest('.section');
+            $section.find('input[type="checkbox"]').attr('checked', true);
+            $section.hide();
+        });
+
+        // Floors
+        const $floor_extra_form = $('#floors .floor').last();
+        const $floor_form_clone = $floor_extra_form.clone(true);
+        $floor_extra_form.hide();
+
+        $('#add-floor-button').on('click', function () {
+            const $total_forms = $('#id_housefloor-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $floor_form_clone.prop('outerHTML');
+            const regex = /housefloor-(\d+)-/g;
+            const form = form_markup.replace(regex, `housefloor-${count}-`);
+
+            $('#floors #add-floor-button').before(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $(document).on('click', '.delete-floor-button', function () {
+            const $floor = $(this).closest('.floor');
+            $floor.find('input[type="checkbox"]').attr('checked', true);
+            $floor.hide();
+        });
+
+        // Users
+        function update_role_display(el) {
+            const selected_option = el.find('option:selected');
+            const role = selected_option.data('role');
+            el.closest('.user').find('.role-display').val(role ?? 'Виреріть...');
+        }
+
+        $(document).ready(function () {
+            $('#users select').each(function () {
+                update_role_display($(this));
+            });
+
+            $('form').on('change', '#users select', function () {
+                update_role_display($(this));
+            });
+        });
+
+        const $user_extra_form = $('#users .user').last();
+        const $user_form_clone = $user_extra_form.clone(true);
+        $user_extra_form.hide();
+
+        $('#add-user-button').on('click', function () {
+            const $total_forms = $('#id_houseuser-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $user_form_clone.prop('outerHTML');
+            const regex = /houseuser-(\d+)-/g;
+            const form = form_markup.replace(regex, `houseuser-${count}-`);
+
+            $('#users #add-user-button').before(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $(document).on('click', '.delete-user-button', function () {
+            const $user = $(this).closest('.user');
+            $user.find('input[type="checkbox"]').attr('checked', true);
+            $user.hide();
+        });
+
+        // Images
+        $(document).on('change', 'input:file', function (e) {
+            const image = e.target.files[0];
+            const src = URL.createObjectURL(image);
+
+            const id = $(e.target).prop('id');
+            const number = id.match(/\d+/)[0];
+
+            $('#images img').eq(Number(number) - 1).attr('src', src);
+        });
     </script>
 {% endblock js %}
