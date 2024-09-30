@@ -40,7 +40,7 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Домівки</a></li>
+    <li><a href="{% url 'adminlte_houses_list' %}">Домівки</a></li>
     <li class="active">{{ house.name }}</li>
 {% endblock breadcrumb %}
 {% block content %}

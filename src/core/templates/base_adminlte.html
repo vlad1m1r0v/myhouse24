@@ -196,7 +196,10 @@
                 <li><a><i class="fa fa-key"></i> <span>Квартири</span></a></li>
                 <li><a><i class="fa fa-users"></i>
                     <span>Власники квартир</span></a></li>
-                <li><a><i class="fa fa-building"></i> <span>Домівки</span></a></li>
+                {% if perms.authentication.houses %}
+                    <li><a href="{% url 'adminlte_houses_list' %}"><i class="fa fa-building"></i>
+                        <span>Домівки</span></a></li>
+                {% endif %}
                 <li><a><i class="fa fa-envelope-o"></i> <span>Повідомлення</span></a></li>
                 <li><a><i class="fa fa-wrench"></i>
                     <span>Заявки виклику майстра</span></a></li>
@@ -208,11 +211,15 @@
                         <ul class="treeview-menu">
                             <li><a href="{% url 'adminlte_website_management_home' %}"><i class="fa fa-circle-o"></i>
                                 <span>Головна сторінка</span></a></li>
-                            <li><a href="{% url 'adminlte_website_management_about_us' %}"><i class="fa fa-circle-o"></i> <span>Про нас</span></a></li>
-                            <li><a href="{% url 'adminlte_website_management_services' %}"><i class="fa fa-circle-o"></i> <span>Послуги</span></a>
+                            <li><a href="{% url 'adminlte_website_management_about_us' %}"><i
+                                    class="fa fa-circle-o"></i> <span>Про нас</span></a></li>
+                            <li><a href="{% url 'adminlte_website_management_services' %}"><i
+                                    class="fa fa-circle-o"></i> <span>Послуги</span></a>
                             </li>
-                            <li><a href="{% url 'adminlte_website_management_tariffs' %}"><i class="fa fa-circle-o"></i> <span>Тарифи</span></a></li>
-                            <li><a href="{% url 'adminlte_website_management_contacts' %}"><i class="fa fa-circle-o"></i> <span>Контакти</span></a>
+                            <li><a href="{% url 'adminlte_website_management_tariffs' %}"><i class="fa fa-circle-o"></i>
+                                <span>Тарифи</span></a></li>
+                            <li><a href="{% url 'adminlte_website_management_contacts' %}"><i
+                                    class="fa fa-circle-o"></i> <span>Контакти</span></a>
                             </li>
                         </ul>
                     </li>

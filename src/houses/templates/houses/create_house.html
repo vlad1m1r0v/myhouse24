@@ -24,7 +24,7 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li>Домівки</li>
+    <li><a href="{% url 'adminlte_houses_list' %}">Домівки</a></li>
     <li class="active">Новий дім</li>
 {% endblock breadcrumb %}
 {% block content %}

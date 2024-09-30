@@ -1,12 +1,24 @@
+from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, View
 
 from src.houses.forms import AdminHouseForm, AdminHouseSectionFormSet, AdminHouseFloorFormSet, AdminHouseUserFormSet
 from src.houses.models import House
+
+
+class AdminHousesListView(PermissionRequiredMixin, TemplateView):
+    template_name = 'houses/list_houses.html'
+    permission_required = 'authentication.houses'
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до домівок')
+        logout(self.request)
+        return redirect(reverse('authentication_adminlte_login'))
 
 
 class AdminHouseCreateView(PermissionRequiredMixin, TemplateView):
@@ -44,7 +56,7 @@ class AdminHouseCreateView(PermissionRequiredMixin, TemplateView):
             messages.success(self.request, 'Домівку успішно створено')
         else:
             messages.error(self.request, 'Виникли певні посилки при створенні домівки')
-        return redirect(reverse('adminlte_houses_create'))
+        return redirect(reverse('adminlte_houses_list'))
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до домівок')
@@ -96,9 +108,52 @@ class AdminHouseUpdateView(PermissionRequiredMixin, TemplateView):
             messages.success(self.request, 'Домівку успішно оновлено')
         else:
             messages.error(self.request, 'Виникли певні посилки при оновленні домівки')
-        return redirect(reverse('adminlte_houses_create'))
+        return redirect(reverse('adminlte_houses_list'))
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до домівок')
         logout(self.request)
         return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminHousesDatatableView(AjaxDatatableView):
+    model = House
+    title = 'Домівки'
+    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
+    search_values_separator = '+'
+
+    column_defs = [
+        {'name': 'id', 'title': '#', 'visible': True, },
+        {'name': 'name', 'title': 'Назва', 'visible': True, },
+        {'name': 'address', 'title': 'Адреса', 'visible': True},
+        {'name': 'button_group',
+         'title': '',
+         'placeholder': True, 'visible': True,
+         'searchable': False,
+         'orderable': False,
+         },
+    ]
+
+    def customize_row(self, row, obj):
+        row['button_group'] = \
+            f"""
+            <div class="btn-group pull-right">
+                 <a href={reverse('adminlte_house_update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
+                    <i class="fa fa-pencil"></i>
+                </a>
+                <button data-href={reverse('adminlte_house_delete', kwargs={'pk': obj.id})} class="btn btn-default btn-sm delete-button" title="Видалити">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            """
+
+
+class AdminHousesDeleteView(PermissionRequiredMixin, View):
+    permission_required = ('authentication.houses',)
+
+    def delete(self, request, *args, **kwargs):
+        House.objects.get(pk=self.kwargs['pk']).delete()
+        return JsonResponse(status=200, data={'success': True})
+
+    def handle_no_permission(self):
+        return JsonResponse(status=403, data={'success': False, 'message': 'У Вас немає доступу до домівок'})
