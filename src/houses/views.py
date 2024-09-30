@@ -43,8 +43,7 @@ class AdminHouseCreateView(PermissionRequiredMixin, TemplateView):
 
             messages.success(self.request, 'Домівку успішно створено')
         else:
-            messages.success(self.request, 'Виникли певні посилки при створенні домівки')
-            print(users.errors)
+            messages.error(self.request, 'Виникли певні посилки при створенні домівки')
         return redirect(reverse('adminlte_houses_create'))
 
     def handle_no_permission(self):
@@ -58,6 +57,46 @@ class AdminHouseDetailView(PermissionRequiredMixin, DetailView):
     template_name = 'houses/detail_house.html'
     model = House
     context_object_name = 'house'
+
+    def handle_no_permission(self):
+        messages.error(self.request, 'У Вас немає доступу до домівок')
+        logout(self.request)
+        return redirect(reverse('authentication_adminlte_login'))
+
+
+class AdminHouseUpdateView(PermissionRequiredMixin, TemplateView):
+    template_name = 'houses/update_house.html'
+    permission_required = 'authentication.houses'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        house = House.objects.get(pk=self.kwargs['pk'])
+
+        context['house'] = AdminHouseForm(instance=house)
+        context['sections'] = AdminHouseSectionFormSet(instance=house)
+        context['floors'] = AdminHouseFloorFormSet(instance=house)
+        context['users'] = AdminHouseUserFormSet(instance=house)
+
+        return context
+
+    def post(self, *args, **kwargs):
+        instance = House.objects.get(pk=kwargs.get('pk'))
+
+        house = AdminHouseForm(self.request.POST, self.request.FILES, instance=instance)
+        sections = AdminHouseSectionFormSet(self.request.POST, instance=instance)
+        floors = AdminHouseFloorFormSet(self.request.POST, instance=instance)
+        users = AdminHouseUserFormSet(self.request.POST, instance=instance)
+
+        if all([house.is_valid(), sections.is_valid(), floors.is_valid(), users.is_valid()]):
+            house.save()
+            sections.save()
+            floors.save()
+            users.save()
+            messages.success(self.request, 'Домівку успішно оновлено')
+        else:
+            messages.error(self.request, 'Виникли певні посилки при оновленні домівки')
+        return redirect(reverse('adminlte_houses_create'))
 
     def handle_no_permission(self):
         messages.error(self.request, 'У Вас немає доступу до домівок')

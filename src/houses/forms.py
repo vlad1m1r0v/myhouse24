@@ -31,27 +31,22 @@ class AdminHouseForm(forms.ModelForm):
     )
 
     image_1 = forms.ImageField(
-        required=False,
         widget=forms.FileInput(),
         label='Зображення #1. Рекомендований розмір: (522x350)')
 
     image_2 = forms.ImageField(
-        required=False,
         widget=forms.FileInput(),
         label='Зображення #2. Рекомендований розмір: (248x160)')
 
     image_3 = forms.ImageField(
-        required=False,
         widget=forms.FileInput(),
         label='Зображення #3. Рекомендований розмір: (248x160)')
 
     image_4 = forms.ImageField(
-        required=False,
         widget=forms.FileInput(),
         label='Зображення #4. Рекомендований розмір: (248x160)')
 
     image_5 = forms.ImageField(
-        required=False,
         widget=forms.FileInput(),
         label='Зображення #5. Рекомендований розмір: (248x160)')
 
@@ -64,7 +59,12 @@ class AdminHouseSectionForm(forms.ModelForm):
     name = forms.CharField(
         required=False,
         label='Назва',
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'minlength': 5,
+                'maxlength': 30
+            })
     )
 
     class Meta:
@@ -86,7 +86,12 @@ class AdminHouseFloorForm(forms.ModelForm):
     name = forms.CharField(
         required=False,
         label='Назва',
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'minlength': 5,
+                'maxlength': 30
+            })
     )
 
     class Meta:
