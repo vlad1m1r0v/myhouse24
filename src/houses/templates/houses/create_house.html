@@ -30,7 +30,7 @@
 {% block content %}
     <div class="box">
         <div class="box-body">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row">
                     <!--Name, Address and Image Inputs-->
@@ -228,6 +228,8 @@
 
             $('#sections #add-section-button').before(form);
 
+            $('#sections input[type=text]:last').val(`Cекція ${count}`);
+
             $total_forms.attr('value', count + 1);
         });
 
@@ -251,6 +253,8 @@
             const form = form_markup.replace(regex, `housefloor-${count}-`);
 
             $('#floors #add-floor-button').before(form);
+
+            $('#floors input[type=text]:last').val(`Поверх ${count}`);
 
             $total_forms.attr('value', count + 1);
         });

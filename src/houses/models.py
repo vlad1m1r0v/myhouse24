@@ -15,15 +15,15 @@ class House(models.Model):
 
 
 class HouseUser(models.Model):
-    house = models.ForeignKey(House, on_delete=models.CASCADE)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='users')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class HouseFloor(models.Model):
-    house = models.OneToOneField(House, on_delete=models.CASCADE)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='floors')
     name = models.CharField()
 
 
 class HouseSection(models.Model):
-    house = models.OneToOneField(House, on_delete=models.CASCADE)
+    house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='sections')
     name = models.CharField()

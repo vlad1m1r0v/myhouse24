@@ -10,12 +10,24 @@ from src.houses.models import House, HouseSection, HouseFloor, HouseUser
 class AdminHouseForm(forms.ModelForm):
     name = forms.CharField(
         label='Назва',
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'minlength': 5,
+                'maxlength': 30
+            }
+        )
     )
 
     address = forms.CharField(
         label='Адреса',
-        widget=forms.TextInput(attrs={'class': 'form-control'})
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'minlength': 10,
+                'maxlength': 60
+            }
+        )
     )
 
     image_1 = forms.ImageField(
@@ -96,9 +108,9 @@ class AdminHouseUserForm(forms.ModelForm):
     user = forms.ModelChoiceField(
         required=False,
         queryset=CustomUser.objects.all(),
-    label = 'ПІБ',
-    widget = forms.Select(attrs={'class': 'form-control'}),
-    empty_label = 'Виберіть...'
+        label='ПІБ',
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label='Виберіть...'
     )
 
     class Meta:

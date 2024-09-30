@@ -1,0 +1,122 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    {{ house.name }}
+{% endblock title %}
+{% block css %}
+    <style>
+        td {
+            vertical-align: middle !important;
+        }
+
+        table {
+            margin-bottom: 15px;
+        }
+
+        table tr td:first-child {
+            font-weight: bold;
+        }
+
+        #users p {
+            margin: 0;
+        }
+
+        #images img {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        #primary-image {
+            aspect-ratio: 522 / 350;
+        }
+
+        .secondary-image {
+            aspect-ratio: 248 / 160;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    {{ house.name }}
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Домівки</a></li>
+    <li class="active">{{ house.name }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title"></h3>
+            <div class="box-tools">
+                <a class="btn btn-primary btn-sm">
+                    <span class="hidden-xs">Редагувати домівку</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-lg-4">
+                    <table class="table table-bordered table-striped table-view">
+                        <tbody>
+                        <tr>
+                            <td>Назва</td>
+                            <td>{{ house.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Адреса</td>
+                            <td>{{ house.address }}</td>
+                        </tr>
+                        <tr>
+                            <td>Секцій</td>
+                            <td>{{ house.sections.count }}</td>
+                        </tr>
+                        <tr>
+                            <td>Поверхів</td>
+                            <td>{{ house.floors.count }}</td>
+                        </tr>
+                        <tr id="users">
+                            <td>Користувачі</td>
+                            <td>
+                                {% for user in house.users.all %}
+                                    <p>
+                                        <strong>{{ user.user.groups.first.name }}: </strong>
+                                        <a href="{% url 'adminlte_user_detail' pk=user.user.id %}">{{ user.user.full_name }}</a>
+                                    </p>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xs-12 col-lg-8" id="images">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <img id="primary-image" src="{{ house.image_1.url }}" alt="Primary House Image">
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <img class="secondary-image" src="{{ house.image_2.url }}"
+                                 alt="Secondary House Image">
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <img class="secondary-image" src="{{ house.image_3.url }}"
+                                 alt="Secondary House Image">
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <img class="secondary-image" src="{{ house.image_4.url }}"
+                                 alt="Secondary House Image">
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <img class="secondary-image" src="{{ house.image_5.url }}"
+                                 alt="Secondary House Image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+    </script>
+{% endblock js %}
