@@ -219,12 +219,12 @@
         $section_extra_form.hide();
 
         $('#add-section-button').on('click', function () {
-            const $total_forms = $('#id_housesection-TOTAL_FORMS');
+            const $total_forms = $('#id_sections-TOTAL_FORMS');
             const count = parseInt($total_forms.val());
 
             const form_markup = $section_form_clone.prop('outerHTML');
-            const regex = /housesection-(\d+)-/g;
-            const form = form_markup.replace(regex, `housesection-${count}-`);
+            const regex = /sections-(\d+)-/g;
+            const form = form_markup.replace(regex, `sections-${count}-`);
 
             $('#sections #add-section-button').before(form);
 
@@ -245,12 +245,12 @@
         $floor_extra_form.hide();
 
         $('#add-floor-button').on('click', function () {
-            const $total_forms = $('#id_housefloor-TOTAL_FORMS');
+            const $total_forms = $('#id_floors-TOTAL_FORMS');
             const count = parseInt($total_forms.val());
 
             const form_markup = $floor_form_clone.prop('outerHTML');
-            const regex = /housefloor-(\d+)-/g;
-            const form = form_markup.replace(regex, `housefloor-${count}-`);
+            const regex = /floors-(\d+)-/g;
+            const form = form_markup.replace(regex, `floors-${count}-`);
 
             $('#floors #add-floor-button').before(form);
 
@@ -287,12 +287,12 @@
         $user_extra_form.hide();
 
         $('#add-user-button').on('click', function () {
-            const $total_forms = $('#id_houseuser-TOTAL_FORMS');
+            const $total_forms = $('#id_users-TOTAL_FORMS');
             const count = parseInt($total_forms.val());
 
             const form_markup = $user_form_clone.prop('outerHTML');
-            const regex = /houseuser-(\d+)-/g;
-            const form = form_markup.replace(regex, `houseuser-${count}-`);
+            const regex = /users-(\d+)-/g;
+            const form = form_markup.replace(regex, `users-${count}-`);
 
             $('#users #add-user-button').before(form);
 
