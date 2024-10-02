@@ -116,7 +116,7 @@
         });
 
         $(document).on('click', 'tbody tr td:not(:last-child)', function () {
-            window.location.assign($(this).closest('tr').find('.btn').attr('href'));
+            window.location.href = $(this).closest('tr').find('td').first().text();
         })
     </script>
 {% endblock js %}
