@@ -36,6 +36,7 @@ class AuthenticationAdminLoginView(FormView):
 
     def get_success_url(self):
         permission_to_url = {
+            'authentication.houses': reverse('adminlte_houses_list'),
             'authentication.website_management': reverse('adminlte_website_management_home'),
             'authentication.services': reverse('adminlte_services'),
             'authentication.roles': reverse('adminlte_permissions'),
