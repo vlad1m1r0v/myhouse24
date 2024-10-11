@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group
 from django.db import transaction
 
 from src.authentication.models import CustomUser, STATUS_CHOICES

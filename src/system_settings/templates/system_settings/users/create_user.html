@@ -34,14 +34,14 @@
                             <label class="control-label">{{ form.phone_number.label }}</label>
                             {{ form.phone_number }}
                         </div>
-                            <div class="form-group">
-                                <label class="control-label">{{ form.role.label }}</label>
-                                {{ form.role }}
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">{{ form.status.label }}</label>
-                                {{ form.status }}
-                            </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.role.label }}</label>
+                            {{ form.role }}
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.status.label }}</label>
+                            {{ form.status }}
+                        </div>
                     </div>
                     <div class="col-xs-12 col-md-6">
                         <div class="form-group">
@@ -84,48 +84,13 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <!--Extend JQuery Validation methods-->
     <script src="{% static 'js/validation.js' %}"></script>
+    <!--Generate / Show password-->
+    <script src="{% static 'js/generate_password.js' %}"></script>
     <!--Input Mask-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
     <script>
-        function generate_strong_password() {
-            const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const lowercase = "abcdefghijklmnopqrstuvwxyz";
-            const digits = "0123456789";
-            const special_chars = "!@#$%^&*()_+{}:<>?[];,.";
-
-            const get_random_char = (str) => str[Math.floor(Math.random() * str.length)];
-
-            let password = [
-                get_random_char(uppercase),
-                get_random_char(digits),
-                get_random_char(lowercase),
-                get_random_char(special_chars)
-            ];
-
-            const all_chars = uppercase + lowercase + digits + special_chars;
-
-            while (password.length < 8) {
-                password.push(get_random_char(all_chars));
-            }
-
-            password = password.sort(() => Math.random() - 0.5);
-
-            return password.join('');
-        }
-
         $(document).ready(function () {
             $('#id_phone_number').inputmask('+38(099)-999-99-99');
-
-            $('#generate-password-button').on('click', function () {
-                const generated_password = generate_strong_password();
-                $('#id_new_password').val(generated_password);
-                $('#id_repeat_password').val(generated_password);
-            })
-
-            $('#show-password-button').on('click', function () {
-                $('#id_new_password').attr('type', (_, attr) => attr === 'password' ? 'text' : 'password');
-                $('#id_repeat_password').attr('type', (_, attr) => attr === 'password' ? 'text' : 'password');
-            })
 
             const $form = $('#user-form');
             const $button = $('#submit-button');

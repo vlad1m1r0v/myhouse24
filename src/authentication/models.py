@@ -2,11 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from .managers import CustomUserManager
-STATUS_CHOICES = [
-    ("new", "новий"),
-    ("active", "активний"),
-    ("disabled", "деактивований"),
-]
+from src.core.consts import STATUS_CHOICES
+
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
