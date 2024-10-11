@@ -2,7 +2,12 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from .managers import CustomUserManager
-from src.core.consts import STATUS_CHOICES
+
+STATUS_CHOICES = [
+    ("new", "новий"),
+    ("active", "активний"),
+    ("disabled", "деактивований"),
+]
 
 
 class CustomUser(AbstractUser):

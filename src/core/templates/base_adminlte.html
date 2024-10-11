@@ -160,7 +160,7 @@
                                 <i class="fa fa-user-circle text-purple bg-gray-light img-circle"></i>
 
                                 <p>
-                                    {{ user.first_name }} {{ user.last_name }} ({{ user.groups.first.name }})
+                                    {{ user.first_name }} {{ user.last_name }} ({% if user.is_superuser %}Адміністратор{% else %}users.groups.first.name{% endif %})
                                 </p>
                             </li>
                             <!-- Menu Footer-->

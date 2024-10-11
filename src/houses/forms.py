@@ -1,7 +1,5 @@
 from django import forms
-from django.contrib.auth.models import Group
-from django.db.models import Subquery, OuterRef
-from django.forms import inlineformset_factory, modelformset_factory
+from django.forms import inlineformset_factory
 
 from src.authentication.models import CustomUser
 from src.houses.models import House, HouseSection, HouseFloor, HouseUser
@@ -112,7 +110,7 @@ AdminHouseFloorFormSet = inlineformset_factory(
 class AdminHouseUserForm(forms.ModelForm):
     user = forms.ModelChoiceField(
         required=False,
-        queryset=CustomUser.objects.all(),
+        queryset=CustomUser.objects.filter(is_staff=True),
         label='ПІБ',
         widget=forms.Select(attrs={'class': 'form-control'}),
         empty_label='Виберіть...'

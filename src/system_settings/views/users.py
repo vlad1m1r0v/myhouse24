@@ -4,7 +4,7 @@ from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Value, Subquery, OuterRef
+from django.db.models import Value, Subquery, OuterRef, Q
 from django.db.models.functions import Concat, Coalesce
 from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
@@ -55,7 +55,7 @@ class AdminUsersDatatableView(AjaxDatatableView):
     ]
 
     def get_initial_queryset(self, request=None):
-        return self.model.objects.annotate(
+        return self.model.objects.filter(Q(is_staff=True) | Q(is_superuser=True)).annotate(
             full_name=Concat('first_name', Value(' '), 'last_name')
         ).annotate(
             role=Coalesce(
@@ -83,7 +83,7 @@ class AdminUsersDatatableView(AjaxDatatableView):
                  <a href={reverse('adminlte_user_update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
                     <i class="fa fa-pencil"></i>
                 </a>
-                <button {'disabled' if self.request.user.id == obj.id else ''} {'data-href=' + reverse('adminlte_user_delete', kwargs={'pk': obj.id}) if self.request.user.id != obj.id else ''} class="btn btn-default btn-sm delete-button"  title="Видалити">
+                <button {'disabled' if self.request.user.id == obj.id or obj.is_superuser else ''} {'data-href=' + reverse('adminlte_user_delete', kwargs={'pk': obj.id}) if self.request.user.id != obj.id else ''} class="btn btn-default btn-sm delete-button"  title="Видалити">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>

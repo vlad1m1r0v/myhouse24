@@ -57,6 +57,10 @@ class AdminUserForm(forms.ModelForm):
         user = kwargs.get('instance')
         super().__init__(*args, **kwargs)
 
+        if not user:
+            self.fields['new_password'].required = True
+            self.fields['repeat_password'].required = True
+
         if user and user.groups.exists():
             self.fields['role'].initial = user.groups.first()
 
@@ -81,6 +85,9 @@ class AdminUserForm(forms.ModelForm):
     @transaction.atomic
     def save(self, commit=True):
         user = super().save(commit=False)
+
+        user.is_staff = True
+
         selected_group = self.cleaned_data.get('role')
 
         password = self.cleaned_data.get('new_password')

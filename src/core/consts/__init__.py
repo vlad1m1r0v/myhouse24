@@ -1,1 +1,0 @@
-from .status_choices import STATUS_CHOICES

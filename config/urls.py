@@ -25,5 +25,6 @@ urlpatterns = [
     path('', include('src.authentication.urls')),
     path('', include('src.system_settings.urls')),
     path('', include('src.website_management.urls')),
-    path('', include('src.houses.urls'))
+    path('', include('src.houses.urls')),
+    path('', include('src.house_owners.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

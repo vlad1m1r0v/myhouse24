@@ -45,12 +45,17 @@ class AuthenticationAdminLoginView(FormView):
             'authentication.payment_items': reverse('adminlte_payment_items_list'),
         }
 
+
+        if self.request.user.is_superuser:
+            messages.success(self.request, 'Користувач успішно увійшов в систему')
+            return permission_to_url[next(iter(permission_to_url))]
+
         for perm, url in permission_to_url.items():
             if self.request.user.has_perm(f'{perm}'):
-                messages.success(self.request, 'Адміністратор успішно увійшов в систему')
+                messages.success(self.request, 'Користувач успішно увійшов в систему')
                 return url
 
-        messages.error(self.request, 'В адміністратора немає права доступу до жодної зі сторінок')
+        messages.error(self.request, 'В користувача немає права доступу до жодної зі сторінок')
         return reverse('authentication_adminlte_login')
 
     def form_invalid(self, form):
@@ -60,5 +65,5 @@ class AuthenticationAdminLoginView(FormView):
 class AuthenticationAdminLogoutView(View):
     def post(self, request, *args, **kwargs):
         logout(request)
-        messages.success(request, 'Адміністратор  успішно вийшов із системи')
+        messages.success(request, f'Користувач  успішно вийшов із системи')
         return redirect(reverse_lazy('authentication_adminlte_login'))
