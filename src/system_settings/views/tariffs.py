@@ -7,18 +7,29 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, View
 
+from src.core.utils import is_ajax
 from src.system_settings.forms import AdminTariffForm, AdminTariffServiceFormSet
 from src.system_settings.models import Tariff
 
 
-class AdminTariffsView(PermissionRequiredMixin, TemplateView):
-    permission_required = ('authentication.tariffs',)
-    template_name = 'system_settings/tariffs/list_tariffs.html'
+class TariffPermissionRequiredMixin(PermissionRequiredMixin):
+    permission_required = 'authentication.tariffs'
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до тарифів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
+    def dispatch(self, request, *args, **kwargs):
+        if not self.has_permission():
+            if is_ajax(request):
+                return JsonResponse(status=403,
+                                    data={'success': False, 'message': 'У Вас немає доступу до тарифів'})
+            else:
+                messages.error(request, 'У Вас немає доступу до тарифів')
+                logout(request)
+                return redirect(reverse('authentication_adminlte_login'))
+        return super().dispatch(request, *args, **kwargs)
+
+
+class AdminTariffsView(TariffPermissionRequiredMixin,
+                       TemplateView):
+    template_name = 'system_settings/tariffs/list_tariffs.html'
 
 
 class AdminTariffsDatatableView(AjaxDatatableView):
@@ -54,20 +65,15 @@ class AdminTariffsDatatableView(AjaxDatatableView):
         row['updated_at'] = str(obj.updated_at.strftime("%d.%m.%Y-%-H:%M"))
 
 
-class AdminTariffDetailView(PermissionRequiredMixin, DetailView):
+class AdminTariffDetailView(TariffPermissionRequiredMixin,
+                            DetailView):
     template_name = 'system_settings/tariffs/detail_tariff.html'
-    permission_required = ('authentication.tariffs',)
     model = Tariff
     context_object_name = 'tariff'
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до тарифів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
 
-
-class AdminTariffUpdateView(PermissionRequiredMixin, TemplateView):
-    permission_required = ('authentication.tariffs',)
+class AdminTariffUpdateView(TariffPermissionRequiredMixin,
+                            TemplateView):
     template_name = 'system_settings/tariffs/update_tariff.html'
 
     def get_context_data(self, **kwargs):
@@ -101,14 +107,9 @@ class AdminTariffUpdateView(PermissionRequiredMixin, TemplateView):
 
             return self.render_to_response(self.get_context_data(tariff=tariff, services=services))
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до тарифів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
 
-
-class AdminTariffCreateView(PermissionRequiredMixin, TemplateView):
-    permission_required = ('authentication.tariffs',)
+class AdminTariffCreateView(TariffPermissionRequiredMixin,
+                            TemplateView):
     template_name = 'system_settings/tariffs/create_tariff.html'
 
     def get_context_data(self, **kwargs):
@@ -157,18 +158,11 @@ class AdminTariffCreateView(PermissionRequiredMixin, TemplateView):
 
             return self.render_to_response(self.get_context_data(tariff=form, services=formset))
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до тарифів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
 
-
-class AdminTariffDeleteView(PermissionRequiredMixin, View):
+class AdminTariffDeleteView(TariffPermissionRequiredMixin,
+                            View):
     permission_required = ('authentication.tariffs',)
 
     def delete(self, request, *args, **kwargs):
         Tariff.objects.get(pk=self.kwargs['pk']).delete()
         return JsonResponse(status=200, data={'success': True})
-
-    def handle_no_permission(self):
-        return JsonResponse(status=403,data={'success': False, 'message': 'У Вас немає доступу до тарифів'})

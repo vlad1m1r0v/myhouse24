@@ -10,10 +10,9 @@ from django.views.generic import TemplateView
 from src.system_settings.forms import AdminGroupPermissionFormSet
 
 
-
 class AdminGroupPermissionsView(PermissionRequiredMixin, TemplateView):
     template_name = 'system_settings/permissions.html'
-    permission_required = ('authentication.roles',)
+    permission_required = 'authentication.roles'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

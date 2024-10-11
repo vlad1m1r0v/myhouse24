@@ -8,18 +8,55 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, View, CreateView, UpdateView
 
+from src.core.utils import is_ajax
 from src.system_settings.forms import AdminPaymentItemForm
 from src.system_settings.models import PaymentItem
 
 
-class AdminPaymentItemsView(PermissionRequiredMixin, TemplateView, ):
-    template_name = 'system_settings/payment_items/list_payments_items.html'
-    permission_required = ('authentication.payment_items',)
+class PaymentItemPermissionRequiredMixin(PermissionRequiredMixin):
+    permission_required = 'authentication.payment_items'
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до статей платежів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
+    def dispatch(self, request, *args, **kwargs):
+        if not self.has_permission():
+            if is_ajax(request):
+                return JsonResponse(status=403,
+                                    data={'success': False, 'message': 'У Вас немає доступу до статей платежів'})
+            else:
+                messages.error(request, 'У Вас немає доступу до статей платежів')
+                logout(request)
+                return redirect(reverse('authentication_adminlte_login'))
+        return super().dispatch(request, *args, **kwargs)
+
+
+class AdminPaymentItemsView(PaymentItemPermissionRequiredMixin,
+                            TemplateView):
+    template_name = 'system_settings/payment_items/list_payments_items.html'
+
+
+class AdminPaymentItemsDeleteView(PaymentItemPermissionRequiredMixin, View):
+    def delete(self, request, *args, **kwargs):
+        PaymentItem.objects.get(pk=self.kwargs['pk']).delete()
+        return JsonResponse(status=200, data={'success': True})
+
+
+class AdminPaymentItemCreateView(SuccessMessageMixin,
+                                 PaymentItemPermissionRequiredMixin,
+                                 CreateView):
+    model = PaymentItem
+    template_name = 'system_settings/payment_items/create_payment_item.html'
+    form_class = AdminPaymentItemForm
+    success_url = reverse_lazy('adminlte_payment_items_list')
+    success_message = 'Статтю платежу успішно створено'
+
+
+class AdminPaymentItemUpdateView(SuccessMessageMixin,
+                                 PaymentItemPermissionRequiredMixin,
+                                 UpdateView):
+    model = PaymentItem
+    template_name = 'system_settings/payment_items/update_payment_item.html'
+    form_class = AdminPaymentItemForm
+    success_url = reverse_lazy('adminlte_payment_items_list')
+    success_message = 'Статтю платежу успішно оновлено'
 
 
 class AdminPaymentItemsDatatableView(AjaxDatatableView):
@@ -55,42 +92,3 @@ class AdminPaymentItemsDatatableView(AjaxDatatableView):
                 </button>
             </div>
             """
-
-
-class AdminPaymentItemsDeleteView(PermissionRequiredMixin, View):
-    permission_required = ('authentication.payment_items',)
-
-    def delete(self, request, *args, **kwargs):
-        PaymentItem.objects.get(pk=self.kwargs['pk']).delete()
-        return JsonResponse(status=200, data={'success': True})
-
-    def handle_no_permission(self):
-        return JsonResponse(status=403,data={'success': False, 'message': 'У Вас немає доступу до статей платежів'})
-
-
-class AdminPaymentItemCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
-    model = PaymentItem
-    template_name = 'system_settings/payment_items/create_payment_item.html'
-    form_class = AdminPaymentItemForm
-    permission_required = ('authentication.payment_items',)
-    success_url = reverse_lazy('adminlte_payment_items_list')
-    success_message = 'Статтю платежу успішно створено'
-
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до статей платежів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
-
-
-class AdminPaymentItemUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
-    model = PaymentItem
-    template_name = 'system_settings/payment_items/update_payment_item.html'
-    form_class = AdminPaymentItemForm
-    permission_required = ('authentication.payment_items',)
-    success_url = reverse_lazy('adminlte_payment_items_list')
-    success_message = 'Статтю платежу успішно оновлено'
-
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до статей платежів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))

@@ -12,17 +12,28 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, View, CreateView, UpdateView, DetailView
 
 from src.authentication.models import CustomUser, STATUS_CHOICES
+from src.core.utils import is_ajax
 from src.system_settings.forms import AdminUserForm
 
 
-class AdminUsersView(PermissionRequiredMixin, TemplateView):
-    permission_required = ('authentication.users',)
-    template_name = 'system_settings/users/list_users.html'
+class UserPermissionRequiredMixin(PermissionRequiredMixin):
+    permission_required = 'authentication.users'
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до користувачів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
+    def dispatch(self, request, *args, **kwargs):
+        if not self.has_permission():
+            if is_ajax(request):
+                return JsonResponse(status=403,
+                                    data={'success': False, 'message': 'У Вас немає доступу до статей користувачів'})
+            else:
+                messages.error(request, 'У Вас немає доступу до користувачів')
+                logout(request)
+                return redirect(reverse('authentication_adminlte_login'))
+        return super().dispatch(request, *args, **kwargs)
+
+
+class AdminUsersView(UserPermissionRequiredMixin,
+                     TemplateView):
+    template_name = 'system_settings/users/list_users.html'
 
 
 class AdminUsersDatatableView(AjaxDatatableView):
@@ -90,9 +101,9 @@ class AdminUsersDatatableView(AjaxDatatableView):
             """
 
 
-class AdminUserDetailView(PermissionRequiredMixin, DetailView):
+class AdminUserDetailView(UserPermissionRequiredMixin,
+                          DetailView):
     model = CustomUser
-    permission_required = ('authentication.users',)
     template_name = 'system_settings/users/detail_user.html'
     context_object_name = 'user'
 
@@ -105,15 +116,11 @@ class AdminUserDetailView(PermissionRequiredMixin, DetailView):
         context['role'] = user.groups.first() if user.groups.exists() else None
         return context
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до користувачів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
 
-
-class AdminUserUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateView):
+class AdminUserUpdateView(SuccessMessageMixin,
+                          UserPermissionRequiredMixin,
+                          UpdateView):
     model = CustomUser
-    permission_required = ('authentication.users',)
     form_class = AdminUserForm
     template_name = 'system_settings/users/update_user.html'
     success_url = reverse_lazy('adminlte_users_list')
@@ -131,32 +138,19 @@ class AdminUserUpdateView(SuccessMessageMixin, PermissionRequiredMixin, UpdateVi
         messages.error(self.request, "Помилка при оновленні данних користувача")
         return super().form_invalid(form)
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до користувачів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
 
-
-class AdminUserCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
+class AdminUserCreateView(SuccessMessageMixin,
+                          UserPermissionRequiredMixin,
+                          CreateView):
     model = CustomUser
     template_name = 'system_settings/users/create_user.html'
     form_class = AdminUserForm
-    permission_required = ('authentication.users',)
     success_url = reverse_lazy('adminlte_users_list')
     success_message = 'Новий користувач успішно створений'
 
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до користувачів')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))
 
-
-class AdminUserDeleteView(PermissionRequiredMixin, View):
-    permission_required = ('authentication.users',)
-
+class AdminUserDeleteView(UserPermissionRequiredMixin,
+                          View):
     def delete(self, request, *args, **kwargs):
         CustomUser.objects.get(pk=self.kwargs['pk']).delete()
         return JsonResponse(status=200, data={'success': True})
-
-    def handle_no_permission(self):
-        return JsonResponse(status=403,data={'success': False, 'message': 'У Вас немає доступу до користувачів'})
