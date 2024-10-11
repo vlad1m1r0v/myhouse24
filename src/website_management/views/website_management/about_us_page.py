@@ -1,16 +1,15 @@
 from django.contrib import messages
-from django.contrib.auth import logout
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
 from src.website_management.forms import AdminAboutUsGalleryFormSet, AdminAboutUsDocumentFormSet, \
     AdminAboutUsPageForm, AdminAboutUsAdditionalGalleryFormSet
 from src.website_management.models import AboutUsPage, AboutUsGallery, AboutUsAdditionalGallery, AboutUsDocument
+from .mixin import WebsitePermissionRequiredMixin
 
-
-class AdminAboutUsPageView(PermissionRequiredMixin, TemplateView):
+class AdminAboutUsPageView(WebsitePermissionRequiredMixin,
+                           TemplateView):
     template_name = 'website_management/about_us_page.html'
     permission_required = ('authentication.website_management',)
 
@@ -79,8 +78,3 @@ class AdminAboutUsPageView(PermissionRequiredMixin, TemplateView):
         else:
             messages.error(self.request, 'Виникли певні помилки про оновленні сторінки "Про нас"')
         return redirect(reverse_lazy('adminlte_website_management_about_us'))
-
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до управління cайтом')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))

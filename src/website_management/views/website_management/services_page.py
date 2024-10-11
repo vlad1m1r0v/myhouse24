@@ -1,17 +1,15 @@
 from django.contrib import messages
-from django.contrib.auth import logout
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
 from src.website_management.forms import AdminServicesPageForm, AdminServicesPageBlockFormSet
 from src.website_management.models import ServicesPage, ServicesPageBlock
+from .mixin import WebsitePermissionRequiredMixin
 
-
-class AdminServicesPageView(PermissionRequiredMixin, TemplateView):
+class AdminServicesPageView(WebsitePermissionRequiredMixin,
+                            TemplateView):
     template_name = 'website_management/services_page.html'
-    permission_required = ('authentication.website_management',)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -39,8 +37,3 @@ class AdminServicesPageView(PermissionRequiredMixin, TemplateView):
                     for error in error_list:
                         messages.error(self.request, error)
         return redirect(reverse_lazy('adminlte_website_management_services'))
-
-    def handle_no_permission(self):
-        messages.error(self.request, 'У Вас немає доступу до управління cайтом')
-        logout(self.request)
-        return redirect(reverse('authentication_adminlte_login'))

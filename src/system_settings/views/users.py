@@ -23,7 +23,7 @@ class UserPermissionRequiredMixin(PermissionRequiredMixin):
         if not self.has_permission():
             if is_ajax(request):
                 return JsonResponse(status=403,
-                                    data={'success': False, 'message': 'У Вас немає доступу до статей користувачів'})
+                                    data={'success': False, 'message': 'У Вас немає доступу до користувачів'})
             else:
                 messages.error(request, 'У Вас немає доступу до користувачів')
                 logout(request)
