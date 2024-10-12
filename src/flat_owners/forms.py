@@ -7,7 +7,7 @@ from src.authentication.models import CustomUser, STATUS_CHOICES
 from src.system_settings.tasks import send_password_update_notification
 
 
-class AdminHouseOwnerForm(forms.ModelForm):
+class AdminFlatOwnerForm(forms.ModelForm):
     avatar = forms.ImageField(
         widget=forms.FileInput(),
         label='Зображення')
@@ -25,7 +25,8 @@ class AdminHouseOwnerForm(forms.ModelForm):
         label='По батькові')
 
     birth_date = forms.DateField(
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateInput(attrs={'class': 'form-control'}, format='%d.%m.%Y'),
         label='Дата народження'
     )
 
@@ -111,13 +112,13 @@ class AdminHouseOwnerForm(forms.ModelForm):
 
     def clean_ID(self):
         ID = self.cleaned_data.get('ID')
-        if CustomUser.objects.filter(ID=ID).exists():
+        if CustomUser.objects.filter(ID=ID).exclude(pk=self.instance.pk if self.instance else None).exists():
             raise forms.ValidationError("Користувач з таким ідентифікатором вже існує")
         return ID
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if CustomUser.objects.filter(email=email).exists():
+        if CustomUser.objects.filter(email=email).exclude(pk=self.instance.pk if self.instance else None).exists():
             raise forms.ValidationError("Користувач з такою електронною поштою вже існує")
         return email
 

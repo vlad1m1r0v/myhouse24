@@ -1,7 +1,7 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% block title %}
-    Новий власник
+    Редагування
 {% endblock title %}
 {% block css %}
     <style>
@@ -35,23 +35,25 @@
 <link rel="stylesheet"
       href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
 {% block header %}
-    Новий власник
+    Редагування
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
     <li><a>Власники квартир</a></li>
-    <li class="active">Новий власник</li>
+    <li><a>Профіль власника</a></li>
+    <li class="active">Редагування</li>
 {% endblock breadcrumb %}
 {% block content %}
     <div class="box">
         <div class="box-body">
             <form id="house-owner-form" method="post" enctype="multipart/form-data">
+                {{ form.id }}
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-xs-12 col-sm-6">
                         <div id="avatar-container">
                             <div id="avatar-preview-container">
-                                <img id="avatar" src="https://placehold.co/175x175"
+                                <img id="avatar" src="{{ form.instance.avatar.url }}"
                                      alt="Avatar Preview">
                             </div>
                             <div class="form-group">
@@ -88,7 +90,7 @@
                         <div class="form-group">
                             <label>{{ form.birth_date.label }}</label>
                             <div class="input-group date">
-                                {{ form.birth_date }}
+                                {{ form.birth_date}}
                                 <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
                                 <i class="glyphicon glyphicon-calendar"></i>
                             </span>
@@ -147,7 +149,7 @@
                 <div class="row">
                     <div class="col-xs-12 text-right">
                         <!--TODO: change URL to house owners list page-->
-                        <a href="{% url 'adminlte_house_owner_create' %}" class="btn btn-default">Відмінити</a>
+                        <a href="{% url 'adminlte_flat_owner_create' %}" class="btn btn-default">Відмінити</a>
                         <button id="submit-button" type="submit" class="btn btn-success">Зберегти</button>
                     </div>
                 </div>
@@ -213,7 +215,7 @@
                 const isValid = $form.validate({
                     rules: {
                         avatar: {
-                            required: true,
+                            required: false,
                         },
                         first_name: {
                             required: true,
@@ -264,19 +266,14 @@
                             maxlength: 200,
                         },
                         new_password: {
-                            required: true,
                             minlength: 8,
                             strong_password: true,
                         },
                         repeat_password: {
-                            required: true,
                             equalTo: '#id_new_password',
                         }
                     },
                     messages: {
-                        avatar: {
-                            required: "Завантажте фотографію"
-                        },
                         first_name: {
                             required: "Вкажіть ім'я",
                             minlength: "Ім'я повинне містити щонайменше 2 символи",
@@ -320,11 +317,9 @@
                             maxlength: "Максимальна довжина заміток не має перевищувати 200 символів"
                         },
                         new_password: {
-                            required: "Введіть пароль",
                             minlength: "Пароль повинен містити хоча б 8 символів",
                         },
                         repeat_password: {
-                            required: "Повторіть пароль",
                             equalTo: "Паролі не співпадають"
                         }
                     },
