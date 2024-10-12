@@ -5,10 +5,37 @@
 {% endblock title %}
 {% block css %}
     <style>
+        #avatar-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #avatar-preview-container {
+            border-radius: 100%;
+            max-width: 150px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            margin: 15px auto;
+        }
+
+        #avatar {
+            height: 150px;
+            aspect-ratio: auto;
+        }
+
+        #id_about_me {
+            resize: none;
+            height: 256px;
+        }
     </style>
 {% endblock css %}
+<!--Datepicker-->
+<link rel="stylesheet"
+      href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
 {% block header %}
-   Новий власник
+    Новий власник
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
@@ -18,8 +45,112 @@
 {% block content %}
     <div class="box">
         <div class="box-body">
-            <form id="payment-item-form" method="post">
+            <form id="house-owner-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div id="avatar-container">
+                            <div id="avatar-preview-container">
+                                <img id="avatar" src="https://placehold.co/175x175"
+                                     alt="Avatar Preview">
+                            </div>
+                            <div class="form-group">
+                                <label>{{ form.avatar.label }}</label>
+                                {{ form.avatar }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label>{{ form.ID.label }}</label>
+                            {{ form.ID }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.status.label }}</label>
+                            {{ form.status }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label>{{ form.first_name.label }}</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.last_name.label }}</label>
+                            {{ form.last_name }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.middle_name.label }}</label>
+                            {{ form.middle_name }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.birth_date.label }}</label>
+                            <div class="input-group date">
+                                {{ form.birth_date }}
+                                <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label>{{ form.about_me.label }}</label>
+                            {{ form.about_me }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <h2 class="page-header">Контактні дані</h2>
+                        <div class="form-group">
+                            <label>{{ form.phone_number.label }}</label>
+                            {{ form.phone_number }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.viber.label }}</label>
+                            {{ form.viber }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.telegram.label }}</label>
+                            {{ form.telegram }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.email.label }}</label>
+                            {{ form.email }}
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <h2 class="page-header">Змінити пароль</h2>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.new_password.label }}</label>
+                            <div class="input-group">
+                                {{ form.new_password }}
+                                <span class="input-group-btn">
+                                    <button id="generate-password-button" class="btn btn-default" type="button">
+                                        Згенерувати пароль
+                                    </button>
+                                    <button id="show-password-button" type="button" class="btn btn-primary">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">{{ form.repeat_password.label }}</label>
+                            {{ form.repeat_password }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-right">
+                        <!--TODO: change URL to house owners list page-->
+                        <a href="{% url 'adminlte_house_owner_create' %}" class="btn btn-default">Відмінити</a>
+                        <button id="submit-button" type="submit" class="btn btn-success">Зберегти</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -27,7 +158,196 @@
 {% block js %}
     <!--JQuery Validation-->
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Extend JQuery Validation methods-->
+    <script src="{% static 'js/validation.js' %}"></script>
+    <!--Datepicker-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <!--Datepicker Localization-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
+    <!--Input Mask-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
+    <!--Generate / Show password-->
+    <script src="{% static 'js/generate_password.js' %}"></script>
     <script>
+        $(function () {
+            $(document).on('change', 'input:file', function (e) {
+                const image = e.target.files[0];
+                const src = URL.createObjectURL(image);
+                $('#avatar').attr('src', src);
+            });
 
+            $('#id_birth_date').datepicker({
+                autoclose: true,
+                language: 'uk'
+            })
+
+            $('.kv-date-calendar').click(function () {
+                $('#id_birth_date').focus();
+            })
+
+            $('#id_phone_number').inputmask('+38(099)-999-99-99');
+
+            $('#id_telegram').inputmask({
+                mask: "https://t.me/[*]{1,}",
+                definitions: {
+                    '*': {
+                        validator: "[A-Za-z0-9._]",
+                        cardinality: 1,
+                        casing: "lower"
+                    }
+                },
+                placeholder: "",
+            });
+
+
+            $('#id_viber').inputmask("viber://ch\\at?number=+380999999999");
+
+            const $form = $('#house-owner-form');
+            const $button = $('#submit-button');
+
+            $form.on('focus blur keyup select', 'input,textarea,select', function () {
+                validateForm();
+            });
+
+            const validateForm = function () {
+                const isValid = $form.validate({
+                    rules: {
+                        avatar: {
+                            required: true,
+                        },
+                        first_name: {
+                            required: true,
+                            minlength: 2,
+                            maxlength: 20,
+                        },
+                        last_name: {
+                            required: true,
+                            minlength: 3,
+                            maxlength: 20,
+                        },
+                        middle_name: {
+                            required: true,
+                            minlength: 5,
+                            maxlength: 20
+                        },
+                        birth_date: {
+                            required: true,
+                            birth_date: true,
+                        },
+                        phone_number: {
+                            required: true,
+                            phone_ua: true,
+                        },
+                        viber: {
+                            required: true,
+                            viber: true,
+                        },
+                        telegram: {
+                            required: true,
+                            telegram: true,
+                        },
+                        email: {
+                            required: true,
+                            email: false,
+                            valid_email: true,
+                        },
+                        ID: {
+                          required: true,
+                          number: true,
+                        },
+                        status: {
+                            required: true,
+                        },
+                        about_me: {
+                            required: true,
+                            minlength: 20,
+                            maxlength: 200,
+                        },
+                        new_password: {
+                            required: true,
+                            minlength: 8,
+                            strong_password: true,
+                        },
+                        repeat_password: {
+                            required: true,
+                            equalTo: '#id_new_password',
+                        }
+                    },
+                    messages: {
+                        avatar: {
+                            required: "Завантажте фотографію"
+                        },
+                        first_name: {
+                            required: "Вкажіть ім'я",
+                            minlength: "Ім'я повинне містити щонайменше 2 символи",
+                            maxlength: "Ім'я не повинне перевищувати 20 символів",
+                        },
+                        last_name: {
+                            required: "Вкажіть прізвище",
+                            minlength: "Прізвище повинне містити щонайменше 3 символи",
+                            maxlength: "Прізвище не повинне перевищувати 20 символів",
+                        },
+                        middle_name: {
+                            required: "Вкажіть по батькові",
+                            minlength: "По батькові повинне містити щонайменше 5 символів",
+                            maxlength: "По батькові не повинне перевищувати 20 символів",
+                        },
+                        birth_date: {
+                            required: "Вкажіть дату народження"
+                        },
+                        phone_number: {
+                            required: "Вкажіть номер телефону",
+                        },
+                        viber: {
+                            required: "Вкажіть посилання в Viber",
+                        },
+                        telegram: {
+                            required: "Вкажіть посилання в Telegram",
+                        },
+                        email: {
+                            required: "Вкажіть електронну пошту",
+                        },
+                        ID: {
+                          required: "Введіть унікальний ідентифікатор",
+                          number: "Ідентифікатор має складатись виключно з цифр",
+                        },
+                        status: {
+                            required: "Вкажіть статус"
+                        },
+                        about_me: {
+                            required: "Введіть замітки про власника квартири",
+                            minlength: "Мінімальна довжина заміток має бути 20 символів",
+                            maxlength: "Максимальна довжина заміток не має перевищувати 200 символів"
+                        },
+                        new_password: {
+                            required: "Введіть пароль",
+                            minlength: "Пароль повинен містити хоча б 8 символів",
+                        },
+                        repeat_password: {
+                            required: "Повторіть пароль",
+                            equalTo: "Паролі не співпадають"
+                        }
+                    },
+                    errorElement: 'small',
+                    errorPlacement: function (error, element) {
+                        error.css({'color': 'red'});
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function (element) {
+                        $(element).closest('.form-group').addClass('has-error');
+                    },
+                    unhighlight: function (element) {
+                        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                    }
+                }).checkForm();
+
+
+                if (isValid) {
+                    $button.prop('disabled', false);
+                } else {
+                    $button.prop('disabled', 'disabled');
+                }
+            }
+        });
     </script>
 {% endblock js %}

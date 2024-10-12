@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from .managers import CustomUserManager
+from ..core.utils import get_upload_path
 
 STATUS_CHOICES = [
     ("new", "новий"),
@@ -15,7 +16,7 @@ class CustomUser(AbstractUser):
     username = None
 
     ID = models.PositiveIntegerField(unique=True, null=True, blank=True)
-    avatar = models.ImageField(upload_to='avatars', null=True, blank=True)
+    avatar = models.ImageField(upload_to=get_upload_path, null=True, blank=True)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     middle_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)

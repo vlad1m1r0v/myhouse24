@@ -33,3 +33,30 @@ $.validator.addMethod(
     },
     "Вкажіть коректний код карти"
 );
+
+$.validator.addMethod("birth_date", function (value, element) {
+    const regex = /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.(19|20)\d{2}$/;
+
+    if (!regex.test(value)) {
+        return false;
+    }
+
+    const parts = value.split('.');
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+
+    const date = new Date(year, month, day);
+
+    return date.getDate() === day && date.getMonth() === month && date.getFullYear() === year;
+}, "Введіть правильну дату народження в форматі DD.MM.YYYY");
+
+$.validator.addMethod("viber", function (value, element) {
+    const viberRegex = /^viber:\/\/chat\?number=\+380\d{9}$/;
+     return this.optional(element) || viberRegex.test(value);
+}, "Вкажіть валідну адресу в Viber");
+
+$.validator.addMethod("telegram", function (value, element) {
+    const telegramRegex = /^https:\/\/t\.me\/\w{3,}$/;
+     return this.optional(element) || telegramRegex.test(value);
+}, "Вкажіть валідну адресу в Telegram");
