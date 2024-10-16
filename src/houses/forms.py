@@ -65,6 +65,7 @@ class AdminHouseSectionForm(forms.ModelForm):
             })
     )
 
+
     class Meta:
         model = HouseSection
         fields = ['name']

@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'src.system_settings.apps.SystemSettingsConfig',
     'src.website_management.apps.WebsiteManagementConfig',
     'src.houses.apps.HousesConfig',
-    'src.flat_owners.apps.FlatOwnersConfig'
+    'src.flat_owners.apps.FlatOwnersConfig',
+    'src.flats.apps.FlatsConfig',
+    'src.personal_accounts.apps.PersonalAccountsConfig'
 ]
 
 MIDDLEWARE = [
