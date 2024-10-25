@@ -52,12 +52,27 @@ class AdminCreateFlatView(FlatPermissionRequiredMixin,
                 flat=flat
             )
 
-            flat.personal_account = personal_account
-            flat.save()
+            personal_account.save()
 
-            messages.success(self.request, 'Нову квартиру успішно створено')
+        personal_account = form.cleaned_data.get('personal_account')
+
+        if personal_account:
+            try:
+                personal_account.flat = flat
+                personal_account.save()
+            except PersonalAccount.DoesNotExist:
+                messages.error(self.request, 'Особовий рахунок не знайдено')
+
+        messages.success(self.request, 'Нову квартиру успішно створено')
 
         return HttpResponseRedirect(self.success_url)
+
+    def form_invalid(self, form):
+        for _, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f"{error}")
+
+        return super().form_invalid(form)
 
 
 class AdminFlatHousesView(FlatPermissionRequiredMixin,

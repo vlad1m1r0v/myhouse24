@@ -72,12 +72,17 @@ class AdminFlatForm(forms.ModelForm):
         label='Особовий рахунок',
     )
 
-    personal_account =forms.ChoiceField(
+    personal_account =forms.ModelChoiceField(
         required=False,
         # TODO: add available personal accounts (those who don't have flat)
-        choices=[],
+        queryset=PersonalAccount.objects.filter(flat__isnull=True),
         widget=forms.Select(attrs={'class': 'form-control select'}),
     )
+
+    def clean(self):
+        no = self.cleaned_data.get('new_personal_account')
+        if PersonalAccount.objects.filter(no=no).exists():
+            raise ValidationError(f'Особовий рахунок з номером {no} вже існує')
 
     class Meta:
         model = Flat

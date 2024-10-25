@@ -88,6 +88,7 @@
             const $floorSelect = $("#id_floor");
             const $ownerSelect = $("#id_owner");
             const $tariffSelect = $("#id_tariff");
+            const $personalAccountSelect = $("#id_personal_account");
 
             $houseSelect.select2({
                 width: '100%',
@@ -188,6 +189,10 @@
                 }
             );
 
+            $personalAccountSelect.select2({
+                width: '100%',
+                placeholder: 'Виберіть...',
+            })
         })
     </script>
 {% endblock js %}

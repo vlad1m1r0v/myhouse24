@@ -15,4 +15,7 @@ class PersonalAccount(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, default="active")
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     section = models.ForeignKey(HouseSection, on_delete=models.CASCADE)
-    flat = models.ForeignKey(Flat, null=True, blank=True, on_delete=models.CASCADE)
+    flat = models.OneToOneField(Flat, null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.no
