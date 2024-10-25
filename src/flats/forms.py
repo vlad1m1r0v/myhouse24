@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 from src.authentication.models import CustomUser
 from src.flats.models import Flat
@@ -22,6 +23,19 @@ class AJAXModelChoiceField(forms.ModelChoiceField):
 
 
 class AdminFlatForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        flat_instance = kwargs.get('instance')
+        super().__init__(*args, **kwargs)
+
+        if flat_instance:
+            personal_account = PersonalAccount.objects.get(flat=flat_instance)
+            self.fields['personal_account'].initial = personal_account
+            self.fields['personal_account'].queryset = PersonalAccount.objects.filter(
+                Q(flat__isnull=True) | Q(flat=flat_instance)
+            )
+        else:
+            self.fields['personal_account'].queryset = PersonalAccount.objects.filter(flat__isnull=True)
+
     no = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': 'form-control'}),
         label="Номер квартири")
@@ -72,16 +86,14 @@ class AdminFlatForm(forms.ModelForm):
         label='Особовий рахунок',
     )
 
-    personal_account =forms.ModelChoiceField(
+    personal_account = forms.ModelChoiceField(
         required=False,
-        # TODO: add available personal accounts (those who don't have flat)
-        queryset=PersonalAccount.objects.filter(flat__isnull=True),
-        widget=forms.Select(attrs={'class': 'form-control select'}),
+        queryset=None
     )
 
     def clean(self):
         no = self.cleaned_data.get('new_personal_account')
-        if PersonalAccount.objects.filter(no=no).exists():
+        if PersonalAccount.objects.filter(no=no).exclude(flat=self.instance).exists():
             raise ValidationError(f'Особовий рахунок з номером {no} вже існує')
 
     class Meta:
