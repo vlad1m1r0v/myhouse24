@@ -23,6 +23,7 @@
         <div class="box-body">
             <form id="flat-form" method="post">
                 {% csrf_token %}
+                {{ form.id }}
                 <div class="row">
                     <div class="col-xs-12 col-sm-6">
                         <div class="form-group">
@@ -78,8 +79,6 @@
     </div>
 {% endblock content %}
 {% block js %}
-    <!--JQuery Validation-->
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <!--Select2-->
     <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
     <script>

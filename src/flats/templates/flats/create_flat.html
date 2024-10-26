@@ -77,8 +77,6 @@
     </div>
 {% endblock content %}
 {% block js %}
-    <!--JQuery Validation-->
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <!--Select2-->
     <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
     <script>
@@ -192,7 +190,7 @@
             $personalAccountSelect.select2({
                 width: '100%',
                 placeholder: 'Виберіть...',
-            })
+            });
         })
     </script>
 {% endblock js %}
