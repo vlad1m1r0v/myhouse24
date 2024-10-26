@@ -92,9 +92,18 @@ class AdminFlatForm(forms.ModelForm):
     )
 
     def clean(self):
-        no = self.cleaned_data.get('new_personal_account')
-        if PersonalAccount.objects.filter(no=no).exclude(flat=self.instance).exists():
-            raise ValidationError(f'Особовий рахунок з номером {no} вже існує')
+        cleaned_data = super().clean()
+        no = cleaned_data.get('new_personal_account')
+
+        if no:
+            if self.instance.pk:
+                exists = PersonalAccount.objects.filter(no=no).exclude(flat=self.instance).exists()
+            else:
+                exists = PersonalAccount.objects.filter(no=no).exists()
+            if exists:
+                raise ValidationError(f'Особовий рахунок з номером {no} вже існує')
+
+        return cleaned_data
 
     class Meta:
         model = Flat
