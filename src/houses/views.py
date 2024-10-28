@@ -1,7 +1,7 @@
 from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
 from django.contrib.auth import logout
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, AccessMixin
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -10,6 +10,7 @@ from django.views.generic import TemplateView, DetailView, View
 from src.core.utils import is_ajax
 from src.houses.forms import AdminHouseForm, AdminHouseSectionFormSet, AdminHouseFloorFormSet, AdminHouseUserFormSet
 from src.houses.models import House
+
 
 class HousePermissionRequiredMixin(PermissionRequiredMixin):
     permission_required = 'authentication.houses'
@@ -24,6 +25,26 @@ class HousePermissionRequiredMixin(PermissionRequiredMixin):
                 logout(request)
                 return redirect(reverse('authentication_adminlte_login'))
         return super().dispatch(request, *args, **kwargs)
+
+
+class HouseUserMixin(View):
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        pk = kwargs.get('pk')
+
+        has_permission = user.is_superuser or House.objects.filter(pk=pk, users__user=user).exists()
+
+        print({has_permission})
+
+        if not has_permission:
+            if is_ajax(request):
+                return JsonResponse(status=403,
+                                    data={'success': False, 'message': 'У Вас немає доступу до будинку'})
+            else:
+                messages.error(request, 'У Вас немає доступу до будинку')
+                return redirect(reverse('adminlte_houses_list'))
+        return super().dispatch(request, *args, **kwargs)
+
 
 class AdminHousesListView(HousePermissionRequiredMixin,
                           TemplateView):
@@ -68,15 +89,19 @@ class AdminHouseCreateView(HousePermissionRequiredMixin,
         return redirect(reverse('adminlte_houses_list'))
 
 
-class AdminHouseDetailView(HousePermissionRequiredMixin,
-                           DetailView):
+class AdminHouseDetailView(
+    HousePermissionRequiredMixin,
+    HouseUserMixin,
+    DetailView):
     template_name = 'houses/detail_house.html'
     model = House
     context_object_name = 'house'
 
 
-class AdminHouseUpdateView(HousePermissionRequiredMixin,
-                           TemplateView):
+class AdminHouseUpdateView(
+    HousePermissionRequiredMixin,
+    HouseUserMixin,
+    TemplateView):
     template_name = 'houses/update_house.html'
 
     def get_context_data(self, **kwargs):
@@ -141,9 +166,17 @@ class AdminHousesDatatableView(AjaxDatatableView):
             </div>
             """
 
+    def get_initial_queryset(self, request=None):
+        user = request.user
+        if user.is_superuser:
+            return super().get_initial_queryset(request)
+        return super().get_initial_queryset(request).filter(users__user=user)
 
-class AdminHousesDeleteView(HousePermissionRequiredMixin,
-                            View):
+
+class AdminHousesDeleteView(
+    HousePermissionRequiredMixin,
+    HouseUserMixin,
+    View):
     permission_required = ('authentication.houses',)
 
     def delete(self, request, *args, **kwargs):
