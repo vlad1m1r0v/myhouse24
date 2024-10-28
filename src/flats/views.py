@@ -32,8 +32,29 @@ class FlatPermissionRequiredMixin(PermissionRequiredMixin):
         return super().dispatch(request, *args, **kwargs)
 
 
+class HouseUserMixin(View):
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        pk = kwargs.get('pk')
+
+        has_permission = user.is_superuser or Flat.objects.filter(
+            pk=pk,
+            house__users__user=user
+        ).exists()
+
+        if not has_permission:
+            if is_ajax(request):
+                return JsonResponse(status=403,
+                                    data={'success': False, 'message': 'У Вас немає доступу до квартири'})
+            else:
+                messages.error(request, 'У Вас немає доступу до квартири')
+                return redirect(reverse('adminlte_houses_list'))
+        return super().dispatch(request, *args, **kwargs)
+
+
 # Create your views here.
 class AdminCreateFlatView(FlatPermissionRequiredMixin,
+                          HouseUserMixin,
                           CreateView):
     template_name = 'flats/create_flat.html'
     form_class = AdminFlatForm
@@ -76,6 +97,7 @@ class AdminCreateFlatView(FlatPermissionRequiredMixin,
 
 
 class AdminUpdateFlatView(FlatPermissionRequiredMixin,
+                          HouseUserMixin,
                           UpdateView):
     template_name = 'flats/update_flat.html'
     model = Flat

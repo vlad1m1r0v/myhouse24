@@ -34,8 +34,6 @@ class HouseUserMixin(View):
 
         has_permission = user.is_superuser or House.objects.filter(pk=pk, users__user=user).exists()
 
-        print({has_permission})
-
         if not has_permission:
             if is_ajax(request):
                 return JsonResponse(status=403,
