@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 from src.personal_accounts.models import STATUS_CHOICES
 from src.core.utils import AJAXModelChoiceField
@@ -37,6 +38,14 @@ class AdminPersonalAccountForm(forms.ModelForm):
         label='Квартира',
         empty_label='Виберіть...'
     )
+
+    def clean_no(self):
+        if PersonalAccount.objects.filter(no=self.cleaned_data['no']).exists():
+            raise ValidationError('Особовий рахунок з таким номером вже існує')
+
+    def clean_flat(self):
+        if Flat.objects.filter(personalaccount__isnull=False, pk=self.cleaned_data['flat'].pk).exists():
+            raise ValidationError('У квартири, що вказана в формі, вже є особовий рахунок')
 
     class Meta:
         model = PersonalAccount

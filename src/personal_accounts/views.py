@@ -43,12 +43,19 @@ class AdminPersonaAccountCreateView(SuccessMessageMixin,
     # TODO: change to personal accounts list page
     success_url = reverse_lazy('adminlte_personal_account_create')
 
+    def form_invalid(self, form):
+        for _, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f"{error}")
+
+        return super().form_invalid(form)
+
 
 class AdminPersonalAccountFlatsView(PersonalAccountPermissionRequiredMixin,
                                     View):
     def get(self, request, *args, **kwargs):
         term = request.GET.get('section_id')
-        flats = Flat.objects.filter(section=term).values('no', 'id')
+        flats = Flat.objects.filter(section=term, personalaccount__isnull=True).values('no', 'id')
         return JsonResponse(data=list(flats), safe=False)
 
 
