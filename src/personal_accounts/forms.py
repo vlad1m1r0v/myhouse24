@@ -22,30 +22,55 @@ class AdminPersonalAccountForm(forms.ModelForm):
         queryset=House.objects.none(),
         label='Будинок',
         widget=forms.Select(attrs={'class': 'form-control select'}),
-        empty_label='Виберіть...'
+        empty_label='Виберіть...',
+        required=False
     )
 
     section = AJAXModelChoiceField(
         queryset=HouseSection.objects.none(),
         label='Секція',
         widget=forms.Select(attrs={'class': 'form-control select'}),
-        empty_label='Виберіть...'
+        empty_label='Виберіть...',
+        required=False,
     )
 
     flat = AJAXModelChoiceField(
         queryset=Flat.objects.none(),
         widget=forms.Select(attrs={'class': 'form-control select'}),
         label='Квартира',
-        empty_label='Виберіть...'
+        empty_label='Виберіть...',
+        required=False
     )
 
     def clean_no(self):
-        if PersonalAccount.objects.filter(no=self.cleaned_data['no']).exists():
+        no = self.cleaned_data['no']
+
+        if PersonalAccount.objects.filter(no=no).exists():
             raise ValidationError('Особовий рахунок з таким номером вже існує')
 
+        return no
+
     def clean_flat(self):
-        if Flat.objects.filter(personalaccount__isnull=False, pk=self.cleaned_data['flat'].pk).exists():
+        flat = self.cleaned_data['flat']
+
+        if not flat:
+            return
+
+        if Flat.objects.filter(personalaccount__isnull=False, pk=flat.pk).exists():
             raise ValidationError('У квартири, що вказана в формі, вже є особовий рахунок')
+
+        return flat
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        print(cleaned_data)
+
+        if not cleaned_data.get('flat'):
+            cleaned_data['house'] = None
+            cleaned_data['section'] = None
+
+        return cleaned_data
 
     class Meta:
         model = PersonalAccount

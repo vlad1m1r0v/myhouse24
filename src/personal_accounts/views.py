@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.db.models import F, Value
 from src.core.utils import is_ajax
 from src.flats.models import Flat
@@ -40,6 +40,24 @@ class AdminPersonaAccountCreateView(SuccessMessageMixin,
     model = PersonalAccount
     form_class = AdminPersonalAccountForm
     success_message = 'Особовий рахунок успішно створено'
+    # TODO: change to personal accounts list page
+    success_url = reverse_lazy('adminlte_personal_account_create')
+
+    def form_invalid(self, form):
+        for _, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f"{error}")
+
+        return super().form_invalid(form)
+
+
+class AdminPersonaAccountUpdateView(SuccessMessageMixin,
+                                    PersonalAccountPermissionRequiredMixin,
+                                    UpdateView):
+    template_name = 'update_personal_account.html'
+    model = PersonalAccount
+    form_class = AdminPersonalAccountForm
+    success_message = 'Особовий рахунок успішно оновлено'
     # TODO: change to personal accounts list page
     success_url = reverse_lazy('adminlte_personal_account_create')
 
