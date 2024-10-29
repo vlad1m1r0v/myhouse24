@@ -3,24 +3,11 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 from src.authentication.models import CustomUser
+from src.core.utils import AJAXModelChoiceField
 from src.flats.models import Flat
 from src.houses.models import House, HouseSection, HouseFloor
 from src.personal_accounts.models import PersonalAccount
 from src.system_settings.models import Tariff
-
-
-class AJAXModelChoiceField(forms.ModelChoiceField):
-    def to_python(self, value):
-        if value in self.empty_values:
-            return None
-        try:
-            key = self.to_field_name or 'pk'
-            model = self.queryset.model
-            value = model.objects.get(**{key: value})
-        except (ValueError, TypeError, self.queryset.model.DoesNotExist):
-            raise ValidationError("Вибране значення не знайдено в базі даних")
-        return value
-
 
 class AdminFlatForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
