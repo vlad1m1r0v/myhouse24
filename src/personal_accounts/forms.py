@@ -56,6 +56,10 @@ class AdminPersonalAccountForm(forms.ModelForm):
         if not flat:
             return
 
+        if self.instance.pk:
+            if self.instance.flat == flat:
+                return flat
+
         if Flat.objects.filter(personalaccount__isnull=False, pk=flat.pk).exists():
             raise ValidationError('У квартири, що вказана в формі, вже є особовий рахунок')
 
