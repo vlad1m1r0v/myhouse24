@@ -18,8 +18,14 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 
+from config.sitemaps import StaticViewSitemap, robots_txt
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('src.authentication.urls')),
@@ -29,4 +35,13 @@ urlpatterns = [
     path('', include('src.flat_owners.urls')),
     path('', include('src.flats.urls')),
     path('', include('src.personal_accounts.urls'))
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# sitemap and robots
+urlpatterns += [
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+         name='django.contrib.sitemaps.views.sitemap'),
+    path('robots.txt', robots_txt, name='robots_txt'),
+]
