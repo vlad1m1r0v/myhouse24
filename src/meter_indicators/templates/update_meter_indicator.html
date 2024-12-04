@@ -118,8 +118,6 @@
     <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
     <script>
         $(document).ready(function () {
-            $('#id_no').val(Date.now());
-
             const $date = $('#id_date');
 
             $date.datepicker({
@@ -127,7 +125,6 @@
                 language: 'uk',
             });
 
-            $date.datepicker("setDate", "0");
 
             $('.kv-date-calendar').click(function () {
                 $('#id_date').focus();
@@ -217,25 +214,25 @@
                 );
             });
 
-            {% if form.initial.house %}
+            {% if form.instance %}
                 $houseSelect.append($("<option />")
-                    .attr("value", {{form.initial.house.id}})
-                    .html('{{form.initial.house.name}}'))
-                    .val({{form.initial.house.id}})
+                    .attr("value", {{form.instance.house.id}})
+                    .html('{{form.instance.house.name}}'))
+                    .val({{form.instance.house.id}})
                     .trigger("select2:select")
                     .select2("close");
 
                 $sectionSelect.append($("<option />")
-                    .attr("value", {{form.initial.section.id}})
-                    .html('{{form.initial.section.name}}'))
-                    .val({{form.initial.section.id}})
+                    .attr("value", {{form.instance.section.id}})
+                    .html('{{form.instance.section.name}}'))
+                    .val({{form.instance.section.id}})
                     .trigger("select2:select")
                     .select2("close");
 
                 $flatSelect.append($("<option />")
-                    .attr("value", {{form.initial.flat.id}})
-                    .html('Квартира №{{form.initial.flat.no}}'))
-                    .val({{form.initial.flat.id}})
+                    .attr("value", {{form.instance.flat.id}})
+                    .html('Квартира №{{form.instance.flat.no}}'))
+                    .val({{form.instance.flat.id}})
                     .trigger("select2:select")
                     .select2("close");
             {% endif %}
