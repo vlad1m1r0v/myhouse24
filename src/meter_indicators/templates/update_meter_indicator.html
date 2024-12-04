@@ -51,7 +51,7 @@
     <li><a>Показники рахунків</a></li>
     {% if form.instance.flat %}
         <li><a>Показники рахунків, квартира №{{ form.instance.flat.no }}</a></li>
-        <li><a>Показник рахунку №{{ form.instance.no }}</a></li>
+        <li><a href="{% url 'adminlte_meter_indicator_detail' pk=form.instance.id %}">Показник рахунку №{{ form.instance.no }}</a></li>
     {% endif %}
     <li class="active">Оновлення</li>
 {% endblock breadcrumb %}

@@ -6,7 +6,7 @@ urlpatterns = [
     path('adminlte/meter-indicators/create/',
          views.AdminCreateMeterIndicatorView.as_view(),
          name='adminlte_meter_indicator_create'),
-    path('adminlte/meter-indicators/update/<int:pk>/',
+    path('adminlte/meter-indicators/<int:pk>/update/',
          views.AdminUpdateMeterIndicatorView.as_view(),
          name='adminlte_meter_indicator_update'),
     path('adminlte/meter-indicators/<int:pk>/',
