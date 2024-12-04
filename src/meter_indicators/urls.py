@@ -9,4 +9,7 @@ urlpatterns = [
     path('adminlte/meter-indicators/update/<int:pk>/',
          views.AdminUpdateMeterIndicatorView.as_view(),
          name='adminlte_meter_indicator_update'),
+    path('adminlte/meter-indicators/<int:pk>/',
+         views.AdminDetailMeterIndicatorView.as_view(),
+         name='adminlte_meter_indicator_detail'),
 ]

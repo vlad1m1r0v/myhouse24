@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DetailView
 
 from src.core.utils import is_ajax
 from src.flats.models import Flat
@@ -129,3 +129,11 @@ class AdminUpdateMeterIndicatorView(
 
         # TODO: change to meter indicators list page URL
         return reverse_lazy('adminlte_meter_indicator_create')
+
+
+class AdminDetailMeterIndicatorView(
+    MeterIndicatorPermissionRequiredMixin,
+    DetailView
+):
+    model = MeterIndicator
+    template_name = 'detail_meter_indicator.html'

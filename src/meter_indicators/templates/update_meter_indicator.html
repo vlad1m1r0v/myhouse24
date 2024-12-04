@@ -1,7 +1,7 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% block title %}
-    Новий показник
+    Оновлення показнику
 {% endblock title %}
 {% block css %}
     <!--Select2-->
@@ -14,15 +14,28 @@
         .page-header-spec {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             margin-bottom: 15px;
         }
 
         .page-header-spec .form-group {
-            margin: 0;
+            margin-bottom: 0;
         }
 
-        .page-header-spec .label-mid {
-            margin: 0 15px;
+        @media screen and (max-width: 768px) {
+            .page-header-spec .form-group {
+                margin-bottom: 15px;
+            }
+
+            .page-header-spec .label-mid {
+                margin: 0 15px 15px 15px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-header-spec .label-mid {
+                margin: 0 15px;
+            }
         }
 
         .action-buttons button {
@@ -31,12 +44,16 @@
     </style>
 {% endblock css %}
 {% block header %}
-    Новий показник
+    Оновлення показнику
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
     <li><a>Показники рахунків</a></li>
-    <li class="active">Новий показник</li>
+    {% if form.instance.flat %}
+        <li><a>Показники рахунків, квартира №{{ form.instance.flat.no }}</a></li>
+        <li><a>Показник рахунку №{{ form.instance.no }}</a></li>
+    {% endif %}
+    <li class="active">Оновлення</li>
 {% endblock breadcrumb %}
 {% block content %}
     <form method="post">
