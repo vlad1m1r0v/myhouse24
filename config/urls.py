@@ -34,7 +34,8 @@ urlpatterns = [
     path('', include('src.houses.urls')),
     path('', include('src.flat_owners.urls')),
     path('', include('src.flats.urls')),
-    path('', include('src.personal_accounts.urls'))
+    path('', include('src.personal_accounts.urls')),
+    path('', include('src.meter_indicators.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

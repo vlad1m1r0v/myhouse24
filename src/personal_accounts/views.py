@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import CreateView, UpdateView
-from django.db.models import F, Value
+from django.db.models import F, Value, Q
 from src.core.utils import is_ajax
 from src.flats.models import Flat
 from src.personal_accounts.forms import AdminPersonalAccountForm
@@ -69,11 +69,17 @@ class AdminPersonaAccountUpdateView(SuccessMessageMixin,
         return super().form_invalid(form)
 
 
-class AdminPersonalAccountFlatsView(PersonalAccountPermissionRequiredMixin,
-                                    View):
+class AdminPersonalAccountFlatsView(PersonalAccountPermissionRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         term = request.GET.get('section_id')
-        flats = Flat.objects.filter(section=term, personalaccount__isnull=True).values('no', 'id')
+        ignore_account = request.GET.get('ignore_account') == 'true'
+
+        filters = Q(section=term)
+
+        if not ignore_account:
+            filters &= Q(personalaccount__isnull=True)
+
+        flats = Flat.objects.filter(filters).values('no', 'id')
         return JsonResponse(data=list(flats), safe=False)
 
 

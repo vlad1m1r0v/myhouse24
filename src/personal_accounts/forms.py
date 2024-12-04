@@ -68,8 +68,6 @@ class AdminPersonalAccountForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        print(cleaned_data)
-
         if not cleaned_data.get('flat'):
             cleaned_data['house'] = None
             cleaned_data['section'] = None

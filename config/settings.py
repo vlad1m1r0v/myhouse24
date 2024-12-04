@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'src.houses.apps.HousesConfig',
     'src.flat_owners.apps.FlatOwnersConfig',
     'src.flats.apps.FlatsConfig',
-    'src.personal_accounts.apps.PersonalAccountsConfig'
+    'src.personal_accounts.apps.PersonalAccountsConfig',
+    'src.meter_indicators.apps.MeterIndicatorsConfig'
 ]
 
 MIDDLEWARE = [
