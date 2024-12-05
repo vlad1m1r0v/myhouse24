@@ -12,4 +12,10 @@ urlpatterns = [
     path('adminlte/meter-indicators/<int:pk>/',
          views.AdminDetailMeterIndicatorView.as_view(),
          name='adminlte_meter_indicator_detail'),
+    path('adminlte/meter-indicators/for-flat/',
+         views.AdminMeterIndicatorForFlatView.as_view(),
+         name='adminlte_meter_indicators_for_flat'),
+    path('adminlte/meter-indicators/for-flat/datatable/',
+         views.AdminMeterIndicatorForFlatDatatableView.as_view(),
+         name='adminlte_meter_indicators_for_flat_datatable'),
 ]

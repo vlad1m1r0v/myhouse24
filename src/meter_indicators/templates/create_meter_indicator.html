@@ -50,7 +50,9 @@
     <li><a><i class="fa fa-home"></i> Головна</a></li>
     <li><a>Показники рахунків</a></li>
     {% if form.initial.flat %}
-        <li><a>Показники рахунків, квартира №{{ form.initial.flat.no }}</a></li>
+        <li>
+            <a href="{% url 'adminlte_meter_indicators_for_flat' %}?flat_id={{ form.initial.flat.id }}&service_id={{ form.initial.service.id }}">Показники
+                рахунків, квартира №{{ form.initial.flat.no }}</a></li>
     {% endif %}
     <li class="active">Новий показник</li>
 {% endblock breadcrumb %}

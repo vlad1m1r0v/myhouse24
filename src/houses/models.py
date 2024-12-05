@@ -13,6 +13,9 @@ class House(models.Model):
     image_4 = models.ImageField(upload_to=get_upload_path)
     image_5 = models.ImageField(upload_to=get_upload_path)
 
+    def __str__(self):
+        return self.name
+
 
 class HouseUser(models.Model):
     house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='users')
@@ -26,3 +29,6 @@ class HouseFloor(models.Model):
 class HouseSection(models.Model):
     house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='sections')
     name = models.CharField()
+
+    def __str__(self):
+        return self.name
