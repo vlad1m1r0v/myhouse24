@@ -114,83 +114,56 @@
                     }
                 });
 
+                const $houseSelect = $("th.house-filter > select").first();
+                const $sectionSelect = $("th.section-filter > select").first();
+                const $flatSelect = $("th.flat-filter > select").first();
+
+                $houseSelect.on('select2:select', function () {
+                    $sectionSelect.empty();
+
+                    $sectionSelect.select2(
+                        {
+                            width: '100%',
+                            placeholder: 'Виберіть...',
+                            ajax: {
+                                url: `{% url 'adminlte_flat_sections'%}?house_id=${$houseSelect.val()}`,
+                                dataType: "json",
+                                processResults: data => ({
+                                    results: data.map(item => ({
+                                        id: item.id,
+                                        text: item.name
+                                    }))
+                                })
+                            }
+                        }
+                    );
+                })
+
+                $sectionSelect.on('select2:select', function () {
+                    $flatSelect.empty();
+
+                    $flatSelect.select2(
+                        {
+                            width: '100%',
+                            placeholder: 'Виберіть...',
+                            ajax: {
+                                url: `{% url 'adminlte_personal_account_flats'%}?ignore_account=true&section_id=${$sectionSelect.val()}`,
+                                dataType: "json",
+                                processResults: data => ({
+                                    results: data.map(item => ({
+                                        id: item.id,
+                                        text: item.no
+                                    }))
+                                })
+                            }
+                        }
+                    );
+                })
             });
 
             $datatable.on('drawCallback', function () {
                 adjust_rows();
             });
-
-            // select2 ajax filters setup
-            const $houseSelect = $("th.house-filter > select");
-            const $sectionSelect = $("th.section-filter > select");
-            const $flatSelect = $("th.flat-filter > select");
-
-            $houseSelect.select2({
-                width: '100%',
-                placeholder: 'Виберіть...',
-                ajax: {
-                    url: "{% url 'adminlte_flat_houses'%}",
-                    dataType: "json",
-                    processResults: data => ({
-                        results: data.map(item => ({
-                            id: item.id,
-                            text: item.name
-                        }))
-                    })
-                }
-            });
-
-            $sectionSelect.select2({
-                width: '100%',
-                placeholder: 'Виберіть...',
-            });
-
-            $houseSelect.on('select2:select', function () {
-                $sectionSelect.empty();
-
-                $sectionSelect.select2(
-                    {
-                        width: '100%',
-                        placeholder: 'Виберіть...',
-                        ajax: {
-                            url: `{% url 'adminlte_flat_sections'%}?house_id=${$houseSelect.val()}`,
-                            dataType: "json",
-                            processResults: data => ({
-                                results: data.map(item => ({
-                                    id: item.id,
-                                    text: item.name
-                                }))
-                            })
-                        }
-                    }
-                );
-            })
-
-            $flatSelect.select2({
-                width: '100%',
-                placeholder: 'Виберіть...',
-            });
-
-            $sectionSelect.on('select2:select', function () {
-                $flatSelect.empty();
-
-                $flatSelect.select2(
-                    {
-                        width: '100%',
-                        placeholder: 'Виберіть...',
-                        ajax: {
-                            url: `{% url 'adminlte_personal_account_flats'%}?ignore_account=true&section_id=${$sectionSelect.val()}`,
-                            dataType: "json",
-                            processResults: data => ({
-                                results: data.map(item => ({
-                                    id: item.id,
-                                    text: `Квартира №${item.no}`
-                                }))
-                            })
-                        }
-                    }
-                );
-            })
         });
     </script>
 {% endblock js %}
