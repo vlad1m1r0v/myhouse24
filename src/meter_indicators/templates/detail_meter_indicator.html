@@ -1,5 +1,6 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
+{% load l10n %}
 {% block title %}
     Показник рахунку
 {% endblock title %}
@@ -116,7 +117,7 @@
                             </tr>
                             <tr>
                                 <td>Поточні показники</td>
-                                <td>{{ object.value }}</td>
+                                <td>{{ object.value|unlocalize }}</td>
                             </tr>
                             <tr>
                                 <td>Одиниця вимірювання</td>

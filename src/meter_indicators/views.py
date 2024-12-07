@@ -1,5 +1,4 @@
 from datetime import datetime
-from random import choices
 
 from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
@@ -10,7 +9,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, UpdateView, DetailView, TemplateView
+from django.views.generic import CreateView, UpdateView, DetailView, TemplateView, View
 from django.template.defaultfilters import date as _date
 
 from src.core.utils import is_ajax
@@ -156,12 +155,13 @@ class AdminMeterIndicatorForFlatView(
 
         flat_id = self.request.GET.get('flat_id', None)
         flat = Flat.objects.get(pk=flat_id)
+        context["flat"] = flat
 
         service_id = self.request.GET.get('service_id', None)
-        service = Service.objects.get(pk=service_id)
 
-        context["flat"] = flat
-        context["service"] = service
+        if service_id:
+            service = Service.objects.get(pk=service_id)
+            context["service"] = service
 
         return context
 
@@ -173,9 +173,23 @@ class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
     search_values_separator = '+'
 
     column_defs = [
-        {'name': 'no', 'title': 'Номер', 'visible': True, 'orderable': False},
-        {'name': 'status', 'title': 'Статус', 'visible': True, 'choices': StatusChoices.choices},
-        {'name': 'date', 'title': 'Дата', 'className': 'daterange-filter', 'visible': True},
+        {
+            'name': 'no',
+            'title': 'Номер',
+            'visible': True,
+        },
+        {
+            'name': 'status',
+            'title': 'Статус',
+            'visible': True,
+            'choices': StatusChoices.choices
+        },
+        {
+            'name': 'date',
+            'title': 'Дата',
+            'className': 'daterange-filter',
+            'visible': True
+        },
         {
             'name': 'month',
             'title': 'Місяць',
@@ -231,13 +245,27 @@ class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
             'searchable': False,
             'orderable': False,
         },
+        {
+            'name': 'button_group',
+            'title': '',
+            'placeholder': True, 'visible': True,
+            'searchable': False,
+            'orderable': False,
+        },
     ]
 
     def get_initial_queryset(self, request=None):
-        flat_id = self.request.REQUEST.get('flat_id')
-        service_id = self.request.REQUEST.get('service_id')
+        filters = Q()
 
-        return MeterIndicator.objects.filter(flat_id=flat_id, service_id=service_id)
+        flat_id = self.request.REQUEST.get('flat_id')
+        if flat_id:
+            filters &= Q(flat__id=flat_id)
+
+        service_id = self.request.REQUEST.get('service_id')
+        if service_id:
+            filters &= Q(service_id=service_id)
+
+        return MeterIndicator.objects.filter(filters)
 
     def filter_queryset(self, params, qs):
         for column_link in params['column_links']:
@@ -285,3 +313,21 @@ class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
         row['service__id'] = obj.service.name
 
         row['service__unit__unit'] = obj.service.unit.unit
+
+        row['button_group'] = \
+            f"""
+            <div class="btn-group" style="display:flex; flex-wrap:nowrap;">
+                <a class="btn btn-default btn-sm"  data-id={obj.id} href={reverse('adminlte_meter_indicator_update', kwargs={'pk': obj.id})} title="Редагувати">
+                    <i class="fa fa-pencil"></i>
+                </a> 
+                <button class="btn btn-default btn-sm delete-button" data-href={reverse('adminlte_meter_indicator_delete', kwargs={'pk': obj.id})} title="Видалити">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            """
+
+
+class AdminMeterIndicatorDeleteView(MeterIndicatorPermissionRequiredMixin, View):
+    def delete(self, request, *args, **kwargs):
+        MeterIndicator.objects.get(pk=self.kwargs['pk']).delete()
+        return JsonResponse(status=200, data={'success': True})

@@ -29,6 +29,10 @@
         th:nth-child(6) {
             min-width: 100px;
         }
+
+        th:last-child {
+            width: fit-content;
+        }
     </style>
 {% endblock css %}
 {% block header %}
@@ -96,7 +100,9 @@
                 },
                 {
                     flat_id: {{ flat.id }},
-                    service_id: {{ service.id }}
+                    {% if service %}
+                        service_id: {{ service.id }}
+                    {% endif %}
                 }
             );
 
@@ -203,6 +209,36 @@
             $datatable.on('drawCallback', function () {
                 adjust_rows();
             });
+
+            $(document).on('click', '.delete-button', async function () {
+                const $button = $(this);
+
+                const result = await Swal.fire({
+                    title: "Ви дійсно хочете видалити цей об'єкт?",
+                    icon: "question",
+                    showDenyButton: true,
+                    confirmButtonText: "Видалити",
+                    denyButtonText: "Відмінити"
+                });
+
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: $button.attr('data-href'),
+                        method: "DELETE", headers: {
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                        success: function () {
+                            Swal.fire("Об'єкт успішно видалено", "", "success");
+                            $button.closest('tr').remove();
+                        }
+                    });
+                }
+            });
+
+            $(document).on('click', 'tbody tr td:not(:last-child)', function () {
+                const id = $(this).closest('tr').find('.btn').data('id')
+                window.location.assign(`${window.location.origin}/adminlte/meter-indicators/${id}/`);
+            })
         });
     </script>
 {% endblock js %}

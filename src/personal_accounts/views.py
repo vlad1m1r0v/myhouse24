@@ -71,10 +71,14 @@ class AdminPersonaAccountUpdateView(SuccessMessageMixin,
 
 class AdminPersonalAccountFlatsView(PersonalAccountPermissionRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        term = request.GET.get('section_id')
+        section_id = request.GET.get('section_id')
+        term = request.GET.get('term')
         ignore_account = request.GET.get('ignore_account') == 'true'
 
-        filters = Q(section=term)
+        filters = Q(section__pk=section_id)
+
+        if term:
+            filters &= Q(no__icontains=term)
 
         if not ignore_account:
             filters &= Q(personalaccount__isnull=True)
