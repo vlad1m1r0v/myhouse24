@@ -27,5 +27,3 @@ class MeterIndicator(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     value = models.FloatField()
 
-
-

@@ -176,12 +176,14 @@ class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
         {'name': 'no', 'title': 'Номер', 'visible': True, 'orderable': False},
         {'name': 'status', 'title': 'Статус', 'visible': True, 'choices': StatusChoices.choices},
         {'name': 'date', 'title': 'Дата', 'className': 'daterange-filter', 'visible': True},
-        {'name': 'month',
-         'title': 'Місяць',
-         'placeholder': True,
-         'visible': True,
-         'searchable': False,
-         'orderable': True, },
+        {
+            'name': 'month',
+            'title': 'Місяць',
+            'placeholder': True,
+            'visible': True,
+            'searchable': False,
+            'orderable': True,
+        },
         {
             'name': 'house__id',
             'title': 'Будинок',
@@ -207,10 +209,10 @@ class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
             'orderable': False
         },
         {
-            'name': 'service__name',
+            'name': 'service__id',
             'title': 'Послуга',
             'visible': True,
-            'choices': [(service.name, service.name) for service in Service.objects.all()],
+            'choices': [(service.id, service.name) for service in Service.objects.all()],
             'orderable': False
         },
         {
@@ -280,6 +282,6 @@ class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
 
         row['flat__id'] = obj.flat.no
 
-        row['service__name'] = obj.service.name
+        row['service__id'] = obj.service.name
 
         row['service__unit__unit'] = obj.service.unit.unit
