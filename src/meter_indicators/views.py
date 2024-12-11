@@ -47,18 +47,23 @@ class AdminCreateMeterIndicatorView(
         flat_id = self.request.GET.get('flat_id', None)
         service_id = self.request.GET.get('service_id', None)
 
-        if flat_id and service_id:
+        initial = {}
+
+        if flat_id:
             flat = Flat.objects.select_related('house', 'section').get(pk=flat_id)
-            service = Service.objects.get(pk=service_id)
+
+            initial['house'] = flat.house
+            initial['section'] = flat.section
+            initial['flat'] = flat
+
+            if service_id:
+                service = Service.objects.get(pk=service_id)
+
+                initial['service'] = service
 
             return AdminMeterIndicatorForm(
                 self.request.POST or None,
-                initial={
-                    'house': flat.house,
-                    'section': flat.section,
-                    'flat': flat,
-                    'service': service
-                }
+                initial=initial
             )
 
         return AdminMeterIndicatorForm(self.request.POST or None)
@@ -148,7 +153,7 @@ class AdminMeterIndicatorForFlatView(
     MeterIndicatorPermissionRequiredMixin,
     TemplateView
 ):
-    template_name = 'list_meter_data_for_flat.html'
+    template_name = 'list_meter_indicators_for_flat.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -166,7 +171,7 @@ class AdminMeterIndicatorForFlatView(
         return context
 
 
-class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
+class AdminMeterIndicatorsForFlatDatatableView(AjaxDatatableView):
     model = MeterIndicator
     title = 'Показники лічильників'
     length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
@@ -177,12 +182,14 @@ class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
             'name': 'no',
             'title': 'Номер',
             'visible': True,
+            'orderable': False,
         },
         {
             'name': 'status',
             'title': 'Статус',
             'visible': True,
-            'choices': StatusChoices.choices
+            'choices': StatusChoices.choices,
+            # 'orderable': False,
         },
         {
             'name': 'date',
@@ -287,8 +294,8 @@ class AdminMeterIndicatorForFlatDatatableView(AjaxDatatableView):
 
             if field == 'month':
                 if order.ascending:
-                    return qs.order_by('-date')
-                return qs.order_by('date')
+                    return qs.order_by('date')
+                return qs.order_by('-date')
 
             break
 
@@ -331,3 +338,97 @@ class AdminMeterIndicatorDeleteView(MeterIndicatorPermissionRequiredMixin, View)
     def delete(self, request, *args, **kwargs):
         MeterIndicator.objects.get(pk=self.kwargs['pk']).delete()
         return JsonResponse(status=200, data={'success': True})
+
+
+class AdminListMeterIndicatorsView(
+    MeterIndicatorPermissionRequiredMixin,
+    TemplateView
+):
+    template_name = 'list_meter_indicators.html'
+
+
+class AdminMeterIndicatorsDatatableView(AjaxDatatableView):
+    model = MeterIndicator
+    title = 'Показники лічильників'
+    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
+    search_values_separator = '+'
+
+    column_defs = [
+        {
+            'name': 'house__id',
+            'title': 'Будинок',
+            'className': 'house-filter',
+            'visible': True,
+            'choices': [(house.id, house.name) for house in House.objects.all()],
+            'orderable': False,
+        },
+        {
+            'name': 'section__id',
+            'title': 'Секція',
+            'className': 'section-filter',
+            'visible': True,
+            'choices': [],
+            # 'orderable': False,
+        },
+        {
+            'name': 'flat__id',
+            'title': 'Номер квартири',
+            'className': 'flat-filter',
+            'visible': True,
+            'choices': [],
+            'orderable': True,
+        },
+        {
+            'name': 'service__id',
+            'title': 'Послуга',
+            'visible': True,
+            'choices': [(service.id, service.name) for service in Service.objects.all()],
+            'orderable': False
+        },
+        {
+            'name': 'value',
+            'title': 'Показник',
+            'visible': True,
+            'placeholder': True,
+            'searchable': False,
+            'orderable': False,
+        },
+        {
+            'name': 'service__unit__unit',
+            'title': 'Одиниця',
+            'visible': True,
+            'placeholder': True,
+            'searchable': False,
+            'orderable': False,
+        },
+        {
+            'name': 'button_group',
+            'title': '',
+            'placeholder': True, 'visible': True,
+            'searchable': False,
+            'orderable': False,
+        },
+    ]
+
+    def customize_row(self, row, obj):
+        row['house__id'] = obj.house.name
+
+        row['section__id'] = obj.section.name
+
+        row['flat__id'] = obj.flat.no
+
+        row['service__id'] = obj.service.name
+
+        row['service__unit__unit'] = obj.service.unit.unit
+
+        row['button_group'] = \
+            f"""
+            <div class="btn-group" style="display:flex; flex-wrap:nowrap;">
+                <a href='{reverse_lazy('adminlte_meter_indicator_create')}?flat_id={obj.flat.id}&service_id={obj.service.id}' class="btn btn-default btn-sm" title="Додати нові показники">
+                    <i class="fa fa-plus-circle"></i>
+                </a> 
+                <a href='{reverse_lazy('adminlte_meter_indicators_for_flat')}?flat_id={obj.flat.id}&service_id={obj.service.id}' class="btn btn-default btn-sm meter-indicator-for-flat-history" title="Переглянути історію показників">
+                    <i class="fa fa-eye"></i>
+                </a>
+            </div>
+            """

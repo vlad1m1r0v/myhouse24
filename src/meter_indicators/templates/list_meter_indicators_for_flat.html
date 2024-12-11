@@ -1,7 +1,8 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
+{% load query_params %}
 {% block title %}
-    Показники рахунків, квартира №{{ flat.no }}
+    Показники лічильників, квартира №{{ flat.no }}
 {% endblock title %}
 {% block css %}
     <!--Datatable-->
@@ -36,20 +37,21 @@
     </style>
 {% endblock css %}
 {% block header %}
-    Показники рахунків, квартира №{{ flat.no }}
+    Показники лічильників, квартира №{{ flat.no }}
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Показники рахунків</a></li>
-    <li class="active"><a>Показники рахунків, квартира №{{ flat.no }}</a></li>
+    <li><a href="{% url 'adminlte_meter_indicators_list' %}">Показники лічильників</a></li>
+    <li class="active"><a>Показники лічильників, квартира №{{ flat.no }}</a></li>
 {% endblock breadcrumb %}
 {% block content %}
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right margin-bottom">
                 <a class="btn btn-success"
-                   href="{% url 'adminlte_meter_indicator_create' %}?flat_id={{ flat.id }}&service_id={{ service.id }}">Додати
-                    показник</a>
+                   href="{% url 'adminlte_meter_indicator_create' %}{% add_query_params flat_id=flat.id service_id=service.id %}">
+                    Додати показник
+                </a>
             </div>
         </div>
     </div>

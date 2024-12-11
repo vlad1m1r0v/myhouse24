@@ -2,7 +2,7 @@
 {% load static %}
 {% load l10n %}
 {% block title %}
-    Показник рахунку
+    Показник лічильника
 {% endblock title %}
 {% block css %}
     <!--Datepicker-->
@@ -50,9 +50,9 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Показники рахунків</a></li>
-    <li><a>Показники рахунків, квартира №{{ object.flat.no }}</a></li>
-    <li class="active"><a>Показник рахунку №{{ object.no }}</a></li>
+    <li><a href="{% url 'adminlte_meter_indicators_list' %}">Показники лічильників</a></li>
+    <li><a href="{% url 'adminlte_meter_indicators_for_flat' %}?flat_id={{ object.flat.id }}?service_id={{ object.service.id }}">Показники лічильників, квартира №{{ object.flat.no }}</a></li>
+    <li class="active"><a>Показник лічильника №{{ object.no }}</a></li>
 {% endblock breadcrumb %}
 {% block content %}
     <form method="post">

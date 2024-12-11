@@ -1,0 +1,148 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Показники лічильників
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+    <link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet"/>
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Daterange picker-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Показники лічильників
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active"><a>Показники лічильників</a></li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right margin-bottom">
+                <a class="btn btn-success"
+                   href={% url 'adminlte_meter_indicator_create' %}>Додати
+                    показник</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <table id="datatable"
+                       class="table table-striped table-bordered table-hover"
+                       style="width:100%">
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatable-->
+    <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ajax_datatable/js/utils.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/initialize_datatable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/restructure_datatable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/adjust_rows_datatable.js' %}"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Daterange Picker-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Datatable setup
+            const $datatable = $('#datatable');
+
+            AjaxDatatableViewUtils.initialize_table(
+                $datatable,
+                "{% url 'adminlte_meter_indicators_datatable' %}",
+                {
+                    scrollX: false,
+                },
+            );
+
+            $datatable.on('initComplete', function () {
+                restructure_datatable();
+
+                $('#datatable_length, #datatable_filter').hide();
+
+                const $houseSelect = $("th.house-filter > select").first();
+                const $sectionSelect = $("th.section-filter > select").first();
+                const $flatSelect = $("th.flat-filter > select").first();
+
+                $houseSelect.on('select2:select', function () {
+                    $sectionSelect.empty();
+
+                    $sectionSelect.select2(
+                        {
+                            width: '100%',
+                            placeholder: 'Виберіть...',
+                            ajax: {
+                                url: `{% url 'adminlte_flat_sections'%}?house_id=${$houseSelect.val()}`,
+                                dataType: "json",
+                                processResults: data => ({
+                                    results: data.map(item => ({
+                                        id: item.id,
+                                        text: item.name
+                                    }))
+                                })
+                            }
+                        }
+                    );
+                })
+
+                $sectionSelect.on('select2:select', function () {
+                    $flatSelect.empty();
+
+                    $flatSelect.select2(
+                        {
+                            width: '100%',
+                            placeholder: 'Виберіть...',
+                            ajax: {
+                                url: `{% url 'adminlte_personal_account_flats'%}?ignore_account=true&section_id=${$sectionSelect.val()}`,
+                                dataType: "json",
+                                processResults: data => ({
+                                    results: data.map(item => ({
+                                        id: item.id,
+                                        text: item.no
+                                    }))
+                                })
+                            }
+                        }
+                    );
+                })
+            });
+
+            $datatable.on('drawCallback', function () {
+                adjust_rows();
+            })
+
+            $(document).on('click', 'tbody tr td:not(:last-child)', function () {
+                const url = $(this).closest('tr').find('.meter-indicator-for-flat-history').attr('href')
+                window.location.assign(url);
+            })
+        });
+    </script>
+{% endblock js %}

@@ -28,7 +28,6 @@ class AdminMeterIndicatorForm(forms.ModelForm):
         label='Будинок',
         widget=forms.Select(attrs={'class': 'form-control select'}),
         empty_label='Виберіть...',
-        required=False
     )
 
     section = AJAXModelChoiceField(
@@ -36,7 +35,6 @@ class AdminMeterIndicatorForm(forms.ModelForm):
         label='Секція',
         widget=forms.Select(attrs={'class': 'form-control select'}),
         empty_label='Виберіть...',
-        required=False,
     )
 
     flat = AJAXModelChoiceField(
@@ -44,7 +42,6 @@ class AdminMeterIndicatorForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control select'}),
         label='Квартира',
         empty_label='Виберіть...',
-        required=False
     )
 
     service = forms.ModelChoiceField(

@@ -48,10 +48,10 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Показники рахунків</a></li>
+    <li><a href="{% url 'adminlte_meter_indicators_list' %}">Показники лічильників</a></li>
     {% if form.instance.flat %}
-        <li><a href="{% url 'adminlte_meter_indicators_for_flat' %}?flat_id={{ form.instance.flat.id }}&service_id={{ form.instance.service.id }}">Показники рахунків, квартира №{{ form.instance.flat.no }}</a></li>
-        <li><a href="{% url 'adminlte_meter_indicator_detail' pk=form.instance.id %}">Показник рахунку №{{ form.instance.no }}</a></li>
+        <li><a href="{% url 'adminlte_meter_indicators_for_flat' %}?flat_id={{ form.instance.flat.id }}&service_id={{ form.instance.service.id }}">Показники лічильнів, квартира №{{ form.instance.flat.no }}</a></li>
+        <li><a href="{% url 'adminlte_meter_indicator_detail' pk=form.instance.id %}">Показник лічильника №{{ form.instance.no }}</a></li>
     {% endif %}
     <li class="active">Оновлення</li>
 {% endblock breadcrumb %}
