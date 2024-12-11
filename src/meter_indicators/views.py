@@ -14,7 +14,7 @@ from django.template.defaultfilters import date as _date
 
 from src.core.utils import is_ajax
 from src.flats.models import Flat
-from src.houses.models import House
+from src.houses.models import House, HouseSection
 from src.meter_indicators.forms import AdminMeterIndicatorForm
 from src.meter_indicators.models import MeterIndicator, StatusChoices
 from src.system_settings.models import Service
@@ -96,8 +96,7 @@ class AdminCreateMeterIndicatorView(
 
                 return reverse_lazy('adminlte_meter_indicator_create')
 
-        # TODO: change to meter indicators list page URL
-        return reverse_lazy('adminlte_meter_indicator_create')
+        return reverse_lazy('adminlte_meter_indicators_list')
 
 
 class AdminUpdateMeterIndicatorView(
@@ -137,8 +136,7 @@ class AdminUpdateMeterIndicatorView(
 
                 return reverse_lazy('adminlte_meter_indicator_create')
 
-        # TODO: change to meter indicators list page URL
-        return reverse_lazy('adminlte_meter_indicator_create')
+        return reverse_lazy('adminlte_meter_indicators_list')
 
 
 class AdminDetailMeterIndicatorView(
@@ -177,7 +175,14 @@ class AdminMeterIndicatorsForFlatDatatableView(AjaxDatatableView):
     length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
     search_values_separator = '+'
 
+    initial_order = [[0, 'asc']]
+
     column_defs = [
+        {
+            'name': 'pk',
+            'visible': False,
+            'orderable': True,
+        },
         {
             'name': 'no',
             'title': 'Номер',
@@ -189,7 +194,7 @@ class AdminMeterIndicatorsForFlatDatatableView(AjaxDatatableView):
             'title': 'Статус',
             'visible': True,
             'choices': StatusChoices.choices,
-            # 'orderable': False,
+            'orderable': False,
         },
         {
             'name': 'date',
@@ -353,12 +358,18 @@ class AdminMeterIndicatorsDatatableView(AjaxDatatableView):
     length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
     search_values_separator = '+'
 
+    initial_order = [[0, 'asc']]
+
     column_defs = [
+        {
+            'name': 'pk',
+            'visible': False,
+            'orderable': True,
+        },
         {
             'name': 'house__id',
             'title': 'Будинок',
             'className': 'house-filter',
-            'visible': True,
             'choices': [(house.id, house.name) for house in House.objects.all()],
             'orderable': False,
         },
@@ -366,17 +377,14 @@ class AdminMeterIndicatorsDatatableView(AjaxDatatableView):
             'name': 'section__id',
             'title': 'Секція',
             'className': 'section-filter',
-            'visible': True,
             'choices': [],
-            # 'orderable': False,
+            'orderable': False,
         },
         {
-            'name': 'flat__id',
+            'name': 'flat__no',
             'title': 'Номер квартири',
             'className': 'flat-filter',
-            'visible': True,
             'choices': [],
-            'orderable': True,
         },
         {
             'name': 'service__id',
@@ -415,7 +423,7 @@ class AdminMeterIndicatorsDatatableView(AjaxDatatableView):
 
         row['section__id'] = obj.section.name
 
-        row['flat__id'] = obj.flat.no
+        row['flat__no'] = obj.flat.no
 
         row['service__id'] = obj.service.name
 
