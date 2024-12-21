@@ -16,6 +16,7 @@
             align-items: center;
             flex-wrap: wrap;
             margin-bottom: 15px;
+            margin-left: 15px;
         }
 
         .page-header-spec .form-group {
@@ -50,8 +51,11 @@
     <li><a><i class="fa fa-home"></i> Головна</a></li>
     <li><a href="{% url 'adminlte_meter_indicators_list' %}">Показники лічильників</a></li>
     {% if form.instance.flat %}
-        <li><a href="{% url 'adminlte_meter_indicators_for_flat' %}?flat_id={{ form.instance.flat.id }}&service_id={{ form.instance.service.id }}">Показники лічильнів, квартира №{{ form.instance.flat.no }}</a></li>
-        <li><a href="{% url 'adminlte_meter_indicator_detail' pk=form.instance.id %}">Показник лічильника №{{ form.instance.no }}</a></li>
+        <li>
+            <a href="{% url 'adminlte_meter_indicators_for_flat' %}?flat_id={{ form.instance.flat.id }}&service_id={{ form.instance.service.id }}">Показники
+                лічильнів, квартира №{{ form.instance.flat.no }}</a></li>
+        <li><a href="{% url 'adminlte_meter_indicator_detail' pk=form.instance.id %}">Показник лічильника
+            №{{ form.instance.no }}</a></li>
     {% endif %}
     <li class="active">Оновлення</li>
 {% endblock breadcrumb %}
@@ -59,7 +63,7 @@
     <form method="post">
         {% csrf_token %}
         <div class="row">
-            <div class="col-xs-12 col-md-7 col-lg-6">
+            <div class="col">
                 <div class="page-header-spec">
                     <div class="form-group">
                         <div class="input-group">

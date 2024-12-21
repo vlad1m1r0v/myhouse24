@@ -36,6 +36,7 @@ urlpatterns = [
     path('', include('src.flats.urls')),
     path('', include('src.personal_accounts.urls')),
     path('', include('src.meter_indicators.urls')),
+    path('', include('src.master_call_requests.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
