@@ -18,7 +18,7 @@ from src.authentication.models import CustomUser
 from src.core.utils import is_ajax
 from src.flats.models import Flat
 from src.master_call_requests.forms import AdminMasterCallRequestForm
-from src.master_call_requests.models import MasterCallRequest
+from src.master_call_requests.models import MasterCallRequest, StatusChoices
 
 
 # Create your views here.
@@ -76,8 +76,7 @@ class AdminMasterCallRequestCreateView(
     MasterCallRequestPermissionRequiredMixin,
     CreateView):
     success_message = 'Нову заявка виклику майстра успішно створено'
-    # TODO: change to master call requests list page
-    success_url = reverse_lazy('adminlte_master_call_request_create')
+    success_url = reverse_lazy('adminlte_master_call_requests_list')
     form_class = AdminMasterCallRequestForm
     template_name = 'create_master_call_request.html'
 
@@ -87,8 +86,7 @@ class AdminMasterCallRequestUpdateView(
     MasterCallRequestPermissionRequiredMixin,
     UpdateView):
     success_message = 'Заявку виклику майстра успішно оновлено'
-    # TODO: change to master call requests list page
-    success_url = reverse_lazy('adminlte_master_call_request_create')
+    success_url = reverse_lazy('adminlte_master_call_requests_list')
     model = MasterCallRequest
     form_class = AdminMasterCallRequestForm
     template_name = 'update_master_call_request.html'
@@ -151,7 +149,7 @@ class AdminMasterCallRequestDatatableView(AjaxDatatableView):
             'orderable': False,
         },
         {
-            'name': 'flat_owner',
+            'name': 'flat_owner__pk',
             'title': 'Власник',
             'searchable': True,
             'orderable': False,
@@ -172,6 +170,13 @@ class AdminMasterCallRequestDatatableView(AjaxDatatableView):
             'orderable': False,
             'choices': [(master.id, f'{master.first_name} {master.last_name} - {master.groups.first().name}') for master
                         in CustomUser.objects.filter(groups__name__in=['Сантехнік', 'Електрик'])]
+        },
+        {
+            'name': 'status',
+            'title': 'Статус',
+            'visible': True,
+            'choices': StatusChoices.choices,
+            'orderable': False,
         },
         {
             'name': 'button_group',
@@ -227,6 +232,8 @@ class AdminMasterCallRequestDatatableView(AjaxDatatableView):
 
         row['flat__no'] = f"кв.{obj.flat.no}, {obj.flat.house.name}"
 
+        row['flat_owner__pk'] = f'{obj.flat_owner.last_name} {obj.flat_owner.first_name} {obj.flat_owner.middle_name}'
+
         row['flat_owner__phone_number'] = obj.flat_owner.phone_number
 
         if not obj.master:
@@ -245,6 +252,13 @@ class AdminMasterCallRequestDatatableView(AjaxDatatableView):
                 </button>
             </div>
             """
+
+        if obj.status == 'new':
+            row['status'] = f"<small class='label label-primary'>{obj.get_status_display()}</small>"
+        if obj.status == 'in_progress':
+            row['status'] = f"<small class='label label-warning'>{obj.get_status_display()}</small>"
+        if obj.status == 'done':
+            row['status'] = f"<small class='label label-success'>{obj.get_status_display()}</small>"
 
 
 class AdminMasterCallRequestDeleteView(MasterCallRequestPermissionRequiredMixin, View):
