@@ -8,12 +8,13 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
 from src.authentication.models import CustomUser
 from src.core.utils import is_ajax
 from src.flats.models import Flat
 from src.master_call_requests.forms import AdminMasterCallRequestForm
+from src.master_call_requests.models import MasterCallRequest
 
 
 # Create your views here.
@@ -75,3 +76,15 @@ class AdminMasterCallRequestCreateView(
     success_url = reverse_lazy('adminlte_master_call_request_create')
     form_class = AdminMasterCallRequestForm
     template_name = 'create_master_call_request.html'
+
+
+class AdminMasterCallRequestUpdateView(
+    SuccessMessageMixin,
+    MasterCallRequestPermissionRequiredMixin,
+    UpdateView):
+    success_message = 'Заявку виклику майстра успішно оновлено'
+    # TODO: change to master call requests list page
+    success_url = reverse_lazy('adminlte_master_call_request_create')
+    model = MasterCallRequest
+    form_class = AdminMasterCallRequestForm
+    template_name = 'update_master_call_request.html'
