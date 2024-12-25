@@ -200,8 +200,10 @@
                         <span>Домівки</span></a></li>
                 {% endif %}
                 <li><a><i class="fa fa-envelope-o"></i> <span>Повідомлення</span></a></li>
-                <li><a><i class="fa fa-wrench"></i>
-                    <span>Заявки виклику майстра</span></a></li>
+                {% if perms.authentication.service_call_requests %}
+                    <li><a href="{% url 'adminlte_master_call_requests_list' %}"><i class="fa fa-wrench"></i>
+                        <span>Заявки виклику майстра</span></a></li>
+                {% endif %}
                 {% if perms.authentication.meter_indicators %}
                     <li><a href="{% url 'adminlte_meter_indicators_list' %}"><i class="fa fa-dashboard"></i>
                         <span>Показники лічильників</span></a></li>

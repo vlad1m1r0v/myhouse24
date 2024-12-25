@@ -1,14 +1,18 @@
+from ajax_datatable import AjaxDatatableView
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import Group
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models import Value, F, CharField
+from django.db.models import Value, F, CharField, Q, ExpressionWrapper, DateTimeField
 from django.db.models.functions import Concat
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, UpdateView, DetailView
+from django.views.generic import CreateView, UpdateView, DetailView, TemplateView
+
+from datetime import datetime
 
 from src.authentication.models import CustomUser
 from src.core.utils import is_ajax
@@ -93,7 +97,157 @@ class AdminMasterCallRequestUpdateView(
 class AdminMasterCallRequestDetailView(
     MasterCallRequestPermissionRequiredMixin,
     DetailView
-    ):
+):
     model = MasterCallRequest
     template_name = 'detail_master_call_request.html'
 
+
+class AdminMasterCallRequestListView(
+    MasterCallRequestPermissionRequiredMixin,
+    TemplateView
+):
+    template_name = 'list_master_call_requests.html'
+
+
+class AdminMasterCallRequestDatatableView(AjaxDatatableView):
+    model = MasterCallRequest
+    title = 'Заявки виклику майстра'
+    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
+    search_values_separator = '+'
+
+    initial_order = [[0, 'asc']]
+
+    column_defs = [
+        {
+            'name': 'pk',
+            'title': 'Номер заявки',
+        },
+        {
+            'name': 'datetime',
+            'title': 'Зручний час',
+            'placeholder': True,
+            'searchable': True,
+            'orderable': True,
+            'className': 'daterange-filter',
+        },
+        {
+            'name': 'master_type',
+            'title': 'Тип майстера',
+            'className': 'master-type-select',
+            'placeholder': True,
+            'choices': [(group.id, group.name) for group in Group.objects.filter(name__in=['Сантехнік', 'Електрик'])]
+        },
+        {
+            'name': 'description',
+            'title': 'Опис',
+            'searchable': True,
+            'orderable': False,
+        },
+        {
+            'name': 'flat__no',
+            'title': 'Квартира',
+            'placeholder': True,
+            'searchable': True,
+            'orderable': False,
+        },
+        {
+            'name': 'flat_owner',
+            'title': 'Власник',
+            'searchable': True,
+            'orderable': False,
+            'choices': [(user.id, f'{user.last_name} {user.first_name} {user.middle_name}') for user in
+                        CustomUser.objects.filter(is_staff=False)]
+        },
+        {
+            'name': 'flat_owner__phone_number',
+            'title': 'Телефон',
+            'searchable': True,
+            'orderable': False,
+        },
+        {
+            'name': 'master__pk',
+            'title': 'Майстер',
+            'className': 'master-select',
+            'searchable': True,
+            'orderable': False,
+            'choices': [(master.id, f'{master.first_name} {master.last_name} - {master.groups.first().name}') for master
+                        in CustomUser.objects.filter(groups__name__in=['Сантехнік', 'Електрик'])]
+        },
+        {
+            'name': 'button_group',
+            'title': '',
+            'placeholder': True, 'visible': True,
+            'searchable': False,
+            'orderable': False,
+        },
+    ]
+
+    def get_initial_queryset(self, request=None):
+        return self.model.objects.annotate(
+            datetime=ExpressionWrapper(
+                F('date') + F('time'),
+                output_field=DateTimeField()
+            )
+        )
+
+    def filter_queryset(self, params, qs):
+        for column_link in params['column_links']:
+            if column_link.searchable and column_link.search_value:
+                if column_link.name == 'datetime':
+                    date_range = column_link.search_value
+
+                    date_start = datetime.strptime(date_range.split(' - ')[0], '%d.%m.%Y')
+                    date_end = datetime.strptime(date_range.split(' - ')[1], '%d.%m.%Y')
+
+                    qs = qs.filter(Q(datetime__gte=date_start), Q(datetime__lte=date_end))
+                elif column_link.name == 'master_type':
+                    qs = qs.filter(master_type__id=column_link.search_value)
+                else:
+                    qs = self.filter_queryset_by_column(column_link.name, column_link.search_value, qs)
+        return qs
+
+    def sort_queryset(self, params, qs):
+        for order in params['orders']:
+            field = order.column_link.get_field_search_path()
+
+            if field == 'datetime':
+                if order.ascending:
+                    return qs.order_by('datetime')
+                return qs.order_by('-datetime')
+
+            break
+
+        return super().sort_queryset(params, qs)
+
+    def customize_row(self, row, obj):
+        row['datetime'] = obj.datetime.strftime("%d.%m.%Y - %H:%M")
+
+        if not obj.master_type:
+            row['master_type'] = 'Будь-який спеціаліст'
+
+        row['flat__no'] = f"кв.{obj.flat.no}, {obj.flat.house.name}"
+
+        row['flat_owner__phone_number'] = obj.flat_owner.phone_number
+
+        if not obj.master:
+            row['master__pk'] = 'Не задано'
+
+        row['master__pk'] = f'{obj.master.first_name} {obj.master.last_name} - {obj.master.groups.first().name}'
+
+        row['button_group'] = \
+            f"""
+            <div class="btn-group" style="display:flex; flex-wrap:nowrap;">
+                <a class="btn btn-default btn-sm" href={reverse('adminlte_master_call_request_update', kwargs={'pk': obj.id})} title="Редагувати">
+                    <i class="fa fa-pencil"></i>
+                </a> 
+                <button class="btn btn-default btn-sm delete-button" data-href={reverse('adminlte_master_call_request_delete', kwargs={'pk': obj.id})} title="Видалити">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            """
+
+
+class AdminMasterCallRequestDeleteView(MasterCallRequestPermissionRequiredMixin, View):
+    def delete(self, request, *args, **kwargs):
+        MasterCallRequest.objects.get(pk=self.kwargs['pk']).delete()
+        return JsonResponse(status=200, data={'success': True})

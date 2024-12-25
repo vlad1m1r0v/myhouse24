@@ -1,0 +1,221 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Заявки виклику майстра
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
+    <link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet"/>
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Daterange picker-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+
+        th:nth-child(2) {
+            min-width: 120px;
+            width: 120px;
+        }
+
+        th:nth-child(4) {
+            min-width: 150px;
+            width: 150px;
+        }
+
+        th:nth-child(5) {
+            min-width: 150px;
+            width: 150px;
+        }
+
+        th:nth-child(6) {
+            min-width: 150px;
+            width: 150px;
+        }
+
+        th:nth-child(7) {
+            min-width: 150px;
+            width: 150px;
+        }
+
+        th:nth-child(8) {
+            min-width: 200px;
+            width: 200px;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Заявки виклику майстра
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active"><a>Заявки виклику майстра</a></li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right margin-bottom">
+                <a class="btn btn-success"
+                   href={% url 'adminlte_master_call_request_create' %}>Додати
+                    заявку</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <table id="datatable"
+                       class="table table-striped table-bordered table-hover"
+                       style="width:100%">
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatable-->
+    <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ajax_datatable/js/utils.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/initialize_datatable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/restructure_datatable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/adjust_rows_datatable.js' %}"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Daterange Picker-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const $datatable = $('#datatable');
+
+            AjaxDatatableViewUtils.initialize_table(
+                $datatable,
+                "{% url 'adminlte_master_call_requests_datatable' %}",
+                {
+                    scrollX: false,
+                }
+            );
+
+            $datatable.on('initComplete', function () {
+                restructure_datatable();
+
+                $('#datatable_length, #datatable_filter').hide();
+
+                // daterangepicker filter setup
+                const $daterangefilter = $('th.daterange-filter > input');
+
+                $daterangefilter.daterangepicker({
+                    autoUpdateInput: false,
+                    opens: 'right',
+                    locale: {
+                        format: 'DD.MM.YYYY',
+                        "applyLabel": "Ок",
+                        "cancelLabel": "Скасувати",
+                        "fromLabel": "Від",
+                        "toLabel": "До",
+                        "customRangeLabel": "Власний",
+                        "daysOfWeek": [
+                            "Нд",
+                            "Пн",
+                            "Вт",
+                            "Ср",
+                            "Чт",
+                            "Пт",
+                            "Сб"
+                        ],
+                        "monthNames": [
+                            "Січень",
+                            "Лютий",
+                            "Березень",
+                            "Квітень",
+                            "Травень",
+                            "Червень",
+                            "Липень",
+                            "Серпень",
+                            "Вересень",
+                            "Жовтень",
+                            "Листопад",
+                            "Грудень"
+                        ],
+                        firstDay: 1
+                    }
+                });
+
+                $daterangefilter.on('apply.daterangepicker', function (ev, picker) {
+                    $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY')).trigger('change');
+                });
+
+                $daterangefilter.on('cancel.daterangepicker', function (ev, picker) {
+                    $(this).val('').trigger('change');
+                });
+
+                const $masterTypeSelect = $('th.master-type-select > select');
+
+                $masterTypeSelect.select2({
+                    width: '100%',
+                    allowClear: true,
+                    placeholder: 'Будь-який спеціаліст',
+                    minimumResultsForSearch: -1,
+                })
+
+                const $masterSelect = $('th.master-select > select');
+
+                $masterSelect.select2({
+                    width: '100%',
+                    allowClear: true,
+                    placeholder: 'Не задано',
+                    minimumResultsForSearch: -1,
+                })
+            });
+
+            $datatable.on('drawCallback', function () {
+                adjust_rows();
+            })
+
+            $(document).on('click', '.delete-button', async function () {
+                const $button = $(this);
+
+                const result = await Swal.fire({
+                    title: "Ви дійсно хочете видалити цей об'єкт?",
+                    icon: "question",
+                    showDenyButton: true,
+                    confirmButtonText: "Видалити",
+                    denyButtonText: "Відмінити"
+                });
+
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: $button.attr('data-href'),
+                        method: "DELETE", headers: {
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                        success: function () {
+                            Swal.fire("Об'єкт успішно видалено", "", "success");
+                            $button.closest('tr').remove();
+                        }
+                    });
+                }
+            });
+
+            $(document).on('click', 'tbody tr td:not(:last-child)', function () {
+                window.location.href = $(this).closest('tr').find('td').first().text();
+            })
+        })
+    </script>
+{% endblock js %}
