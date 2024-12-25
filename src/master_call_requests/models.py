@@ -20,6 +20,6 @@ class MasterCallRequest(models.Model):
         choices=StatusChoices.choices,
         default=StatusChoices.NEW,
     )
-    master = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='assigned_requests')
+    master = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE, related_name='assigned_requests')
     description = models.TextField()
     comment = models.TextField()

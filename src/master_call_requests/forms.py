@@ -57,6 +57,7 @@ class AdminMasterCallRequestForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control select'}),
         label='Майстер',
         empty_label='Виберіть...',
+        required=False
     )
 
     comment = forms.CharField(

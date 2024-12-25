@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, DetailView
 
 from src.authentication.models import CustomUser
 from src.core.utils import is_ajax
@@ -88,3 +88,12 @@ class AdminMasterCallRequestUpdateView(
     model = MasterCallRequest
     form_class = AdminMasterCallRequestForm
     template_name = 'update_master_call_request.html'
+
+
+class AdminMasterCallRequestDetailView(
+    MasterCallRequestPermissionRequiredMixin,
+    DetailView
+    ):
+    model = MasterCallRequest
+    template_name = 'detail_master_call_request.html'
+
