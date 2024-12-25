@@ -99,6 +99,17 @@ class AdminMasterCallRequestDetailView(
     model = MasterCallRequest
     template_name = 'detail_master_call_request.html'
 
+    def get_queryset(self):
+        return super().get_queryset().select_related(
+            'flat',
+            'flat__house',
+            'flat_owner',
+            'master_type',
+            'master',
+        ).prefetch_related(
+            'master__groups'
+        )
+
 
 class AdminMasterCallRequestListView(
     MasterCallRequestPermissionRequiredMixin,
