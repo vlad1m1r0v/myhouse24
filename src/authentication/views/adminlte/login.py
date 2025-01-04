@@ -40,11 +40,11 @@ class AuthenticationAdminLoginView(FormView):
             'authentication.service_call_requests': reverse('adminlte_master_call_requests_list'),
             'authentication.meter_indicators': reverse('adminlte_meter_indicators_list'),
             'authentication.website_management': reverse('adminlte_website_management_home'),
-            'authentication.services': reverse('adminlte_services'),
-            'authentication.roles': reverse('adminlte_permissions'),
-            'authentication.users': reverse('adminlte_users_list'),
-            'authentication.payment_information': reverse('adminlte_payment_credential'),
-            'authentication.payment_items': reverse('adminlte_payment_items_list'),
+            'authentication.services': reverse('adminlte:system-settings:services:index'),
+            'authentication.roles': reverse('adminlte:system-settings:permissions:index'),
+            'authentication.users': reverse('adminlte:system-settings:users:list'),
+            'authentication.payment_information': reverse('adminlte:system-settings:payment-credential:index'),
+            'authentication.payment_items': reverse('adminlte:system-settings:payment-items:list'),
         }
 
 
