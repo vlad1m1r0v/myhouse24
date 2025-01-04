@@ -1,9 +1,9 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse, reverse_lazy
-from django.views.generic import FormView, View
+from django.contrib.auth import authenticate, login
+from django.urls import reverse
+from django.views.generic import FormView
 from django.shortcuts import redirect
-from .forms import AdminLoginForm
+from src.authentication.forms import AdminLoginForm
 
 
 class AuthenticationAdminLoginView(FormView):
@@ -62,10 +62,3 @@ class AuthenticationAdminLoginView(FormView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
-
-
-class AuthenticationAdminLogoutView(View):
-    def post(self, request, *args, **kwargs):
-        logout(request)
-        messages.success(request, f'Користувач  успішно вийшов із системи')
-        return redirect(reverse_lazy('authentication_adminlte_login'))

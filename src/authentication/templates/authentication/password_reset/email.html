@@ -71,7 +71,7 @@
             сайті MyHouse24.</p>
         <p>Будь ласка, перейдіть за наступним посиланням і виберіть новий пароль:</p>
         <p style="text-align: center;">
-            <a href="{{ protocol }}://{{ domain }}{% url 'authentication_password_reset_confirm' uidb64=uid token=token %}"
+            <a href="{{ protocol }}://{{ domain }}{% url 'authentication:password-reset:confirm' uidb64=uid token=token %}"
                class="button">Скинути пароль</a>
         </p>
         <p>Ваш логін, якщо ви його забули: <strong>{{ user.email }}</strong></p>

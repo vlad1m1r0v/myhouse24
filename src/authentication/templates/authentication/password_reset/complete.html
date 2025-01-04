@@ -1,4 +1,4 @@
-{% extends 'authentication/password_reset/password_reset_base.html' %}
+{% extends 'authentication/password_reset/base.html' %}
 {% block css %}
     <style>
         #reset-password-message {
@@ -10,7 +10,7 @@
     <p id="reset-password-message">
         Ваш пароль встановлено. Ви можете увійти в систему.
     </p>
-    <a href="{% url 'authentication_adminlte_login' %}" class="btn btn-primary btn-block btn-flat">Ввійти в систему
+    <a href="{% url 'authentication:adminlte:login' %}" class="btn btn-primary btn-block btn-flat">Ввійти в систему
     </a>
 {% endblock form %}
 {% block js %}

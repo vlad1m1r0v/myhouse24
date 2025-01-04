@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .managers import CustomUserManager
-from ..core.utils import get_upload_path
+from src.authentication.managers import CustomUserManager
+from src.core.utils import get_upload_path
 
 STATUS_CHOICES = [
     ("new", "новий"),

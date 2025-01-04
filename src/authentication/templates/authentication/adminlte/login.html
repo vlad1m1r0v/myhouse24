@@ -1,4 +1,4 @@
-{% extends 'authentication/base_authentication.html' %}
+{% extends 'authentication/base.html' %}
 {% load static %}
 {% block title %}
     Вхід в панель управління
@@ -29,7 +29,7 @@
         </div>
     </form>
     <div class="text-center" id="forgot-password">
-        <a href="{% url 'authentication_password_reset' %}">Забули пароль?</a>
+        <a href="{% url 'authentication:password-reset:index' %}">Забули пароль?</a>
     </div>
 {% endblock form %}
 {% block js %}

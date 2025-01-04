@@ -168,7 +168,7 @@
                                     <a href="#" class="btn btn-default btn-flat">Профіль</a>
                                 </div>
                                 <div class="pull-right">
-                                    <form method="post" action="{% url 'authentication_adminlte_logout' %}">
+                                    <form method="post" action="{% url 'authentication:adminlte:logout' %}">
                                         {% csrf_token %}
                                         <button class="btn btn-default btn-flat">Вийти</button>
                                     </form>
