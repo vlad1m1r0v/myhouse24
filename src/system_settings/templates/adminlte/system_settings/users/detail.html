@@ -1,0 +1,68 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Користувач
+{% endblock title %}
+{% block css %}
+    <style>
+    </style>
+{% endblock css %}
+{% block header %}
+    Користувач
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:system-settings:users:list' %}">Користувачі</a></li>
+    <li class="active">Користувач</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title"></h3>
+            <div class="box-tools">
+                <a href="{% url 'adminlte:system-settings:users:update' pk=user.id %}" class="btn btn-primary btn-sm">
+                    <span class="hidden-xs">Редагувати користувача</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-lg-4">
+                    <table class="table table-bordered table-striped table-view">
+                        <tbody>
+                        <tr>
+                            <td>Користувач</td>
+                            <td>{{ user.first_name|default_if_none:"&nbsp;" }} {{ user.last_name|default_if_none:"&nbsp;" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Роль</td>
+                            <td>{{ role|default_if_none:"&nbsp;" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Номер телефону</td>
+                            <td>{{ user.phone_number|default_if_none:"&nbsp;" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Електронна пошта</td>
+                            <td>{{ user.email|default_if_none:"&nbsp;" }}</td>
+                        </tr>
+                        <tr>
+                            <td>Статус</td>
+                            <td>
+                                <small class="label {% if user.status == 'new' %}label-warning{% elif user.status == 'disabled' %}label-danger{% else %}label-success{% endif %}">
+                                    {{ user.get_status_display }}
+                                </small>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+    </script>
+{% endblock js %}

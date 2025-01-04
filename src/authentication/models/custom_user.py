@@ -2,7 +2,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from src.authentication.managers import CustomUserManager
-from src.core.utils import get_upload_path
 
 STATUS_CHOICES = [
     ("new", "новий"),
@@ -10,13 +9,17 @@ STATUS_CHOICES = [
     ("disabled", "деактивований"),
 ]
 
+def upload_to(instance, filename):
+    from src.core.utils import get_upload_path
+    return get_upload_path(instance, filename)
+
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     username = None
 
     ID = models.PositiveIntegerField(unique=True, null=True, blank=True)
-    avatar = models.ImageField(upload_to=get_upload_path, null=True, blank=True)
+    avatar = models.ImageField(upload_to=upload_to, null=True, blank=True)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     middle_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)

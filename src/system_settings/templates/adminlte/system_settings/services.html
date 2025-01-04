@@ -1,0 +1,170 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Редагування послуг
+{% endblock title %}
+{% block css %}
+{% endblock css %}
+{% block header %}
+    Редагування послуг
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Редагування послуг</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-xs-12 col-lg-7">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active">
+                                    <a href="#services" data-toggle="tab">Послуги</a>
+                                </li>
+                                <li>
+                                    <a href="#units" data-toggle="tab">Одиниці вимірювання</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div id="services" class="tab-pane active">
+                                    {{ service_formset.management_form }}
+                                    {% for form in service_formset %}
+                                        {% for hidden in form.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-7">
+                                                <div class="form-group">
+                                                    <label>{{ form.name.label }}</label>
+                                                    {{ form.name }}
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-5">
+                                                <div class="form-group">
+                                                    <label>{{ form.unit.label }}</label>
+                                                    <div class="input-group">
+                                                        {{ form.unit }}
+                                                        {% if not form.instance.pk or form.instance.can_delete %}
+                                                            <div style="display:none">
+                                                                {{ form.DELETE }}
+                                                            </div>
+                                                        {% endif %}
+                                                        <span class="input-group-btn">
+                                                                <button type="button"
+                                                                        class="btn btn-default delete-service-button {% if form.instance.pk and not form.instance.can_delete %}disabled{% endif %}">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                {{ form.show_in_counters }}
+                                                <label>{{ form.show_in_counters.label }}</label>
+                                                <div style="margin-bottom: 16px;"></div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                    <button id="add-service-button"
+                                            type="button"
+                                            class="btn btn-default btn-hover-change">
+                                        Додати
+                                    </button>
+                                </div>
+                                <div id="units" class="tab-pane">
+                                    {{ unit_formset.management_form }}
+                                    {% for form in unit_formset %}
+                                        {% for hidden in form.hidden_fields %}
+                                            {{ hidden }}
+                                        {% endfor %}
+                                        <div class="row">
+                                            <div class="col-xs-12">
+                                                <div class="form-group">
+                                                    <label>{{ form.unit.label }}</label>
+                                                    <div class="input-group">
+                                                        {{ form.unit }}
+                                                        {% if not form.instance.pk or form.instance.can_delete %}
+                                                            <div style="display:none">
+                                                                {{ form.DELETE }}
+                                                            </div>
+                                                        {% endif %}
+                                                        <span class="input-group-btn">
+                                                            <button type="button"
+                                                                    class="btn btn-default delete-unit-button {% if form.instance.pk and not form.instance.can_delete %}disabled{% endif %}">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <button id="add-unit-button"
+                                            type="button"
+                                            class="btn btn-default btn-hover-change">
+                                        Додати
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <div class="form-group">
+                            <a href="{% url 'adminlte:system-settings:services:index' %}" class="btn btn-default">Відмінити</a>
+                            <button type="submit" class="btn btn-success">Редагувати</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+        const $unit_extra_form = $('#units > .row:last-of-type');
+        const $unit_form_clone = $unit_extra_form.clone(true);
+        $unit_extra_form.hide();
+
+        const $service_extra_form = $('#services > .row:last-of-type');
+        const $service_form_clone = $service_extra_form.clone(true);
+        $service_extra_form.hide();
+
+        $('#add-unit-button').on('click', function () {
+            const $total_forms = $('#id_unit-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $unit_form_clone.prop('outerHTML');
+            const regex = /unit-(\d+)-/g;
+            const form = form_markup.replace(regex, `unit-${count}-`);
+
+            $('#units #add-unit-button').before(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $('#add-service-button').on('click', function () {
+            const $total_forms = $('#id_service-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $service_form_clone.prop('outerHTML');
+            const regex = /service-(\d+)-/g;
+            const form = form_markup.replace(regex, `service-${count}-`);
+
+            $('#services #add-service-button').before(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $(document).on('click', '.delete-unit-button:not(.disabled), .delete-service-button:not(.disabled)', function () {
+            const $row = $(this).closest('.row');
+            $row.find('input[type="checkbox"]').attr('checked', true);
+            $row.hide();
+        });
+    </script>
+{% endblock js %}
