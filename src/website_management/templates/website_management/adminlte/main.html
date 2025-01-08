@@ -1,0 +1,182 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Редагування  сторінки
+{% endblock title %}
+{% block css %}
+    <style>
+        .slide-image {
+            width: 100%;
+            aspect-ratio: 12 / 5;
+        }
+
+        .block-image {
+            width: 100%;
+            aspect-ratio: 10 / 6;
+        }
+
+        img + label {
+            margin-top: 15px;
+        }
+
+        #slides input[type=file] {
+            margin-bottom: 30px;
+        }
+
+        #blocks input[type=file] {
+            margin-bottom: 15px;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Редагування  сторінки
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Редагування сторінки</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Редагування сторінки "Головна"</h3>
+            <div class="box-tools">
+                <button class="btn btn-default btn-sm" id="update-robots-button">
+                    <span class="hidden-xs">Оновити robots і sitemap</span>
+                    <i class="fa fa-refresh visible-xs" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <form id="home-page-form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h3 class="page-header">Слайдер</h3>
+                <div class="row" id="slides">
+                    {{ slides.management_form }}
+                    {% for slide in slides %}
+                        {% if forloop.counter <= 3 %}
+                            {{ slide.id }}
+                            <div class="col-md-4">
+                                <h4>Слайд {{ forloop.counter }}</h4>
+                                {% if slide.instance.image %}
+                                    <img class="slide-image" src="{{ slide.instance.image.url }}" alt="Slide">
+                                {% else %}
+                                    <img class="slide-image" src="https://placehold.co/1920x800" alt="Slide">
+                                {% endif %}
+                                <label>
+                                    {{ slide.image.label }}
+                                </label>
+                                {{ slide.image }}
+                            </div>
+                        {% else %}
+                            <div style="display: none;">
+                                {{ slide.as_p }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        {{ main_page.id }}
+                        <h3 class="page-header">Стисла інформація</h3>
+                        <div class="form-group">
+                            <label>{{ main_page.title.label }}</label>
+                            {{ main_page.title }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ main_page.description.label }}</label>
+                            {{ main_page.description }}
+                        </div>
+                        <div class="form-group">
+                            {{ main_page.show_app_links }}
+                            <label>{{ main_page.show_app_links.label }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="blocks">
+                    {{ blocks.management_form }}
+                    <div class="col-sm-12">
+                        <h3 class="page-header">Поруч з нами</h3>
+                    </div>
+                    {% for block in blocks %}
+                        {% if forloop.counter <= 6 %}
+                            {{ block.id }}
+                            <div class="col-md-4">
+                                <h4>Блок {{ forloop.counter }}</h4>
+                                {% if block.instance.image %}
+                                    <img class="block-image" src="{{ block.instance.image.url }}" alt="Block">
+                                {% else %}
+                                    <img class="block-image" src="https://placehold.co/1000x600" alt="Block">
+                                {% endif %}
+                                <label>
+                                    {{ block.image.label }}
+                                </label>
+                                {{ block.image }}
+                                <div class="form-group">
+                                    <label>{{ block.title.label }}</label>
+                                    {{ block.title }}
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ block.description.label }}</label>
+                                    {{ block.description }}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div style="display: none;">
+                                {{ block.as_p }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="page-header">Налаштування SEO</h3>
+                        <div class="form-group">
+                            <label>{{ main_page.seo_title.label }}</label>
+                            {{ main_page.seo_title }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ main_page.seo_keywords.label }}</label>
+                            {{ main_page.seo_keywords }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ main_page.seo_description.label }}</label>
+                            {{ main_page.seo_description }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <div class="form-group">
+                            <a href="{% url 'adminlte:website-management:home' %}" class="btn btn-default">Відмінити</a>
+                            <button id="submit-button" type="submit" class="btn btn-success">Зберегти</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+        $(document).on('change', 'input:file', function (e) {
+            const image = e.target.files[0];
+            const src = URL.createObjectURL(image);
+            $(this).parent().find('img').attr('src', src);
+        });
+
+        $('.wysihtml5').wysihtml5({
+            locale: "ua-UA",
+            toolbar: {
+                "font-styles": true,
+                "emphasis": true,
+                "lists": true,
+                "html": false,
+                "link": false,
+                "image": false,
+                "color": false,
+                "blockquote": false,
+                "fa": true,
+            }
+        });
+    </script>
+{% endblock js %}

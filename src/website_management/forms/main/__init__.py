@@ -1,0 +1,3 @@
+from .main_page import AdminMainPageForm
+from .slide_formset import AdminMainPageSlideFormSet
+from .block_formset import AdminMainPageBlockFormSet

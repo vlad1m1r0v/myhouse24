@@ -1,0 +1,366 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Редагування  сторінки
+{% endblock title %}
+{% block css %}
+    <link rel="stylesheet" href={% static 'css/scrolling_wrapper.css' %}>
+    <style>
+        img:not(.fa) + label {
+            margin-top: 15px;
+        }
+
+        .gallery-item, #director {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #director-image {
+            height: 179px;
+            aspect-ratio: 25 / 31;
+        }
+
+        .gallery-item img {
+            margin-bottom: 15px;
+        }
+
+        .gallery-image {
+            height: 275px;
+            aspect-ratio: 1;
+        }
+
+        .image-actions {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        #add-gallery-image-button,
+        #add-additional-gallery-image-button,
+        #add-document-button {
+            margin-bottom: 15px;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Редагування  сторінки
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Редагування сторінки</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Редагування сторінки "Про нас"</h3>
+        </div>
+        <div class="box-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h3 class="page-header">Інформація</h3>
+                <!--Information-->
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="form-group">
+                            <label>{{ about_us.title.label }}</label>
+                            {{ about_us.title }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ about_us.description.label }}</label>
+                            {{ about_us.description }}
+                        </div>
+                    </div>
+                    <div class="col-lg-4" id="director">
+                        <h4>Фото директора</h4>
+                        {% if about_us.instance.director_photo %}
+                            <img id="director-image" src="{{ about_us.instance.director_photo.url }}" alt="Director">
+                        {% else %}
+                            <img id="director-image" src="https://placehold.co/250x310" alt="Director">
+                        {% endif %}
+                        <label>
+                            {{ about_us.director_photo.label }}
+                        </label>
+                        {{ about_us.director_photo }}
+                    </div>
+                </div>
+                <!--Gallery-->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h3 class="page-header">Фотогалерея</h3>
+                        <div class="scrolling-wrapper" id="gallery">
+                            {{ gallery.management_form }}
+                            {% for image in gallery %}
+                                {% for hidden in image.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                                <div class="gallery-item-container">
+                                    <div class="gallery-item">
+                                        {% if image.instance.image %}
+                                            <img class="gallery-image img-thumbnail"
+                                                 src="{{ image.instance.image.url }}"
+                                                 alt="Gallery Image">
+                                        {% else %}
+                                            <img class="gallery-image img-thumbnail"
+                                                 src="https://placehold.co/1200x1200"
+                                                 alt="Gallery Image">
+                                        {% endif %}
+                                        <div class="image-actions">
+                                            {{ image.image }}
+                                            <div style="display:none">
+                                                {{ image.DELETE }}
+                                            </div>
+                                            <button type="button" class="delete-gallery-button btn btn-default">
+                                                <i class="fa fa-trash text-red" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" id="add-gallery-image-button" class="btn btn-success">Додати
+                                зображення
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--Information-->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h3 class="page-header">Додаткова інформація</h3>
+                        <div class="form-group">
+                            <label>{{ about_us.additional_title.label }}</label>
+                            {{ about_us.additional_title }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ about_us.additional_description.label }}</label>
+                            {{ about_us.additional_description }}
+                        </div>
+                    </div>
+                </div>
+                <!--Additional Gallery-->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h3 class="page-header">Додаткова фотогалерея</h3>
+                        <div class="scrolling-wrapper" id="additional-gallery">
+                            {{ additional_gallery.management_form }}
+                            {% for image in additional_gallery %}
+                                {% for hidden in image.hidden_fields %}
+                                    {{ hidden }}
+                                {% endfor %}
+                                <div class="gallery-item-container">
+                                    <div class="gallery-item">
+                                        {% if image.instance.image %}
+                                            <img class="gallery-image img-thumbnail"
+                                                 src="{{ image.instance.image.url }}"
+                                                 alt="Gallery Image">
+                                        {% else %}
+                                            <img class="gallery-image img-thumbnail"
+                                                 src="https://placehold.co/1200x1200"
+                                                 alt="Gallery Image">
+                                        {% endif %}
+                                        <div class="image-actions">
+                                            {{ image.image }}
+                                            <div style="display:none">
+                                                {{ image.DELETE }}
+                                            </div>
+                                            <button type="button"
+                                                    class="delete-additional-gallery-button btn btn-default">
+                                                <i class="fa fa-trash text-red" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" id="add-additional-gallery-image-button" class="btn btn-success">
+                                Додати зображення
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--Documents-->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h3 class="page-header">Документи</h3>
+                    </div>
+                    <div class="col-xs-12 col-md-6" id="documents">
+                        {{ documents.management_form }}
+                        {% for document in documents %}
+                            {% for hidden in document.hidden_fields %}
+                                {{ hidden }}
+                            {% endfor %}
+                            <div class="document">
+                                <div class="form-group">
+                                    <div style="display:none">
+                                        {{ document.DELETE }}
+                                    </div>
+                                    <button type="button"
+                                            class="delete-document-button pull-right text-red form-row-remove-btn"><i
+                                            class="fa fa-trash"></i></button>
+                                    {% if document.instance.extension == 'pdf' %}
+                                        <i class="fa fa-file-pdf-o fa-3x pull-left" style="width: 32px;"
+                                           aria-hidden="true"></i>
+                                    {% elif document.instance.extension == 'jpg' %}
+                                        <img class="fa fa-3x pull-left"
+                                             style="width: 32px; height: 42px;"
+                                             src="{{ document.instance.file.url }}"
+                                             alt="Document">
+                                    {% else %}
+                                        <i class="fa fa-file-o fa-3x pull-left" style="width: 32px;"
+                                           aria-hidden="true"></i>
+                                    {% endif %}
+                                    <label>{{ document.file.label }}</label>
+                                    {{ document.file }}
+                                </div>
+                                <div class="form-group">
+                                    <label>{{ document.title.label }}</label>
+                                    {{ document.title }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="btn-group">
+                            <button type="button" id="add-document-button" class="btn btn-success">Додати документ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--SEO Block-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="page-header">Налаштування SEO</h3>
+                        <div class="form-group">
+                            <label>{{ about_us.seo_title.label }}</label>
+                            {{ about_us.seo_title }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ about_us.seo_keywords.label }}</label>
+                            {{ about_us.seo_keywords }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ about_us.seo_description.label }}</label>
+                            {{ about_us.seo_description }}
+                        </div>
+                    </div>
+                </div>
+                <!--Save / Cancel Buttons-->
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <div class="form-group">
+                            <a href="{% url 'adminlte:website-management:about-us' %}"
+                               class="btn btn-default">Відмінити</a>
+                            <button id="submit-button" type="submit" class="btn btn-success">Зберегти</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+        $(document).on('change', 'input:file', function (e) {
+            const image = e.target.files[0];
+            const src = URL.createObjectURL(image);
+
+            const $parent = $(this).parent();
+
+            if ($parent.find('img').length) {
+                $parent.find('img').attr('src', src);
+            } else {
+                $parent.parent().find('img').attr('src', src);
+            }
+
+        });
+
+        $('.wysihtml5').wysihtml5({
+            locale: "ua-UA",
+            toolbar: {
+                "font-styles": true,
+                "emphasis": true,
+                "lists": true,
+                "html": false,
+                "link": false,
+                "image": false,
+                "color": false,
+                "blockquote": false,
+                "fa": true,
+            }
+        });
+
+        //gallery formset
+        const $gallery_image_extra_form = $('#gallery .gallery-item-container:last-child');
+        const $gallery_image_form_clone = $gallery_image_extra_form.clone(true);
+        $gallery_image_extra_form.hide();
+
+        $('#add-gallery-image-button').on('click', function () {
+            const $total_forms = $('#id_gallery-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $gallery_image_form_clone.prop('outerHTML');
+            const regex = /gallery-(\d+)-/g;
+            const form = form_markup.replace(regex, `gallery-${count}-`);
+
+            $('#gallery').append(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $(document).on('click', '.delete-gallery-button', function () {
+            const $container = $(this).closest('.gallery-item-container');
+            $container.find('input[type="checkbox"]').attr('checked', true);
+            $container.hide();
+        })
+
+        //additional gallery formset
+        const $additional_gallery_image_extra_form = $('#additional-gallery .gallery-item-container:last-child');
+        const $additional_gallery_image_form_clone = $gallery_image_extra_form.clone(true);
+        $additional_gallery_image_extra_form.hide();
+
+        $('#add-additional-gallery-image-button').on('click', function () {
+            const $total_forms = $('#id_additional_gallery-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $gallery_image_form_clone.prop('outerHTML');
+            const regex = /gallery-(\d+)-/g;
+            const form = form_markup.replace(regex, `additional_gallery-${count}-`);
+
+            $('#additional-gallery').append(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $(document).on('click', '.delete-additional-gallery-button', function () {
+            const $container = $(this).closest('.gallery-item-container');
+            $container.find('input[type="checkbox"]').attr('checked', true);
+            $container.hide();
+        })
+
+        //document formset
+        const $document_extra_form = $('#documents .document:last');
+        const $document_form_clone = $document_extra_form.clone(true);
+        $document_extra_form.hide();
+
+        $('#add-document-button').on('click', function () {
+            const $total_forms = $('#id_document-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $document_form_clone.prop('outerHTML');
+            const regex = /document-(\d+)-/g;
+            const form = form_markup.replace(regex, `document-${count}-`);
+
+            $(this).parent().before(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        $(document).on('click', '.delete-document-button', function () {
+            const $container = $(this).closest('.document');
+            $container.find('input[type="checkbox"]').attr('checked', true);
+            $container.hide();
+        });
+    </script>
+{% endblock js %}

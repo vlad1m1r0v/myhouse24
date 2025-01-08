@@ -1,0 +1,70 @@
+{% extends 'website_management/website/base.html' %}
+{% load contacts %}
+{% block seo_title %}{{ page.seo_title }}{% endblock seo_title %}
+{% block seo_description %}{{ page.seo_description }}{% endblock seo_description %}
+{% block seo_keywords %}{{ page.seo_keywords }}{% endblock seo_keywords %}
+{% block css %}
+    <style>
+        .tariff-image {
+            aspect-ratio: 650 / 300;
+            width: 100%;
+        }
+
+        .tariff-title {
+            display: flex;
+            align-items: center;
+            height: 72px;
+        }
+    </style>
+{% endblock css %}
+{% block content %}
+    <div class="container-xl p-4 px-xl-0">
+        <!--Breadcrumb-->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'website:home' %}">Головна сторінка</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Тарифи</li>
+            </ol>
+        </nav>
+        <!--Information-->
+        <h3 class="border-bottom pb-2">{{ page.title }}</h3>
+        {{ page.description|safe }}
+        <!--Tariffs-->
+        <h3 class="border-bottom pb-2">Наші тарифи</h3>
+        <div class="row g-3">
+            {% for tariff in page_obj %}
+                <div class="col-md-4">
+                    <div class="tariff-title border-bottom mb-2">
+                        <h4>{{ tariff.title }}</h4>
+                    </div>
+                    <img class="img-thumbnail tariff-image" src="{{ tariff.image.url }}" alt="Tariff Image">
+                </div>
+            {% endfor %}
+        </div>
+        <!--Pagination Block-->
+        <nav aria-label="Page navigation example" class="mt-4">
+            <ul class="pagination justify-content-center mb-0">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% for page_number in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_number == page_obj.number %}active{% endif %}">
+                        <a class="page-link"
+                           href="?page={{ page_number }}">{{ page_number }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+{% endblock content %}

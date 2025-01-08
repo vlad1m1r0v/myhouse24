@@ -4,7 +4,7 @@ from src.website_management.models import AboutUsPage, AboutUsDocument, AboutUsA
 
 
 class WebsiteAboutUsView(TemplateView):
-    template_name = 'website/about_us.html'
+    template_name = 'website_management/website/about_us.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

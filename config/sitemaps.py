@@ -9,7 +9,7 @@ class StaticViewSitemap(Sitemap):
     changefreq = 'daily'
 
     def items(self):
-        return ['website_home', 'website_about_us', 'website_services', 'website_tariffs', 'website_contacts']
+        return ['website:home', 'website:about-us', 'website:services', 'website:tariffs', 'website:contacts']
 
     def location(self, item):
         return reverse(item)
@@ -20,7 +20,7 @@ def robots_txt(request):
     lines = [
         "User-Agent: *",
         f"Disallow: /adminlte/ \n",
-        f"Host: {request.build_absolute_uri(reverse('website_home'))} \n"
+        f"Host: {request.build_absolute_uri(reverse('website:home'))} \n"
         f"Sitemap: {request.build_absolute_uri(reverse('django.contrib.sitemaps.views.sitemap'))}",
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")

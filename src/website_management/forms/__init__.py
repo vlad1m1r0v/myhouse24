@@ -1,25 +1,25 @@
-from .main_page import (
+from .main import (
     AdminMainPageForm,
     AdminMainPageBlockFormSet,
     AdminMainPageSlideFormSet
 )
 
-from .about_us_page import (
+from .about_us import (
     AdminAboutUsPageForm,
     AdminAboutUsGalleryFormSet,
     AdminAboutUsAdditionalGalleryFormSet,
     AdminAboutUsDocumentFormSet
 )
 
-from .services_page import (
+from .services import (
     AdminServicesPageForm,
     AdminServicesPageBlockFormSet
 )
 
-from .tariffs_page import (
+from .tariffs import (
     AdminTariffsPageForm,
     AdminTariffsPageBlockFormSet
 )
 
 
-from .contacts_page import AdminContactsPageForm
+from .contacts import AdminContactsPageForm

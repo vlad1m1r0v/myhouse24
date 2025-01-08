@@ -5,7 +5,7 @@ from src.website_management.models import ServicesPage, ServicesPageBlock
 
 
 class WebsiteServicesView(TemplateView):
-    template_name = 'website/services.html'
+    template_name = 'website_management/website/services.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
