@@ -15,7 +15,7 @@ class ServicePermissionRequiredMixin(CustomPermissionRequiredMixin):
 
 
 class AdminServicesView(ServicePermissionRequiredMixin, TemplateView):
-    template_name = 'adminlte/system_settings/services.html'
+    template_name = 'system_settings/adminlte/services.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

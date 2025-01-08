@@ -5,4 +5,4 @@ from .mixin import TariffPermissionRequiredMixin
 
 class AdminTariffsView(TariffPermissionRequiredMixin,
                        TemplateView):
-    template_name = 'adminlte/system_settings/tariffs/list.html'
+    template_name = 'system_settings/adminlte/tariffs/list.html'

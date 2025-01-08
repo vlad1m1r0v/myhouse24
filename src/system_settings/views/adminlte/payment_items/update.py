@@ -10,7 +10,7 @@ class AdminPaymentItemUpdateView(SuccessMessageMixin,
                                  PaymentItemPermissionRequiredMixin,
                                  UpdateView):
     model = PaymentItem
-    template_name = 'adminlte/system_settings/payment_items/update.html'
+    template_name = 'system_settings/adminlte/payment_items/update.html'
     form_class = AdminPaymentItemForm
     success_url = reverse_lazy('adminlte:system-settings:payment-items:list')
     success_message = 'Статтю платежу успішно оновлено'

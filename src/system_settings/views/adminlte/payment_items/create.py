@@ -11,7 +11,7 @@ class AdminPaymentItemCreateView(SuccessMessageMixin,
                                  PaymentItemPermissionRequiredMixin,
                                  CreateView):
     model = PaymentItem
-    template_name = 'adminlte/system_settings/payment_items/create.html'
+    template_name = 'system_settings/adminlte/payment_items/create.html'
     form_class = AdminPaymentItemForm
     success_url = reverse_lazy('adminlte:system-settings:payment-items:list')
     success_message = 'Статтю платежу успішно створено'

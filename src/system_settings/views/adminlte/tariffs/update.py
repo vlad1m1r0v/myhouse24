@@ -10,7 +10,7 @@ from .mixin import TariffPermissionRequiredMixin
 
 class AdminTariffUpdateView(TariffPermissionRequiredMixin,
                             TemplateView):
-    template_name = 'adminlte/system_settings/tariffs/update.html'
+    template_name = 'system_settings/adminlte/tariffs/update.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -13,7 +13,7 @@ class RolePermissionRequiredMixin(CustomPermissionRequiredMixin):
     permission_denied_message = 'У Вас немає доступу до платіжних реквізитів'
 
 class AdminGroupPermissionsView(RolePermissionRequiredMixin, TemplateView):
-    template_name = 'adminlte/system_settings/permissions.html'
+    template_name = 'system_settings/adminlte/permissions.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

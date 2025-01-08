@@ -5,4 +5,4 @@ from .mixin import UserPermissionRequiredMixin
 
 class AdminUsersView(UserPermissionRequiredMixin,
                      TemplateView):
-    template_name = 'adminlte/system_settings/users/list.html'
+    template_name = 'system_settings/adminlte/users/list.html'

@@ -15,7 +15,7 @@ class AdminPaymentCredentialView(
     SuccessMessageMixin,
     PaymentCredentialPermissionRequiredMixin,
     FormView):
-    template_name = 'adminlte/system_settings/payment_credential.html'
+    template_name = 'system_settings/adminlte/payment_credential.html'
     form_class = AdminPaymentCredentialForm
     success_url = reverse_lazy('adminlte:system-settings:payment-credential:index')
     success_message = 'Платіжні реквізити успішно оновлено'

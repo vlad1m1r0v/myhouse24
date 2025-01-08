@@ -7,7 +7,7 @@ from .mixin import UserPermissionRequiredMixin
 
 class AdminUserDetailView(UserPermissionRequiredMixin, DetailView):
     model = CustomUser
-    template_name = 'adminlte/system_settings/users/detail.html'
+    template_name = 'system_settings/adminlte/users/detail.html'
     context_object_name = 'user'
 
     def get_queryset(self):

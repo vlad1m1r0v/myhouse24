@@ -11,7 +11,7 @@ class AdminUserCreateView(SuccessMessageMixin,
                           UserPermissionRequiredMixin,
                           CreateView):
     model = CustomUser
-    template_name = 'adminlte/system_settings/users/create.html'
+    template_name = 'system_settings/adminlte/users/create.html'
     form_class = AdminUserForm
     success_url = reverse_lazy('adminlte:system-settings:users:list')
     success_message = 'Новий користувач успішно створений'

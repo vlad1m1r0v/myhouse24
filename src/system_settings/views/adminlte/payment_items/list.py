@@ -5,4 +5,4 @@ from .mixin import PaymentItemPermissionRequiredMixin
 
 class AdminPaymentItemsView(PaymentItemPermissionRequiredMixin,
                             TemplateView):
-    template_name = 'adminlte/system_settings/payment_items/list.html'
+    template_name = 'system_settings/adminlte/payment_items/list.html'

@@ -14,7 +14,7 @@ class AdminUserUpdateView(SuccessMessageMixin,
                           UpdateView):
     model = CustomUser
     form_class = AdminUserForm
-    template_name = 'adminlte/system_settings/users/update.html'
+    template_name = 'system_settings/adminlte/users/update.html'
     success_url = reverse_lazy('adminlte:system-settings:users:list')
 
     def form_valid(self, form):
