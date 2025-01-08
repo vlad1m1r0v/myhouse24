@@ -8,7 +8,7 @@ from src.system_settings.models import Tariff, TariffService, Service
 class AdminTariffServiceForm(forms.ModelForm):
     price = forms.DecimalField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0.0, 'step': 0.1}),
         label='Ціна'
     )
 

@@ -10,7 +10,7 @@ class AdminPaymentItemsDatatableView(AjaxDatatableView):
     search_values_separator = '+'
 
     column_defs = [
-        {'name': 'name', 'title': 'Назва', 'visible': True, },
+        {'name': 'name', 'title': 'Назва', 'visible': True, 'orderable': False},
         {'name': 'type', 'title': 'Прихід / Витрата', 'visible': True, },
         {'name': 'button_group',
          'title': '',

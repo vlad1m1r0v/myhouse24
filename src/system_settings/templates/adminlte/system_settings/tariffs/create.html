@@ -36,7 +36,7 @@
                         {% for service in services %}
                             <div class="row">
                                 <div class="col-xs-6 col-md-4">
-                                    <div class="form-group">
+                                    <div class="form-group service">
                                         <label for="{{ service.service.id_for_label }}">{{ service.service.label }}</label>
                                         <select name="{{ service.service.html_name }}"
                                                 id="{{ service.service.id_for_label }}"
@@ -53,7 +53,7 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-md-3">
-                                    <div class="form-group">
+                                    <div class="form-group price">
                                         <label>{{ service.price.label }}</label>
                                         {{ service.price }}
                                     </div>
@@ -111,7 +111,7 @@
 
         $('#id_service-INITIAL_FORMS').attr('value', 0);
 
-        $form.on('focus blur keyup', 'textarea,input', function () {
+        $form.on('change blur keyup', 'textarea,input,select', function () {
             validate_form();
         });
 
@@ -151,6 +151,26 @@
                     $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
                 }
             }).checkForm();
+
+            $('.price input').each(function () {
+
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: 'Вкажіть ціну'
+                    }
+                });
+            });
+
+            $('.service select').each(function () {
+
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: 'Вкажіть послугу'
+                    }
+                });
+            });
 
             if (is_valid) {
                 $button.prop('disabled', false);

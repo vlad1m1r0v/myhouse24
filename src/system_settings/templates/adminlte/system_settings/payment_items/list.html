@@ -67,6 +67,8 @@
 
             $datatable.on('initComplete', function () {
                 restructure_datatable();
+
+                $('#datatable_length, #datatable_filter').hide();
             });
 
             $datatable.on('drawCallback', function () {

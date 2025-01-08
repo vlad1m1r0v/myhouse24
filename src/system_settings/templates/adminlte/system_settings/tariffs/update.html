@@ -13,7 +13,9 @@
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i>Головна</a></li>
     <li><a href="{% url 'adminlte:system-settings:tariffs:list' %}">Тарифи</a></li>
-    <li><a href="{% url 'adminlte:system-settings:tariffs:detail' pk=tariff.instance.id %}">{{ tariff.instance.name }}</a></li>
+    <li>
+        <a href="{% url 'adminlte:system-settings:tariffs:detail' pk=tariff.instance.id %}">{{ tariff.instance.name }}</a>
+    </li>
     <li class="active">Редагування</li>
 {% endblock breadcrumb %}
 {% block content %}
@@ -41,7 +43,7 @@
                             {% endfor %}
                             <div class="row">
                                 <div class="col-xs-6 col-md-4">
-                                    <div class="form-group">
+                                    <div class="form-group service">
                                         <label for="{{ service.service.id_for_label }}">{{ service.service.label }}</label>
                                         <select name="{{ service.service.html_name }}"
                                                 id="{{ service.service.id_for_label }}"
@@ -58,7 +60,7 @@
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-md-3">
-                                    <div class="form-group">
+                                    <div class="form-group price">
                                         <label>{{ service.price.label }}</label>
                                         {{ service.price }}
                                     </div>
@@ -96,10 +98,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-12 text-center">
+                    <div class="col-xs-12 text-right">
                         <div class="form-group">
-                            <a href="{% url 'adminlte:system-settings:tariffs:update' pk=tariff.instance.pk %}" class="btn btn-default">Відмінити</a>
-                            <button type="submit" class="btn btn-success">Редагувати</button>
+                            <a href="{% url 'adminlte:system-settings:tariffs:list' %}"
+                               class="btn btn-default">Відмінити</a>
+                            <button type="submit" class="btn btn-success">Зберегти</button>
                         </div>
                     </div>
                 </div>
@@ -114,12 +117,13 @@
         const $form = $('#tariff-form');
         const $button = $('button[type=submit]');
 
-        $form.on('focus blur keyup', 'textarea,input', function () {
+        $form.on('change blur keyup', 'textarea,input,select', function () {
             validate_form();
         });
 
         const validate_form = function () {
             const is_valid = $form.validate({
+                ignore: ":hidden",
                 rules: {
                     name: {
                         required: true,
@@ -154,6 +158,26 @@
                     $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
                 }
             }).checkForm();
+
+            $('.price input').each(function () {
+
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: 'Вкажіть ціну'
+                    }
+                });
+            });
+
+            $('.service select').each(function () {
+
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: 'Вкажіть послугу'
+                    }
+                });
+            });
 
             if (is_valid) {
                 $button.prop('disabled', false);

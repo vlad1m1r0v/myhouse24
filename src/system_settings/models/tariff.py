@@ -12,4 +12,4 @@ class Tariff(models.Model):
 class TariffService(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE,)
     tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE, related_name='services')
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=6, decimal_places=1)
