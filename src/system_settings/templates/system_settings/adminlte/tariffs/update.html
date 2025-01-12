@@ -117,10 +117,6 @@
         const $form = $('#tariff-form');
         const $button = $('button[type=submit]');
 
-        $form.on('change blur keyup', 'textarea,input,select', function () {
-            validate_form();
-        });
-
         const validate_form = function () {
             const is_valid = $form.validate({
                 ignore: ":hidden",
@@ -159,7 +155,7 @@
                 }
             }).checkForm();
 
-            $('.price input').each(function () {
+            $('.price input:not(hidden)').each(function () {
 
                 $(this).rules('add', {
                     required: true,
@@ -169,7 +165,7 @@
                 });
             });
 
-            $('.service select').each(function () {
+            $('.service select:not(hidden)').each(function () {
 
                 $(this).rules('add', {
                     required: true,
@@ -185,6 +181,12 @@
                 $button.prop('disabled', 'disabled');
             }
         }
+
+        $(document).ready(validate_form);
+
+        $form.on('change blur keyup', 'textarea,input,select', function () {
+            validate_form();
+        });
 
         const $service_extra_form = $('#services > .row:last-of-type');
         const $service_form_clone = $service_extra_form.clone(true);

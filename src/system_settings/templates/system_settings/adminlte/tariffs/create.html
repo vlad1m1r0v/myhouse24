@@ -152,7 +152,7 @@
                 }
             }).checkForm();
 
-            $('.price input').each(function () {
+            $('.price input:not(hidden)').each(function () {
 
                 $(this).rules('add', {
                     required: true,
@@ -162,7 +162,7 @@
                 });
             });
 
-            $('.service select').each(function () {
+            $('.service select:not(hidden)').each(function () {
 
                 $(this).rules('add', {
                     required: true,

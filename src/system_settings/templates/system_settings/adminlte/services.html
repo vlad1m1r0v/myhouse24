@@ -154,7 +154,7 @@
                 }
             }).checkForm();
 
-            $('.service__name input').each(function () {
+            $('.service__name input:not(hidden)').each(function () {
 
                 $(this).rules('add', {
                     required: true,
@@ -166,7 +166,7 @@
                 });
             });
 
-            $('.service__unit select').each(function () {
+            $('.service__unit select:not(hidden)').each(function () {
                 $(this).rules('add', {
                     required: true,
                     messages: {
@@ -175,7 +175,7 @@
                 });
             });
 
-            $('.unit input').each(function () {
+            $('.unit input:not(hidden)').each(function () {
                 $(this).rules('add', {
                     required: true,
                     messages: {
@@ -183,6 +183,12 @@
                     }
                 });
             });
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
         }
 
         const $unit_extra_form = $('#units > .row:last-of-type');
