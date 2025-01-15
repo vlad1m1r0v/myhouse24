@@ -6,7 +6,7 @@
 {% block css %}
     <link rel="stylesheet" href={% static 'css/scrolling_wrapper.css' %}>
     <style>
-        img:not(.fa) + label {
+        img + .form-group {
             margin-top: 15px;
         }
 
@@ -21,20 +21,17 @@
             aspect-ratio: 25 / 31;
         }
 
-        .gallery-item img {
-            margin-bottom: 15px;
-        }
-
         .gallery-image {
             height: 275px;
             aspect-ratio: 1;
         }
 
-        .image-actions {
+        .gallery-item .form-group {
             display: flex;
             flex-direction: row;
             align-items: center;
-            margin-bottom: 15px;
+            flex-wrap: wrap;
+            max-width: 275px;
         }
 
         #add-gallery-image-button,
@@ -45,7 +42,7 @@
     </style>
 {% endblock css %}
 {% block header %}
-    Редагування  сторінки
+    Редагування сторінки
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
@@ -57,7 +54,7 @@
             <h3 class="box-title">Редагування сторінки "Про нас"</h3>
         </div>
         <div class="box-body">
-            <form method="post" enctype="multipart/form-data">
+            <form id="about-us-page-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <h3 class="page-header">Інформація</h3>
                 <!--Information-->
@@ -79,10 +76,12 @@
                         {% else %}
                             <img id="director-image" src="https://placehold.co/250x310" alt="Director">
                         {% endif %}
-                        <label>
-                            {{ about_us.director_photo.label }}
-                        </label>
-                        {{ about_us.director_photo }}
+                        <div class="form-group">
+                            <label>
+                                {{ about_us.director_photo.label }}
+                            </label>
+                            {{ about_us.director_photo }}
+                        </div>
                     </div>
                 </div>
                 <!--Gallery-->
@@ -106,7 +105,7 @@
                                                  src="https://placehold.co/1200x1200"
                                                  alt="Gallery Image">
                                         {% endif %}
-                                        <div class="image-actions">
+                                        <div class="form-group">
                                             {{ image.image }}
                                             <div style="display:none">
                                                 {{ image.DELETE }}
@@ -161,7 +160,7 @@
                                                  src="https://placehold.co/1200x1200"
                                                  alt="Gallery Image">
                                         {% endif %}
-                                        <div class="image-actions">
+                                        <div class="form-group">
                                             {{ image.image }}
                                             <div style="display:none">
                                                 {{ image.DELETE }}
@@ -261,7 +260,134 @@
     </div>
 {% endblock content %}
 {% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script>
+        const $form = $('#about-us-page-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus change keyup', 'input,textarea', function () {
+            validate_form();
+        });
+
+        const validate_form = function () {
+            const is_valid = $form.validate({
+                ignore: ':hidden',
+                rules: {
+                    title: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    additional_title: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    seo_title: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    seo_keywords: {
+                        required: true,
+                        minlength: 50,
+                    },
+                    seo_description: {
+                        required: true,
+                        minlength: 100,
+                    },
+                },
+                messages: {
+                    title: {
+                        required: 'Введіть заголовок',
+                        minlength: 'Заголовок має містити хоча б 10 символів'
+                    },
+                    additional_title: {
+                        required: 'Введіть заголовок',
+                        minlength: 'Заголовок має містити хоча б 10 символів'
+                    },
+                    seo_title: {
+                        required: 'Введіть SEO заголовок',
+                        minlength: 'SEO заголовок має містити хоча б 10 символів'
+                    },
+                    seo_keywords: {
+                        required: 'Введіть SEO ключові слова',
+                        minlength: 'SEO ключові слова мають містити хоча б 50 символів'
+                    },
+                    seo_description: {
+                        required: 'Введіть SEO опис',
+                        minlength: 'SEO опис має містити хоча б 100 символів'
+                    }
+                },
+
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            $('textarea.wysihtml5').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    minlength: 100,
+                    messages: {
+                        required: 'Введіть опис',
+                        minlength: "Опис має містити мінімум 100 символів"
+                    }
+                });
+            });
+
+            $('#director input[type=file], #gallery input[type=file]:visible, #additional-gallery input[type=file]:visible').each(function () {
+                $(this).rules('add', {
+                    required: function (el) {
+                        const $el = $(el);
+                        const $parent = $el.parent().parent();
+                        const src = $parent.find('img').attr('src');
+                        const regex = /^https:\/\/placehold\.co\/.+$/;
+                        return regex.test(src);
+                    },
+                    messages: {
+                        required: 'Виберіть зображення',
+                    }
+                });
+            });
+
+            $('.document input[type=text]:visible').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    minlength: 10,
+                    messages: {
+                        required: 'Введіть назву документу',
+                        minlength: 'Назва документу має складатися хоча б з 10 символів'
+                    }
+                })
+            });
+
+            $('.document input[type=file]:visible').each(function () {
+                $(this).rules('add', {
+                    required: function (el) {
+                        const $el = $(el);
+                        const $container = $el.parent();
+                        return Boolean($container.find('i.fa-file-o').length);
+                    },
+                    messages: {
+                        required: 'Виберіть документ',
+                    }
+                });
+            });
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
         $(document).on('change', 'input:file', function (e) {
             const image = e.target.files[0];
             const src = URL.createObjectURL(image);
@@ -288,8 +414,19 @@
                 "color": false,
                 "blockquote": false,
                 "fa": true,
+            },
+            "events": {
+                load: function () {
+                    const editor = this;
+                    $(editor.currentView.doc.body).on("keyup", function (event) {
+                        const $textarea = $(editor.editableElement);
+                        $textarea.text(event.currentTarget.innerHTML);
+                        $textarea.trigger('keyup');
+                    })
+                }
             }
         });
+
 
         //gallery formset
         const $gallery_image_extra_form = $('#gallery .gallery-item-container:last-child');
