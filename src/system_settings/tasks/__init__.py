@@ -1,1 +1,2 @@
 from .send_password_update_notification import send_password_update_notification
+from .send_invitation import send_invitation_email

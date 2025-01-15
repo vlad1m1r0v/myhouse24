@@ -15,16 +15,8 @@
             aspect-ratio: 10 / 6;
         }
 
-        img + label {
-            margin-top: 15px;
-        }
-
-        #slides input[type=file] {
-            margin-bottom: 30px;
-        }
-
-        #blocks input[type=file] {
-            margin-bottom: 15px;
+        img + .form-group {
+            margin: 15px 0;
         }
     </style>
 {% endblock css %}
@@ -47,7 +39,7 @@
             </div>
         </div>
         <div class="box-body">
-            <form id="home-page-form" method="post" enctype="multipart/form-data">
+            <form id="main-page-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <h3 class="page-header">Слайдер</h3>
                 <div class="row" id="slides">
@@ -62,10 +54,12 @@
                                 {% else %}
                                     <img class="slide-image" src="https://placehold.co/1920x800" alt="Slide">
                                 {% endif %}
-                                <label>
-                                    {{ slide.image.label }}
-                                </label>
-                                {{ slide.image }}
+                                <div class="form-group">
+                                    <label>
+                                        {{ slide.image.label }}
+                                    </label>
+                                    {{ slide.image }}
+                                </div>
                             </div>
                         {% else %}
                             <div style="display: none;">
@@ -107,11 +101,13 @@
                                 {% else %}
                                     <img class="block-image" src="https://placehold.co/1000x600" alt="Block">
                                 {% endif %}
-                                <label>
-                                    {{ block.image.label }}
-                                </label>
-                                {{ block.image }}
                                 <div class="form-group">
+                                    <label>
+                                        {{ block.image.label }}
+                                    </label>
+                                    {{ block.image }}
+                                </div>
+                                <div class="form-group block-title">
                                     <label>{{ block.title.label }}</label>
                                     {{ block.title }}
                                 </div>
@@ -157,12 +153,11 @@
     </div>
 {% endblock content %}
 {% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script>
-        $(document).on('change', 'input:file', function (e) {
-            const image = e.target.files[0];
-            const src = URL.createObjectURL(image);
-            $(this).parent().find('img').attr('src', src);
-        });
+        const $form = $('#main-page-form');
+        const $button = $('button[type=submit]');
 
         $('.wysihtml5').wysihtml5({
             locale: "ua-UA",
@@ -176,7 +171,124 @@
                 "color": false,
                 "blockquote": false,
                 "fa": true,
+            },
+            "events": {
+                load: function () {
+                    const editor = this;
+                    $(editor.currentView.doc.body).on("keyup", function (event) {
+                        const $textarea = $(editor.editableElement);
+                        $textarea.text(event.currentTarget.innerHTML);
+                        $textarea.trigger('keyup');
+                    })
+                }
             }
+        });
+
+        $form.on('focus change keyup', 'input,textarea', function () {
+            validate_form();
+        });
+
+        const validate_form = function () {
+            const is_valid = $form.validate({
+                ignore: [],
+                rules: {
+                    title: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    seo_title: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    seo_keywords: {
+                        required: true,
+                        minlength: 50,
+                    },
+                    seo_description: {
+                        required: true,
+                        minlength: 100,
+                    },
+                },
+                messages: {
+                    title: {
+                        required: 'Введіть заголовок',
+                        minlength: 'Заголовок має містити хоча б 10 символів'
+                    },
+                    seo_title: {
+                        required: 'Введіть SEO заголовок',
+                        minlength: 'SEO заголовок має містити хоча б 10 символів'
+                    },
+                    seo_keywords: {
+                        required: 'Введіть SEO ключові слова',
+                        minlength: 'SEO ключові слова мають містити хоча б 50 символів'
+                    },
+                    seo_description: {
+                        required: 'Введіть SEO опис',
+                        minlength: 'SEO опис має містити хоча б 100 символів'
+                    }
+                },
+
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            $('input[type=file]').each(function () {
+                $(this).rules('add', {
+                    required: function (el) {
+                        const $el = $(el);
+                        const $parent = $el.closest('.col-md-4');
+                        const src = $parent.find('img').attr('src');
+                        const regex = /^https:\/\/placehold\.co\/.+$/;
+                        return regex.test(src);
+                    },
+                    messages: {
+                        required: 'Виберіть зображення',
+                    }
+                });
+            });
+
+            $('textarea.wysihtml5').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    minlength: 100,
+                    messages: {
+                        required: 'Введіть опис',
+                        minlength: "Опис має містити мінімум 100 символів"
+                    }
+                });
+            });
+
+            $('.block-title input').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    minlength: 10,
+                    messages: {
+                        required: 'Введіть заголовок',
+                        minlength: 'Заголовок має містити мінімум 10 символів'
+                    }
+                });
+            });
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
+        $(document).on('change', 'input:file', function (e) {
+            const image = e.target.files[0];
+            const src = URL.createObjectURL(image);
+            $(this).closest('.col-md-4').find('img').attr('src', src);
         });
     </script>
 {% endblock js %}

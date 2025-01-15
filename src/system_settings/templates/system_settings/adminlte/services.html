@@ -132,10 +132,6 @@
         const $form = $('#service-form');
         const $button = $('button[type=submit]');
 
-        $form.on('focus change blur keyup', 'input,select', function () {
-            validate_form();
-        });
-
         const validate_form = function () {
             const is_valid = $form.validate({
                 ignore: ':hidden',
@@ -191,6 +187,11 @@
             }
         }
 
+        $(document).ready(validate_form);
+
+        $form.on('focus change blur keyup', 'input,select', function () {
+            validate_form();
+        });
         const $unit_extra_form = $('#units > .row:last-of-type');
         const $unit_form_clone = $unit_extra_form.clone(true);
         $unit_extra_form.hide();

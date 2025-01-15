@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запрошення до системи</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+        }
+
+        .header {
+            background-color: #ffd700;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .content a {
+            display: inline-block;
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .content a:hover {
+            background-color: #0056b3;
+        }
+
+        .footer {
+            background-color: #ffd700;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        MyHouse24
+    </div>
+    <div class="content">
+        <h1 style="text-align: center; color: #007bff;">ЗАПРОШЕННЯ ДО СИСТЕМИ</h1>
+        <p>Вас надіслано запрошення для входу в систему MyHouse24</p>
+        <p>Щоб увійти до системи, натисніть на кнопку нижче:</p>
+        <p style="text-align: center;">
+            <a href="{% url 'authentication:adminlte:login' %}">Увійти до системи</a>
+        </p>
+    </div>
+    <div class="footer">
+        © 2024 MyHouse24. Всі права захищені.
+    </div>
+</div>
+</body>
+</html>
