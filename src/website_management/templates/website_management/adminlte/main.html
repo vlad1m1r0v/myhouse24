@@ -1,10 +1,19 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% block title %}
-    Редагування  сторінки
+    Редагування сторінки
 {% endblock title %}
 {% block css %}
     <style>
+        #blocks {
+            display: flex;
+            flex-flow: row wrap;
+
+            &::before {
+                display: block;
+            }
+        }
+
         .slide-image {
             width: 100%;
             aspect-ratio: 12 / 5;
@@ -21,7 +30,7 @@
     </style>
 {% endblock css %}
 {% block header %}
-    Редагування  сторінки
+    Редагування сторінки
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>

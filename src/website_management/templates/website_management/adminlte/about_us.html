@@ -1,7 +1,7 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% block title %}
-    Редагування  сторінки
+    Редагування сторінки
 {% endblock title %}
 {% block css %}
     <link rel="stylesheet" href={% static 'css/scrolling_wrapper.css' %}>
@@ -342,7 +342,7 @@
                 });
             });
 
-            $('#director input[type=file], #gallery input[type=file]:visible, #additional-gallery input[type=file]:visible').each(function () {
+            $('#director input[type=file], #gallery input[type=file], #additional-gallery input[type=file]').each(function () {
                 $(this).rules('add', {
                     required: function (el) {
                         const $el = $(el);
@@ -357,7 +357,7 @@
                 });
             });
 
-            $('.document input[type=text]:visible').each(function () {
+            $('.document input[type=text]').each(function () {
                 $(this).rules('add', {
                     required: true,
                     minlength: 10,
@@ -368,7 +368,7 @@
                 })
             });
 
-            $('.document input[type=file]:visible').each(function () {
+            $('.document input[type=file]').each(function () {
                 $(this).rules('add', {
                     required: function (el) {
                         const $el = $(el);
@@ -450,6 +450,7 @@
             const $container = $(this).closest('.gallery-item-container');
             $container.find('input[type="checkbox"]').attr('checked', true);
             $container.hide();
+            validate_form();
         })
 
         //additional gallery formset
@@ -474,6 +475,7 @@
             const $container = $(this).closest('.gallery-item-container');
             $container.find('input[type="checkbox"]').attr('checked', true);
             $container.hide();
+            validate_form();
         })
 
         //document formset
@@ -498,6 +500,7 @@
             const $container = $(this).closest('.document');
             $container.find('input[type="checkbox"]').attr('checked', true);
             $container.hide();
+            validate_form();
         });
     </script>
 {% endblock js %}
