@@ -209,6 +209,7 @@
             const $row = $(this).closest('.row');
             $row.find('input[type="checkbox"]').attr('checked', true);
             $row.hide();
+            validate_form();
         });
 
         function update_unit_display(el) {
