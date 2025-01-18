@@ -1,14 +1,14 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% block title %}
-    Редагування  сторінки
+    Редагування сторінки
 {% endblock title %}
 {% block css %}
     <style>
     </style>
 {% endblock css %}
 {% block header %}
-    Редагування  сторінки
+    Редагування сторінки
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
@@ -115,23 +115,67 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
     <script>
         $(document).ready(function () {
+            $('.wysihtml5').wysihtml5({
+                locale: "ua-UA",
+                toolbar: {
+                    "font-styles": true,
+                    "emphasis": true,
+                    "lists": true,
+                    "html": false,
+                    "link": false,
+                    "image": false,
+                    "color": false,
+                    "blockquote": false,
+                    "fa": true,
+                },
+                "events": {
+                    load: function () {
+                        const editor = this;
+                        const $textarea = $(editor.editableElement);
+
+                        $(editor.currentView.doc.body).on("keyup", function () {
+                            let content = event.currentTarget.innerHTML;
+                            content = clean_html(content)
+                            $textarea.val(content);
+                            $textarea.trigger('keyup');
+                        })
+                    }
+                }
+            });
+
+            function clean_html(html) {
+                const clean_content = html
+                    .replace(/<p><br><\/p>/g, '')
+                    .replace(/<br>/g, '')
+                    .replace(/<[^>]+>/g, '')
+                    .trim();
+
+                return clean_content;
+            }
+
             $('#id_phone').inputmask('+38(099)-999-99-99');
 
             const $form = $('#contacts-page-form');
             const $button = $('#submit-button');
 
-            $form.on('focus blur keyup', 'input,textarea', function () {
+            $form.on('focus change keyup', 'input,textarea', function () {
                 validateForm();
+                console.log('validated');
             });
 
             const validateForm = function () {
                 const isValid = $form.validate({
                     // contact information
+                    ignore: [],
                     rules: {
                         title: {
                             required: true,
                             minlength: 10,
                             maxlength: 100,
+                        },
+                        description: {
+                            required: true,
+                            minlength: 100,
                         },
                         website_link: {
                             required: true,
@@ -190,6 +234,10 @@
                             required: 'Введіть заголовок',
                             minlength: 'Заголовок повинен містити хоча б 10 символів',
                             maxlength: 'Заголовок не повинен перевищувати 100 символів',
+                        },
+                        description: {
+                            required: 'Введіть опис',
+                            minlength: 'Заголовок повинен містити хоча б 100 символів',
                         },
                         website_link: {
                             required: 'Введіть посилання на комерційний сайт',
@@ -262,22 +310,5 @@
                 }
             };
         })
-
-        $('.wysihtml5').wysihtml5({
-            locale: "ua-UA",
-            toolbar: {
-                "font-styles": true,
-                "emphasis": true,
-                "lists": true,
-                "html": false,
-                "link": false,
-                "image": false,
-                "color": false,
-                "blockquote": false,
-                "fa": true,
-            }
-        });
-
-
     </script>
 {% endblock js %}

@@ -194,6 +194,7 @@
             $('#services #add-service-button').before(form);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-service-button:not(.disabled)', function () {

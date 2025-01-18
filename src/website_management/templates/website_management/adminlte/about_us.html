@@ -272,7 +272,7 @@
 
         const validate_form = function () {
             const is_valid = $form.validate({
-                ignore: ':hidden',
+                ignore: '#gallery input:hidden,#additional-gallery input:hidden,#documents input:hidden',
                 rules: {
                     title: {
                         required: true,
@@ -418,15 +418,27 @@
             "events": {
                 load: function () {
                     const editor = this;
-                    $(editor.currentView.doc.body).on("keyup", function (event) {
-                        const $textarea = $(editor.editableElement);
-                        $textarea.text(event.currentTarget.innerHTML);
+                    const $textarea = $(editor.editableElement);
+
+                    $(editor.currentView.doc.body).on("keyup", function () {
+                        let content = event.currentTarget.innerHTML;
+                        content = clean_html(content)
+                        $textarea.val(content);
                         $textarea.trigger('keyup');
                     })
                 }
             }
         });
 
+        function clean_html(html) {
+            const clean_content = html
+                .replace(/<p><br><\/p>/g, '')
+                .replace(/<br>/g, '')
+                .replace(/<[^>]+>/g, '')
+                .trim();
+
+            return clean_content;
+        }
 
         //gallery formset
         const $gallery_image_extra_form = $('#gallery .gallery-item-container:last-child');
@@ -444,6 +456,7 @@
             $('#gallery').append(form);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-gallery-button', function () {
@@ -469,6 +482,7 @@
             $('#additional-gallery').append(form);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-additional-gallery-button', function () {
@@ -494,6 +508,7 @@
             $(this).parent().before(form);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-document-button', function () {

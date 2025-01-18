@@ -34,7 +34,7 @@
     </style>
 {% endblock css %}
 {% block header %}
-    Редагування  сторінки
+    Редагування сторінки
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
@@ -133,7 +133,7 @@
 
         const validate_form = function () {
             const is_valid = $form.validate({
-                ignore: ':hidden',
+                ignore: '#services .service:hidden *:hidden',
                 rules: {
                     seo_title: {
                         required: true,
@@ -220,6 +220,16 @@
             }
         }
 
+        function clean_html(html) {
+            const clean_content = html
+                .replace(/<p><br><\/p>/g, '')
+                .replace(/<br>/g, '')
+                .replace(/<[^>]+>/g, '')
+                .trim();
+
+            return clean_content;
+        }
+
         $('.wysihtml5').wysihtml5({
             locale: "ua-UA",
             toolbar: {
@@ -236,9 +246,12 @@
             "events": {
                 load: function () {
                     const editor = this;
-                    $(editor.currentView.doc.body).on("keyup", function (event) {
-                        const $textarea = $(editor.editableElement);
-                        $textarea.text(event.currentTarget.innerHTML);
+                    const $textarea = $(editor.editableElement);
+
+                    $(editor.currentView.doc.body).on("keyup", function () {
+                        let content = event.currentTarget.innerHTML;
+                        content = clean_html(content)
+                        $textarea.val(content);
                         $textarea.trigger('keyup');
                     })
                 }
@@ -278,9 +291,12 @@
                 "events": {
                     load: function () {
                         const editor = this;
-                        $(editor.currentView.doc.body).on("keyup", function (event) {
-                            const $textarea = $(editor.editableElement);
-                            $textarea.text(event.currentTarget.innerHTML);
+                        const $textarea = $(editor.editableElement);
+
+                        $(editor.currentView.doc.body).on("keyup", function () {
+                            let content = event.currentTarget.innerHTML;
+                            content = clean_html(content)
+                            $textarea.val(content);
                             $textarea.trigger('keyup');
                         })
                     }
@@ -288,6 +304,7 @@
             });
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-service-button', function () {

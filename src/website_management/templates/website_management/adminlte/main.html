@@ -184,14 +184,27 @@
             "events": {
                 load: function () {
                     const editor = this;
-                    $(editor.currentView.doc.body).on("keyup", function (event) {
-                        const $textarea = $(editor.editableElement);
-                        $textarea.text(event.currentTarget.innerHTML);
+                    const $textarea = $(editor.editableElement);
+
+                    $(editor.currentView.doc.body).on("keyup", function () {
+                        let content = event.currentTarget.innerHTML;
+                        content = clean_html(content)
+                        $textarea.val(content);
                         $textarea.trigger('keyup');
                     })
                 }
             }
         });
+
+        function clean_html(html) {
+            const clean_content = html
+                .replace(/<p><br><\/p>/g, '')
+                .replace(/<br>/g, '')
+                .replace(/<[^>]+>/g, '')
+                .trim();
+
+            return clean_content;
+        }
 
         $form.on('focus change keyup', 'input,textarea', function () {
             validate_form();

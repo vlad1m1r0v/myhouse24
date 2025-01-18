@@ -211,6 +211,7 @@
             $('#units #add-unit-button').before(form);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $('#add-service-button').on('click', function () {
@@ -224,6 +225,7 @@
             $('#services #add-service-button').before(form);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-unit-button:not(.disabled), .delete-service-button:not(.disabled)', function () {
