@@ -36,7 +36,8 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right margin-bottom">
-                <a href="{% url 'adminlte:system-settings:users:create' %}" class="btn btn-success">Додати користувача</a>
+                <a href="{% url 'adminlte:system-settings:users:create' %}" class="btn btn-success">Додати
+                    користувача</a>
             </div>
         </div>
     </div>
@@ -115,6 +116,21 @@
                 });
             }
         });
+
+        $(document).on('click', '.invite-button', async function () {
+            const $button = $(this);
+
+            $.ajax({
+                url: $button.attr('data-href'),
+                method: "POST", headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                success: function () {
+                    Swal.fire("Запрошення успішно надіслано", "", "success");
+                    $button.closest('tr').remove();
+                }
+            });
+        })
 
         $(document).on('click', 'tbody tr td:not(:last-child)', function () {
             window.location.href = $(this).closest('tr').find('td').first().text();

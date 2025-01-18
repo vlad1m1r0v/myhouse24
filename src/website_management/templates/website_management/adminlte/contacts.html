@@ -159,11 +159,10 @@
             const $button = $('#submit-button');
 
             $form.on('focus change keyup', 'input,textarea', function () {
-                validateForm();
-                console.log('validated');
+                validate_form();
             });
 
-            const validateForm = function () {
+            const validate_form = function () {
                 const isValid = $form.validate({
                     // contact information
                     ignore: [],

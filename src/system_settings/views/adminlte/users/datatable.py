@@ -59,7 +59,7 @@ class AdminUsersDatatableView(AjaxDatatableView):
         row['button_group'] = \
             f"""
             <div class="btn-group pull-right">
-                <a class="btn btn-default btn-sm" title='Надіслати запрошення'>
+                <a class="btn btn-default btn-sm invite-button" data-href={reverse('adminlte:system-settings:users:invite', kwargs={'pk': obj.id})} title='Надіслати запрошення'>
                     <i class="fa fa-repeat"></i>
                 </a>
                  <a href={reverse('adminlte:system-settings:users:update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">

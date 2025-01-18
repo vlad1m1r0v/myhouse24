@@ -12,7 +12,8 @@ from .users import (AdminUsersView,
                     AdminUserDetailView,
                     AdminUserCreateView,
                     AdminUserUpdateView,
-                    AdminUserDeleteView)
+                    AdminUserDeleteView,
+                    AdminUserInviteView)
 
 from .permissions import AdminGroupPermissionsView
 

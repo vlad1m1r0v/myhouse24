@@ -10,5 +10,6 @@ urlpatterns = [
     path('create/', views.AdminUserCreateView.as_view(), name='create'),
     path('<int:pk>/', views.AdminUserDetailView.as_view(), name='detail'),
     path('<int:pk>/update/', views.AdminUserUpdateView.as_view(), name='update'),
-    path('<int:pk>/delete/',  views.AdminUserDeleteView.as_view(), name='delete')
+    path('<int:pk>/delete/',  views.AdminUserDeleteView.as_view(), name='delete'),
+    path('<int:pk>/invite/', views.AdminUserInviteView.as_view(), name='invite'),
 ]
