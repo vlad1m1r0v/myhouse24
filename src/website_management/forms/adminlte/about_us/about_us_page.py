@@ -1,6 +1,6 @@
 from django import forms
 
-from ...models import AboutUsPage
+from src.website_management.models import AboutUsPage
 
 
 class AdminAboutUsPageForm(forms.ModelForm):

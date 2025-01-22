@@ -1,7 +1,7 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% block title %}
-    Новий дім
+    {{ house.instance.name }}
 {% endblock title %}
 {% block css %}
     <style>
@@ -20,18 +20,20 @@
     </style>
 {% endblock css %}
 {% block header %}
-    Новий дім
+    {{ house.instance.name }}
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a href="{% url 'adminlte_houses_list' %}">Домівки</a></li>
-    <li class="active">Новий дім</li>
+    <li><a href="{% url 'adminlte:houses:list' %}">Будинки</a></li>
+    <li><a href="{% url 'adminlte:houses:detail' pk=house.instance.id %}">{{ house.instance.name }}</a></li>
+    <li class="active">Редагування</li>
 {% endblock breadcrumb %}
 {% block content %}
     <div class="box">
         <div class="box-body">
-            <form method="post" enctype="multipart/form-data">
+            <form id="house-form" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+                {{ house.id }}
                 <div class="row">
                     <!--Name, Address and Image Inputs-->
                     <div class="col-xs-12 col-lg-4">
@@ -68,22 +70,23 @@
                     <div class="col-xs-12 col-lg-8" id="images">
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
-                                <img id="primary-image" src="https://placehold.co/522x350" alt="Primary House Image">
+                                <img id="primary-image" src="{{ house.instance.image_1.url }}"
+                                     alt="Primary House Image">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                                <img class="secondary-image" src="https://placehold.co/248x160"
+                                <img class="secondary-image" src="{{ house.instance.image_2.url }}"
                                      alt="Secondary House Image">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                                <img class="secondary-image" src="https://placehold.co/248x160"
+                                <img class="secondary-image" src="{{ house.instance.image_3.url }}"
                                      alt="Secondary House Image">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                                <img class="secondary-image" src="https://placehold.co/248x160"
+                                <img class="secondary-image" src="{{ house.instance.image_4.url }}"
                                      alt="Secondary House Image">
                             </div>
                             <div class="col-xs-6 col-md-3">
-                                <img class="secondary-image" src="https://placehold.co/248x160"
+                                <img class="secondary-image" src="{{ house.instance.image_5.url }}"
                                      alt="Secondary House Image">
                             </div>
                         </div>
@@ -108,6 +111,7 @@
                                 <div class="tab-pane clearfix active" id="sections">
                                     {{ sections.management_form }}
                                     {% for section in sections %}
+                                        {{ section.id }}
                                         <div class="form-group section">
                                             <label>{{ section.name.label }}</label>
                                             <div class="input-group">
@@ -131,6 +135,7 @@
                                 <div class="tab-pane clearfix" id="floors">
                                     {{ floors.management_form }}
                                     {% for floor in floors %}
+                                        {{ floor.id }}
                                         <div class="form-group floor">
                                             <label>{{ floor.name.label }}</label>
                                             <div class="input-group">
@@ -155,6 +160,7 @@
                                 <div class="tab-pane clearfix" id="users">
                                     {{ users.management_form }}
                                     {% for user in users %}
+                                        {{ user.id }}
                                         <div class="row user">
                                             <div class="col-xs-12 col-sm-7">
                                                 <div class="form-group">
@@ -165,7 +171,8 @@
                                                         <option value>Виберіть...</option>
                                                         {% for option in user.user.field.queryset %}
                                                             <option value="{{ option.id }}"
-                                                                    data-role="{{ option.groups.first.name }}">
+                                                                    data-role="{{ option.groups.first.name }}"
+                                                                    {% if option.id == user.instance.user.id %}selected{% endif %}>
                                                                 {{ option.full_name }}
                                                             </option>
                                                         {% endfor %}
@@ -212,7 +219,106 @@
     </div>
 {% endblock content %}
 {% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script>
+        const $form = $('#house-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus change keyup', 'input,select', function () {
+            validate_form();
+        });
+
+        const validate_form = function () {
+            const is_valid = $form.validate({
+                ignore: ':hidden',
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    address: {
+                        required: true,
+                        minlength: 20,
+                    },
+                },
+                messages: {
+                    name: {
+                        required: 'Введіть назву',
+                        minlength: 'Назва має містити хоча б 10 символів'
+                    },
+                    address: {
+                        required: 'Введіть адресу',
+                        minlength: 'Адреса має містити хоча б 20 символів'
+                    },
+                },
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            $('#sections input').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    minlength: 8,
+                    messages: {
+                        required: 'Введіть назву секції',
+                        minlength: 'Назва секції має містити мінімум 8 символів'
+                    }
+                });
+            });
+
+            $('#floors input').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    minlength: 8,
+                    messages: {
+                        required: 'Введіть назву поверху',
+                        minlength: 'Назва поверху має містити мінімум 8 символів'
+                    }
+                });
+            });
+
+            $('#users select').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: 'Виберіть користувача',
+                    }
+                });
+            });
+
+            $('input[type=file]').each(function () {
+                $(this).rules('add', {
+                    required: function (el) {
+                        const id = $(el).prop('id');
+                        const number = id.match(/\d+/)[0];
+                        const regex = /^https:\/\/placehold\.co\/.+$/;
+                        const src = $('#images img').eq(Number(number) - 1).attr('src')
+                        return regex.test(src);
+                    },
+                    messages: {
+                        required: 'Виберіть зображення',
+                    }
+                });
+            });
+
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
         // Sections
         const $section_extra_form = $('#sections .section').last();
         const $section_form_clone = $section_extra_form.clone(true);
@@ -231,12 +337,14 @@
             $('#sections input[type=text]:last').val(`Cекція ${count}`);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-section-button', function () {
             const $section = $(this).closest('.section');
             $section.find('input[type="checkbox"]').attr('checked', true);
             $section.hide();
+            validate_form()
         });
 
         // Floors
@@ -257,12 +365,14 @@
             $('#floors input[type=text]:last').val(`Поверх ${count}`);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-floor-button', function () {
             const $floor = $(this).closest('.floor');
             $floor.find('input[type="checkbox"]').attr('checked', true);
             $floor.hide();
+            validate_form();
         });
 
         // Users
@@ -297,12 +407,14 @@
             $('#users #add-user-button').before(form);
 
             $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
         $(document).on('click', '.delete-user-button', function () {
             const $user = $(this).closest('.user');
             $user.find('input[type="checkbox"]').attr('checked', true);
             $user.hide();
+            validate_form();
         });
 
         // Images

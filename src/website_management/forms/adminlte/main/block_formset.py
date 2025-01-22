@@ -1,18 +1,14 @@
 from django import forms
 from django.forms import modelformset_factory
 
-from ...models import ServicesPageBlock
+from src.website_management.models import MainPageBlock
 
 
-class AdminServicesPageBlockForm(forms.ModelForm):
+class AdminMainPageBlockForm(forms.ModelForm):
     image = forms.ImageField(
         required=False,
-        widget=forms.FileInput(
-            attrs={
-                'class': 'form-control',
-            }
-        ),
-        label='Рекомендований розмір: (650x300)')
+        widget=forms.FileInput(),
+        label='Рекомендований розмір: (1000x600)')
 
     title = forms.CharField(
         required=False,
@@ -21,7 +17,7 @@ class AdminServicesPageBlockForm(forms.ModelForm):
                 'class': 'form-control',
             }
         ),
-        label="Назва послуги"
+        label="Заголовок блоку"
     )
 
     description = forms.CharField(
@@ -33,7 +29,7 @@ class AdminServicesPageBlockForm(forms.ModelForm):
                 'style': 'width: 100%;'
             }
         ),
-        label='Опис послуги'
+        label='Опис'
     )
 
     def clean(self):
@@ -42,17 +38,17 @@ class AdminServicesPageBlockForm(forms.ModelForm):
         description = bool(self.cleaned_data.get('description'))
 
         if any([image, title, description]) and not all([image, title, description]):
-            raise forms.ValidationError("Для послуги не вибране зображення або не вказана назва чи опис")
+            raise forms.ValidationError("Для блоку \"Поруч з нами\" не вибране зображення або не вказана назва чи опис")
 
 
     class Meta:
-        model = ServicesPageBlock
+        model = MainPageBlock
         fields = ('image', 'title', 'description')
 
 
-AdminServicesPageBlockFormSet = modelformset_factory(
-    ServicesPageBlock,
-    form=AdminServicesPageBlockForm,
-    extra=1,
-    can_delete=True,
+AdminMainPageBlockFormSet = modelformset_factory(
+    MainPageBlock,
+    form=AdminMainPageBlockForm,
+    max_num=6,
+    extra=6
 )

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import modelformset_factory
 
-from ...models import AboutUsGallery, AboutUsAdditionalGallery
+from src.website_management.models import AboutUsGallery, AboutUsAdditionalGallery
 
 
 class AdminAboutUsGalleryForm(forms.ModelForm):

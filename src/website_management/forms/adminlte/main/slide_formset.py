@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import modelformset_factory
 
-from ...models import MainPageSlide
+from src.website_management.models import MainPageSlide
 
 
 class AdminMainPageSlideForm(forms.ModelForm):

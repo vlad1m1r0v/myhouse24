@@ -1,6 +1,6 @@
 from django import forms
 
-from ...models import ServicesPage
+from src.website_management.models import ServicesPage
 
 class AdminServicesPageForm(forms.ModelForm):
     seo_title = forms.CharField(

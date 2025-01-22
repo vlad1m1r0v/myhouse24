@@ -195,10 +195,10 @@
 {#                <li><a><i class="fa fa-key"></i> <span>Квартири</span></a></li>#}
 {#                <li><a><i class="fa fa-users"></i>#}
 {#                    <span>Власники квартир</span></a></li>#}
-{#                {% if perms.authentication.houses %}#}
-{#                    <li><a href="{% url 'adminlte_houses_list' %}"><i class="fa fa-building"></i>#}
-{#                        <span>Домівки</span></a></li>#}
-{#                {% endif %}#}
+                {% if perms.authentication.houses %}
+                    <li><a href="{% url 'adminlte:houses:list' %}"><i class="fa fa-building"></i>
+                        <span>Будинки</span></a></li>
+                {% endif %}
 {#                <li><a><i class="fa fa-envelope-o"></i> <span>Повідомлення</span></a></li>#}
 {#                {% if perms.authentication.service_call_requests %}#}
 {#                    <li><a href="{% url 'adminlte_master_call_requests_list' %}"><i class="fa fa-wrench"></i>#}

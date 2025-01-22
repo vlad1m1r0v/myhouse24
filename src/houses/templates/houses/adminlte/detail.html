@@ -40,7 +40,7 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a href="{% url 'adminlte_houses_list' %}">Домівки</a></li>
+    <li><a href="{% url 'adminlte:houses:list' %}">Будинки</a></li>
     <li class="active">{{ house.name }}</li>
 {% endblock breadcrumb %}
 {% block content %}
@@ -48,8 +48,8 @@
         <div class="box-header with-border">
             <h3 class="box-title"></h3>
             <div class="box-tools">
-                <a class="btn btn-primary btn-sm" href="{% url 'adminlte_house_update' pk=house.id %}">
-                    <span class="hidden-xs">Редагувати домівку</span>
+                <a class="btn btn-primary btn-sm" href="{% url 'adminlte:houses:update' pk=house.id %}">
+                    <span class="hidden-xs">Редагувати будинок</span>
                     <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                 </a>
             </div>
@@ -80,8 +80,8 @@
                             <td>
                                 {% for user in house.users.all %}
                                     <p>
-                                        <strong>{{ user.user.groups.first.name }}: </strong>
-                                        <a href="{% url 'adminlte_user_detail' pk=user.user.id %}">{{ user.user.full_name }}</a>
+                                        <strong>{{ user.user.first_group.0.name }}: </strong>
+                                        <a href="{% url 'adminlte:system-settings:users:detail' pk=user.user.id %}">{{ user.user.full_name }}</a>
                                     </p>
                                 {% endfor %}
                             </td>

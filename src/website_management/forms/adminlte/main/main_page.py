@@ -1,6 +1,6 @@
 from django import forms
 
-from ...models import MainPage
+from src.website_management.models import MainPage
 
 
 class AdminMainPageForm(forms.ModelForm):
