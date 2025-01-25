@@ -1,15 +1,18 @@
 from django.contrib import messages
-from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.models import Group
+from django.db.models import Prefetch
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 
+from src.authentication.models import CustomUser
 from src.houses.forms import (
     AdminHouseForm,
     AdminHouseSectionFormSet,
     AdminHouseFloorFormSet,
     AdminHouseUserFormSet
 )
-from src.houses.models import House
+from src.houses.models import House, HouseUser
 from .mixin import (
     HousePermissionRequiredMixin,
     HouseUserRequiredMixin
@@ -25,12 +28,21 @@ class AdminHouseUpdateView(
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        house = get_object_or_404(House, pk=kwargs.get('pk'))
+        house = House.objects.prefetch_related(
+            Prefetch('users', queryset=HouseUser.objects.select_related('user'))
+        ).get(pk=self.kwargs['pk'])
 
         context['house'] = AdminHouseForm(instance=house)
         context['sections'] = AdminHouseSectionFormSet(instance=house)
         context['floors'] = AdminHouseFloorFormSet(instance=house)
-        context['users'] = AdminHouseUserFormSet(instance=house)
+        context['users'] = AdminHouseUserFormSet(instance=house, queryset=house.users.all())
+        context['options'] = CustomUser.objects.prefetch_related(
+            Prefetch(
+                'groups',
+                queryset=Group.objects.order_by('id')[:1],
+                to_attr='group'
+            )
+        ).filter(is_staff=True)
 
         return context
 
@@ -49,5 +61,6 @@ class AdminHouseUpdateView(
             users.save()
             messages.success(self.request, 'Будинок успішно оновлено')
         else:
+            print(users.errors)
             messages.error(self.request, 'Виникли певні посилки при оновленні будинку')
         return redirect(reverse('adminlte:houses:list'))

@@ -15,9 +15,7 @@ class AdminHouseDetailView(
     context_object_name = 'house'
 
     def get_queryset(self):
-        """
-        Оптимізуємо запити до бази даних за допомогою select_related і prefetch_related.
-        """
+
         return (
             super().get_queryset()
             .prefetch_related(

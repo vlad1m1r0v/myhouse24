@@ -18,10 +18,10 @@ class CustomPermissionRequiredMixin(PermissionRequiredMixin):
                 status=403,
                 data={'success': False, 'message': self.permission_denied_message}
             )
-        else:
-            messages.error(request, self.permission_denied_message)
-            logout(request)
-            return redirect(reverse('authentication:adminlte:login'))
+
+        messages.error(request, self.permission_denied_message)
+        logout(request)
+        return redirect(reverse('authentication:adminlte:login'))
 
     def dispatch(self, request, *args, **kwargs):
         if not self.has_permission():
