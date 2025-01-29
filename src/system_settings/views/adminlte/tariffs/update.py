@@ -15,11 +15,12 @@ class AdminTariffUpdateView(TariffPermissionRequiredMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        tariff = Tariff.objects.get(pk=self.kwargs['pk'])
+        tariff = Tariff.objects.prefetch_related('services').get(pk=self.kwargs['pk'])
 
         context['tariff'] = AdminTariffForm(instance=tariff)
         context['services'] = AdminTariffServiceFormSet(
             instance=tariff,
+            queryset=tariff.services.all(),
             prefix='service'
         )
 
