@@ -164,19 +164,8 @@
                                         <div class="row user">
                                             <div class="col-xs-12 col-sm-7">
                                                 <div class="form-group">
-                                                    <label for="{{ user.user.id_for_label }}">{{ user.user.label }}</label>
-                                                    <select name="{{ user.user.html_name }}"
-                                                            id="{{ user.user.id_for_label }}"
-                                                            class="form-control">
-                                                        <option value>Виберіть...</option>
-                                                        {% for option in options %}
-                                                            <option value="{{ option.id }}"
-                                                                    data-role="{{ option.group.0 }}"
-                                                                    {% if option.id == user.instance.user.id %}selected{% endif %}>
-                                                                {{ option.full_name }}
-                                                            </option>
-                                                        {% endfor %}
-                                                    </select>
+                                                    <label>{{ user.user.label }}</label>
+                                                    {{ user.user }}
                                                 </div>
                                             </div>
                                             <div class="col-xs-12 col-sm-5">

@@ -13,9 +13,3 @@ class AJAXModelChoiceField(forms.ModelChoiceField):
         except (ValueError, TypeError, self.queryset.model.DoesNotExist):
             raise ValidationError("Вибране значення не знайдено в базі даних")
         return value
-
-
-class CustomChoiceField(forms.ChoiceField):
-    def validate(self, value):
-        if not value.isdigit():
-            raise forms.ValidationError(f"{value} не може бути ForeignKey")

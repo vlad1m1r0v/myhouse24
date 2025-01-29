@@ -19,7 +19,7 @@ class House(models.Model):
 
 class HouseUser(models.Model):
     house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='users')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False, null=False)
 
 
 class HouseFloor(models.Model):

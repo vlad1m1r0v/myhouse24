@@ -81,7 +81,7 @@
                                 {% for user in house.users.all %}
                                     <p>
                                         <strong>{{ user.user.first_group.0.name }}: </strong>
-                                        <a href="{% url 'adminlte:system-settings:users:detail' pk=user.user.id %}">{{ user.user.full_name }}</a>
+                                        <a href="{% url 'adminlte:system-settings:users:detail' pk=user.user.id %}">{{ user.user }}</a>
                                     </p>
                                 {% endfor %}
                             </td>

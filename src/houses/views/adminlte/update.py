@@ -36,13 +36,6 @@ class AdminHouseUpdateView(
         context['sections'] = AdminHouseSectionFormSet(instance=house)
         context['floors'] = AdminHouseFloorFormSet(instance=house)
         context['users'] = AdminHouseUserFormSet(instance=house, queryset=house.users.all())
-        context['options'] = CustomUser.objects.prefetch_related(
-            Prefetch(
-                'groups',
-                queryset=Group.objects.order_by('id')[:1],
-                to_attr='group'
-            )
-        ).filter(is_staff=True)
 
         return context
 
@@ -61,6 +54,5 @@ class AdminHouseUpdateView(
             users.save()
             messages.success(self.request, 'Будинок успішно оновлено')
         else:
-            print(users.errors)
             messages.error(self.request, 'Виникли певні посилки при оновленні будинку')
         return redirect(reverse('adminlte:houses:list'))
