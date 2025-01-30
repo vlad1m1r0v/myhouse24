@@ -158,18 +158,8 @@
                                         <div class="row user">
                                             <div class="col-xs-12 col-sm-7">
                                                 <div class="form-group">
-                                                    <label for="{{ user.user.id_for_label }}">{{ user.user.label }}</label>
-                                                    <select name="{{ user.user.html_name }}"
-                                                            id="{{ user.user.id_for_label }}"
-                                                            class="form-control">
-                                                        <option value>Виберіть...</option>
-                                                        {% for option in user.user.field.queryset %}
-                                                            <option value="{{ option.id }}"
-                                                                    data-role="{{ option.groups.first.name }}">
-                                                                {{ option.full_name }}
-                                                            </option>
-                                                        {% endfor %}
-                                                    </select>
+                                                    <label>{{ user.user.label }}</label>
+                                                    {{ user.user }}
                                                 </div>
                                             </div>
                                             <div class="col-xs-12 col-sm-5">
@@ -212,213 +202,213 @@
     </div>
 {% endblock content %}
 {% block js %}
-<!--JQuery Validation-->
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-<script>
-    const $form = $('#house-form');
-    const $button = $('button[type=submit]');
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script>
+        const $form = $('#house-form');
+        const $button = $('button[type=submit]');
 
-    $form.on('focus change keyup', 'input,select', function () {
-        validate_form();
-    });
+        $form.on('focus change keyup', 'input,select', function () {
+            validate_form();
+        });
 
-    const validate_form = function () {
-        const is_valid = $form.validate({
-            ignore: ':hidden',
-            rules: {
-                name: {
+        const validate_form = function () {
+            const is_valid = $form.validate({
+                ignore: ':hidden',
+                rules: {
+                    name: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    address: {
+                        required: true,
+                        minlength: 20,
+                    },
+                },
+                messages: {
+                    name: {
+                        required: 'Введіть назву',
+                        minlength: 'Назва має містити хоча б 10 символів'
+                    },
+                    address: {
+                        required: 'Введіть адресу',
+                        minlength: 'Адреса має містити хоча б 20 символів'
+                    },
+                },
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            $('#sections input').each(function () {
+                $(this).rules('add', {
                     required: true,
-                    minlength: 10,
-                },
-                address: {
+                    minlength: 8,
+                    messages: {
+                        required: 'Введіть назву секції',
+                        minlength: 'Назва секції має містити мінімум 8 символів'
+                    }
+                });
+            });
+
+            $('#floors input').each(function () {
+                $(this).rules('add', {
                     required: true,
-                    minlength: 20,
-                },
-            },
-            messages: {
-                name: {
-                    required: 'Введіть назву',
-                    minlength: 'Назва має містити хоча б 10 символів'
-                },
-                address: {
-                    required: 'Введіть адресу',
-                    minlength: 'Адреса має містити хоча б 20 символів'
-                },
-            },
-            errorElement: 'small',
-            errorPlacement: function (error, element) {
-                error.css({'color': 'red'});
-                element.closest('.form-group').append(error);
-            },
-            highlight: function (element) {
-                $(element).closest('.form-group').addClass('has-error');
-            },
-            unhighlight: function (element) {
-                $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                    minlength: 8,
+                    messages: {
+                        required: 'Введіть назву поверху',
+                        minlength: 'Назва поверху має містити мінімум 8 символів'
+                    }
+                });
+            });
+
+            $('#users select').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: 'Виберіть користувача',
+                    }
+                });
+            });
+
+            $('input[type=file]').each(function () {
+                $(this).rules('add', {
+                    required: function (el) {
+                        const id = $(el).prop('id');
+                        const number = id.match(/\d+/)[0];
+                        const regex = /^https:\/\/placehold\.co\/.+$/;
+                        const src = $('#images img').eq(Number(number) - 1).attr('src')
+                        return regex.test(src);
+                    },
+                    messages: {
+                        required: 'Виберіть зображення',
+                    }
+                });
+            });
+
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
             }
-        }).checkForm();
-
-        $('#sections input').each(function () {
-            $(this).rules('add', {
-                required: true,
-                minlength: 8,
-                messages: {
-                    required: 'Введіть назву секції',
-                    minlength: 'Назва секції має містити мінімум 8 символів'
-                }
-            });
-        });
-
-        $('#floors input').each(function () {
-            $(this).rules('add', {
-                required: true,
-                minlength: 8,
-                messages: {
-                    required: 'Введіть назву поверху',
-                    minlength: 'Назва поверху має містити мінімум 8 символів'
-                }
-            });
-        });
-
-        $('#users select').each(function () {
-            $(this).rules('add', {
-                required: true,
-                messages: {
-                    required: 'Виберіть користувача',
-                }
-            });
-        });
-
-        $('input[type=file]').each(function () {
-            $(this).rules('add', {
-                required: function (el) {
-                    const id = $(el).prop('id');
-                    const number = id.match(/\d+/)[0];
-                    const regex = /^https:\/\/placehold\.co\/.+$/;
-                    const src = $('#images img').eq(Number(number) - 1).attr('src')
-                    return regex.test(src);
-                },
-                messages: {
-                    required: 'Виберіть зображення',
-                }
-            });
-        });
-
-
-        if (is_valid) {
-            $button.prop('disabled', false);
-        } else {
-            $button.prop('disabled', 'disabled');
         }
-    }
 
-    // Sections
-    const $section_extra_form = $('#sections .section').last();
-    const $section_form_clone = $section_extra_form.clone(true);
-    $section_extra_form.hide();
+        // Sections
+        const $section_extra_form = $('#sections .section').last();
+        const $section_form_clone = $section_extra_form.clone(true);
+        $section_extra_form.hide();
 
-    $('#add-section-button').on('click', function () {
-        const $total_forms = $('#id_sections-TOTAL_FORMS');
-        const count = parseInt($total_forms.val());
+        $('#add-section-button').on('click', function () {
+            const $total_forms = $('#id_sections-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
 
-        const form_markup = $section_form_clone.prop('outerHTML');
-        const regex = /sections-(\d+)-/g;
-        const form = form_markup.replace(regex, `sections-${count}-`);
+            const form_markup = $section_form_clone.prop('outerHTML');
+            const regex = /sections-(\d+)-/g;
+            const form = form_markup.replace(regex, `sections-${count}-`);
 
-        $('#sections #add-section-button').before(form);
+            $('#sections #add-section-button').before(form);
 
-        $('#sections input[type=text]:last').val(`Cекція ${count}`);
+            $('#sections input[type=text]:last').val(`Cекція ${count}`);
 
-        $total_forms.attr('value', count + 1);
-        validate_form();
-    });
-
-    $(document).on('click', '.delete-section-button', function () {
-        const $section = $(this).closest('.section');
-        $section.find('input[type="checkbox"]').attr('checked', true);
-        $section.hide();
-        validate_form()
-    });
-
-    // Floors
-    const $floor_extra_form = $('#floors .floor').last();
-    const $floor_form_clone = $floor_extra_form.clone(true);
-    $floor_extra_form.hide();
-
-    $('#add-floor-button').on('click', function () {
-        const $total_forms = $('#id_floors-TOTAL_FORMS');
-        const count = parseInt($total_forms.val());
-
-        const form_markup = $floor_form_clone.prop('outerHTML');
-        const regex = /floors-(\d+)-/g;
-        const form = form_markup.replace(regex, `floors-${count}-`);
-
-        $('#floors #add-floor-button').before(form);
-
-        $('#floors input[type=text]:last').val(`Поверх ${count}`);
-
-        $total_forms.attr('value', count + 1);
-        validate_form();
-    });
-
-    $(document).on('click', '.delete-floor-button', function () {
-        const $floor = $(this).closest('.floor');
-        $floor.find('input[type="checkbox"]').attr('checked', true);
-        $floor.hide();
-        validate_form();
-    });
-
-    // Users
-    function update_role_display(el) {
-        const selected_option = el.find('option:selected');
-        const role = selected_option.data('role');
-        el.closest('.user').find('.role-display').val(role ?? 'Виреріть...');
-    }
-
-    $(document).ready(function () {
-        $('#users select').each(function () {
-            update_role_display($(this));
+            $total_forms.attr('value', count + 1);
+            validate_form();
         });
 
-        $('form').on('change', '#users select', function () {
-            update_role_display($(this));
+        $(document).on('click', '.delete-section-button', function () {
+            const $section = $(this).closest('.section');
+            $section.find('input[type="checkbox"]').attr('checked', true);
+            $section.hide();
+            validate_form()
         });
-    });
 
-    const $user_extra_form = $('#users .user').last();
-    const $user_form_clone = $user_extra_form.clone(true);
-    $user_extra_form.hide();
+        // Floors
+        const $floor_extra_form = $('#floors .floor').last();
+        const $floor_form_clone = $floor_extra_form.clone(true);
+        $floor_extra_form.hide();
 
-    $('#add-user-button').on('click', function () {
-        const $total_forms = $('#id_users-TOTAL_FORMS');
-        const count = parseInt($total_forms.val());
+        $('#add-floor-button').on('click', function () {
+            const $total_forms = $('#id_floors-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
 
-        const form_markup = $user_form_clone.prop('outerHTML');
-        const regex = /users-(\d+)-/g;
-        const form = form_markup.replace(regex, `users-${count}-`);
+            const form_markup = $floor_form_clone.prop('outerHTML');
+            const regex = /floors-(\d+)-/g;
+            const form = form_markup.replace(regex, `floors-${count}-`);
 
-        $('#users #add-user-button').before(form);
+            $('#floors #add-floor-button').before(form);
 
-        $total_forms.attr('value', count + 1);
-        validate_form();
-    });
+            $('#floors input[type=text]:last').val(`Поверх ${count}`);
 
-    $(document).on('click', '.delete-user-button', function () {
-        const $user = $(this).closest('.user');
-        $user.find('input[type="checkbox"]').attr('checked', true);
-        $user.hide();
-        validate_form();
-    });
+            $total_forms.attr('value', count + 1);
+            validate_form();
+        });
 
-    // Images
-    $(document).on('change', 'input:file', function (e) {
-        const image = e.target.files[0];
-        const src = URL.createObjectURL(image);
+        $(document).on('click', '.delete-floor-button', function () {
+            const $floor = $(this).closest('.floor');
+            $floor.find('input[type="checkbox"]').attr('checked', true);
+            $floor.hide();
+            validate_form();
+        });
 
-        const id = $(e.target).prop('id');
-        const number = id.match(/\d+/)[0];
+        // Users
+        function update_role_display(el) {
+            const selected_option = el.find('option:selected');
+            const role = selected_option.data('role');
+            el.closest('.user').find('.role-display').val(role ?? 'Виреріть...');
+        }
 
-        $('#images img').eq(Number(number) - 1).attr('src', src);
-    });
-</script>
+        $(document).ready(function () {
+            $('#users select').each(function () {
+                update_role_display($(this));
+            });
+
+            $('form').on('change', '#users select', function () {
+                update_role_display($(this));
+            });
+        });
+
+        const $user_extra_form = $('#users .user').last();
+        const $user_form_clone = $user_extra_form.clone(true);
+        $user_extra_form.hide();
+
+        $('#add-user-button').on('click', function () {
+            const $total_forms = $('#id_users-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $user_form_clone.prop('outerHTML');
+            const regex = /users-(\d+)-/g;
+            const form = form_markup.replace(regex, `users-${count}-`);
+
+            $('#users #add-user-button').before(form);
+
+            $total_forms.attr('value', count + 1);
+            validate_form();
+        });
+
+        $(document).on('click', '.delete-user-button', function () {
+            const $user = $(this).closest('.user');
+            $user.find('input[type="checkbox"]').attr('checked', true);
+            $user.hide();
+            validate_form();
+        });
+
+        // Images
+        $(document).on('change', 'input:file', function (e) {
+            const image = e.target.files[0];
+            const src = URL.createObjectURL(image);
+
+            const id = $(e.target).prop('id');
+            const number = id.match(/\d+/)[0];
+
+            $('#images img').eq(Number(number) - 1).attr('src', src);
+        });
+    </script>
 {% endblock js %}

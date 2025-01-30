@@ -14,26 +14,39 @@ class AdminUsersDatatableView(AjaxDatatableView):
     search_values_separator = '+'
 
     column_defs = [
-        {'name': 'id', 'title': '#', 'visible': True, },
-        {'name': 'full_name', 'title': 'Користувач', 'visible': True, },
-        {'name': 'role',
-         'title': 'Роль',
-         'visible': True,
-         'choices': [(group.name, group.name) for group in Group.objects.all()],
-         },
-        {'name': 'phone_number', 'title': 'Номер телефону', 'visible': True},
-        {'name': 'email', 'title': 'Електронна пошта', 'visible': True},
-        {'name': 'status',
-         'title': 'Статус',
-         'visible': True,
-         'choices': STATUS_CHOICES,
-         },
-        {'name': 'button_group',
-         'title': '',
-         'placeholder': True, 'visible': True,
-         'searchable': False,
-         'orderable': False,
-         },
+        {
+            'name': 'id',
+            'title': '#',
+        },
+        {
+            'name': 'full_name',
+            'title': 'Користувач',
+        },
+        {
+            'name': 'role',
+            'title': 'Роль',
+            'choices': [(group.name, group.name) for group in Group.objects.all()],
+        },
+        {
+            'name': 'phone_number',
+            'title': 'Номер телефону',
+        },
+        {
+            'name': 'email',
+            'title': 'Електронна пошта',
+        },
+        {
+            'name': 'status',
+            'title': 'Статус',
+            'choices': STATUS_CHOICES,
+        },
+        {
+            'name': 'button_group',
+            'title': '',
+            'placeholder': True,
+            'searchable': False,
+            'orderable': False,
+        },
     ]
 
     def get_initial_queryset(self, request=None):
@@ -49,6 +62,8 @@ class AdminUsersDatatableView(AjaxDatatableView):
         )
 
     def customize_row(self, row, obj):
+        row['name'] = str(obj)
+
         if obj.status == 'new':
             row['status'] = f"<small class='label label-warning'>{obj.get_status_display()}</small>"
         elif obj.status == 'active':

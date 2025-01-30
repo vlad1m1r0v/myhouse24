@@ -37,19 +37,8 @@
                             <div class="row">
                                 <div class="col-xs-6 col-md-4">
                                     <div class="form-group service">
-                                        <label for="{{ service.service.id_for_label }}">{{ service.service.label }}</label>
-                                        <select name="{{ service.service.html_name }}"
-                                                id="{{ service.service.id_for_label }}"
-                                                class="form-control">
-                                            <option value>Виберіть...</option>
-                                            {% for option in service.service.field.queryset %}
-                                                <option value="{{ option.id }}"
-                                                        data-unit="{{ option.unit }}"
-                                                        {% if option.id == service.instance.service.id %}selected{% endif %}>
-                                                    {{ option.name }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
+                                        <label>{{ service.service.label }}</label>
+                                        {{ service.service }}
                                     </div>
                                 </div>
                                 <div class="col-xs-6 col-md-3">

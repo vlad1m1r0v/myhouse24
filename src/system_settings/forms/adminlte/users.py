@@ -7,6 +7,7 @@ from django.db import transaction
 from src.authentication.models import CustomUser, STATUS_CHOICES
 from src.system_settings.tasks import send_password_update_notification
 
+
 class AdminUserForm(forms.ModelForm):
     first_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),

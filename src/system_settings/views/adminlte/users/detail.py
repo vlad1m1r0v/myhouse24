@@ -1,4 +1,5 @@
-from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import Group
+from django.db.models import Subquery, OuterRef
 from django.views.generic import DetailView
 
 from src.authentication.models import CustomUser
@@ -11,14 +12,5 @@ class AdminUserDetailView(UserPermissionRequiredMixin, DetailView):
     context_object_name = 'user'
 
     def get_queryset(self):
-        return CustomUser.objects.prefetch_related('groups')
-
-    def get_object(self, queryset=None):
-        queryset = queryset or self.get_queryset()
-        return get_object_or_404(queryset, pk=self.kwargs.get('pk'))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = self.object
-        context['role'] = user.groups.first() if user.groups.exists() else None
-        return context
+        role_subquery = Subquery(Group.objects.filter(user=OuterRef('pk')).order_by('id')[:1].values('name'))
+        return super().get_queryset().annotate(role=role_subquery)

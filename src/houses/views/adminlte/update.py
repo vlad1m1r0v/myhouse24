@@ -1,11 +1,9 @@
 from django.contrib import messages
-from django.contrib.auth.models import Group
 from django.db.models import Prefetch
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from src.authentication.models import CustomUser
 from src.houses.forms import (
     AdminHouseForm,
     AdminHouseSectionFormSet,
