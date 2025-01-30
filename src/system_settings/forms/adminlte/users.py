@@ -21,11 +21,9 @@ class AdminUserForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'class': 'form-control'}),
         label='Номер телефону')
 
-    role = forms.ModelChoiceField(
+    role = forms.ChoiceField(
         widget=forms.Select(attrs={'class': 'form-control'}),
-        queryset=Group.objects,
         label="Роль",
-        empty_label=None
     )
 
     status = forms.ChoiceField(
@@ -51,19 +49,18 @@ class AdminUserForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'phone_number', 'email', 'role', 'status', 'new_password',
-                  'repeat_password']
+        fields = ['first_name', 'last_name', 'phone_number', 'email', 'status', 'new_password', 'repeat_password']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.get('instance')
+
         super().__init__(*args, **kwargs)
+
+        self.fields['role'].choices = [(role.id, role.name) for role in Group.objects.all()]
 
         if not user:
             self.fields['new_password'].required = True
             self.fields['repeat_password'].required = True
-
-        if user and user.groups.exists():
-            self.fields['role'].initial = user.groups.first()
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

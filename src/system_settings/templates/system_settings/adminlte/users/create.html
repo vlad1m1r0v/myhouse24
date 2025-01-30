@@ -133,6 +133,7 @@
                             strong_password: true,
                         },
                         repeat_password: {
+                            required: true,
                             equalTo: '#id_new_password',
                         }
                     },
@@ -164,6 +165,7 @@
                             minlength: "Пароль повинен містити хоча б 8 символів",
                         },
                         repeat_password: {
+                            required: "Введіть пароль",
                             equalTo: "Паролі не співпадають"
                         }
                     },
