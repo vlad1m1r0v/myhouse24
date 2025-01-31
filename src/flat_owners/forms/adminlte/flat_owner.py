@@ -65,19 +65,12 @@ class AdminFlatOwnerForm(forms.ModelForm):
     )
 
     new_password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                'placeholder': 'Новий пароль',
-                'class': 'form-control'}),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Новий пароль', 'class': 'form-control'}),
         required=False,
         label="Новий пароль"
     )
     repeat_password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                'placeholder': 'Повторіть пароль',
-                'class': 'form-control'
-            }),
+        widget=forms.PasswordInput(attrs={'placeholder': 'Повторіть пароль', 'class': 'form-control'}),
         required=False,
         label="Повторіть пароль"
     )
@@ -138,12 +131,13 @@ class AdminFlatOwnerForm(forms.ModelForm):
         user = super().save(commit=False)
 
         password = self.cleaned_data.get('new_password')
+
         if password:
             user.password = make_password(password)
 
             send_password_update_notification.delay(
-                subject_template_name='system_settings/users/password_change_subject.txt',
-                email_template_name='system_settings/users/password_change_notification.html',
+                subject_template_name='system_settings/adminlte/users/password_change_subject.txt',
+                email_template_name='system_settings/adminlte/users/password_change_notification.html',
                 context={
                     'email': user.email,
                     'password': password,

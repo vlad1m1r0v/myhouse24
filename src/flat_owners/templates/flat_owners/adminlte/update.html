@@ -13,16 +13,19 @@
 
         #avatar-preview-container {
             border-radius: 100%;
-            max-width: 150px;
+            width: 150px;
+            aspect-ratio: 1;
             overflow: hidden;
             display: flex;
+            align-items: center;
             justify-content: center;
             margin: 15px auto;
         }
 
         #avatar {
-            height: 150px;
-            aspect-ratio: auto;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
         }
 
         #id_about_me {
@@ -90,7 +93,7 @@
                         <div class="form-group">
                             <label>{{ form.birth_date.label }}</label>
                             <div class="input-group date">
-                                {{ form.birth_date}}
+                                {{ form.birth_date }}
                                 <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
                                 <i class="glyphicon glyphicon-calendar"></i>
                             </span>
@@ -149,7 +152,7 @@
                 <div class="row">
                     <div class="col-xs-12 text-right">
                         <!--TODO: change URL to house owners list page-->
-                        <a href="{% url 'adminlte_flat_owner_create' %}" class="btn btn-default">Відмінити</a>
+                        <a href="{% url 'adminlte:flat-owners:create' %}" class="btn btn-default">Відмінити</a>
                         <button id="submit-button" type="submit" class="btn btn-success">Зберегти</button>
                     </div>
                 </div>
@@ -207,12 +210,12 @@
             const $form = $('#house-owner-form');
             const $button = $('#submit-button');
 
-            $form.on('focus blur keyup select', 'input,textarea,select', function () {
-                validateForm();
+            $form.on('focus blur keyup select change', 'input,textarea,select', function () {
+                validate_form();
             });
 
-            const validateForm = function () {
-                const isValid = $form.validate({
+            const validate_form = function () {
+                const is_valid = $form.validate({
                     rules: {
                         avatar: {
                             required: false,
@@ -254,8 +257,8 @@
                             valid_email: true,
                         },
                         ID: {
-                          required: true,
-                          number: true,
+                            required: true,
+                            number: true,
                         },
                         status: {
                             required: true,
@@ -305,8 +308,8 @@
                             required: "Вкажіть електронну пошту",
                         },
                         ID: {
-                          required: "Введіть унікальний ідентифікатор",
-                          number: "Ідентифікатор має складатись виключно з цифр",
+                            required: "Введіть унікальний ідентифікатор",
+                            number: "Ідентифікатор має складатись виключно з цифр",
                         },
                         status: {
                             required: "Вкажіть статус"
@@ -337,7 +340,7 @@
                 }).checkForm();
 
 
-                if (isValid) {
+                if (is_valid) {
                     $button.prop('disabled', false);
                 } else {
                     $button.prop('disabled', 'disabled');

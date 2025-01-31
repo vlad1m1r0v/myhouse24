@@ -93,8 +93,8 @@ class AdminUserForm(forms.ModelForm):
             user.password = make_password(password)
 
             send_password_update_notification.delay(
-                subject_template_name='system_settings/users/password_change_subject.txt',
-                email_template_name='system_settings/users/password_change_notification.html',
+                subject_template_name='system_settings/adminlte/users/password_change_subject.txt',
+                email_template_name='system_settings/adminlte/users/password_change_notification.html',
                 context={
                     'email': user.email,
                     'password': password,

@@ -187,72 +187,146 @@
             <!-- Sidebar user panel -->
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu tree" data-widget="tree">
-{#                <li><a><i class="fa fa-line-chart"></i> <span>Статистика</span></a></li>#}
-{#                <li><a><i class="fa fa-dollar"></i> <span>Каса</span></a></li>#}
-{#                <li><a><i class="fa fa-files-o"></i> <span>Квитанції на оплату</span></a>#}
-{#                </li>#}
-{#                <li><a><i class="fa fa-credit-card"></i> <span>Особові рахунки</span></a></li>#}
-{#                <li><a><i class="fa fa-key"></i> <span>Квартири</span></a></li>#}
-{#                <li><a><i class="fa fa-users"></i>#}
-{#                    <span>Власники квартир</span></a></li>#}
+                <li>
+                    <a>
+                        <i class="fa fa-line-chart"></i> <span>Статистика</span>
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <i class="fa fa-dollar"></i> <span>Каса</span>
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <i class="fa fa-files-o"></i> <span>Квитанції на оплату</span>
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <i class="fa fa-credit-card"></i> <span>Особові рахунки</span>
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <i class="fa fa-key"></i> <span>Квартири</span>
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <i class="fa fa-users"></i><span>Власники квартир</span>
+                    </a>
+                </li>
                 {% if perms.authentication.houses %}
-                    <li><a href="{% url 'adminlte:houses:list' %}"><i class="fa fa-building"></i>
-                        <span>Будинки</span></a></li>
+                    <li>
+                        <a href="{% url 'adminlte:houses:list' %}">
+                            <i class="fa fa-building"></i><span>Будинки</span>
+                        </a>
+                    </li>
                 {% endif %}
-{#                <li><a><i class="fa fa-envelope-o"></i> <span>Повідомлення</span></a></li>#}
-{#                {% if perms.authentication.service_call_requests %}#}
-{#                    <li><a href="{% url 'adminlte_master_call_requests_list' %}"><i class="fa fa-wrench"></i>#}
-{#                        <span>Заявки виклику майстра</span></a></li>#}
-{#                {% endif %}#}
-{#                {% if perms.authentication.meter_indicators %}#}
-{#                    <li><a href="{% url 'adminlte_meter_indicators_list' %}"><i class="fa fa-dashboard"></i>#}
-{#                        <span>Показники лічильників</span></a></li>#}
-{#                {% endif %}#}
+                <li>
+                    <a>
+                        <i class="fa fa-envelope-o"></i> <span>Повідомлення</span>
+                    </a>
+                </li>
+                {% if perms.authentication.service_call_requests %}
+                    <li>
+                        <a>
+                            <i class="fa fa-wrench"></i><span>Заявки виклику майстра</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if perms.authentication.meter_indicators %}
+                    <li>
+                        <a>
+                            <i class="fa fa-dashboard"></i><span>Показники лічильників</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% if perms.authentication.website_management %}
-                    <li class="treeview"><a href="#!"><i class="fa fa-desktop"></i> <span>Управління сайтом</span> <span
-                            class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+                    <li class="treeview">
+                        <a href="#!">
+                            <i class="fa fa-desktop"></i> <span>Управління сайтом</span>
+                            <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                        </a>
                         <ul class="treeview-menu">
-                            <li><a href="{% url 'adminlte:website-management:home' %}"><i class="fa fa-circle-o"></i>
-                                <span>Головна сторінка</span></a></li>
-                            <li><a href="{% url 'adminlte:website-management:about-us' %}"><i
-                                    class="fa fa-circle-o"></i> <span>Про нас</span></a></li>
-                            <li><a href="{% url 'adminlte:website-management:services' %}"><i
-                                    class="fa fa-circle-o"></i> <span>Послуги</span></a>
+                            <li>
+                                <a href="{% url 'adminlte:website-management:home' %}">
+                                    <i class="fa fa-circle-o"></i><span>Головна сторінка</span>
+                                </a>
                             </li>
-                            <li><a href="{% url 'adminlte:website-management:tariffs' %}"><i class="fa fa-circle-o"></i>
-                                <span>Тарифи</span></a></li>
-                            <li><a href="{% url 'adminlte:website-management:contacts' %}"><i
-                                    class="fa fa-circle-o"></i> <span>Контакти</span></a>
+                            <li>
+                                <a href="{% url 'adminlte:website-management:about-us' %}">
+                                    <i class="fa fa-circle-o"></i> <span>Про нас</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'adminlte:website-management:services' %}">
+                                    <i class="fa fa-circle-o"></i> <span>Послуги</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'adminlte:website-management:tariffs' %}">
+                                    <i class="fa fa-circle-o"></i><span>Тарифи</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'adminlte:website-management:contacts' %}">
+                                    <i class="fa fa-circle-o"></i> <span>Контакти</span>
+                                </a>
                             </li>
                         </ul>
                     </li>
                 {% endif %}
-                <li class="treeview"><a href="#!"><i class="fa fa-cogs"></i> <span>Налаштування системи</span> <span
-                        class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+                <li class="treeview">
+                    <a href="#!"><i class="fa fa-cogs">
+                    </i>
+                        <span>Налаштування системи</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
                     <ul class="treeview-menu">
                         {% if perms.authentication.services %}
-                            <li><a href="{% url 'adminlte:system-settings:services:index' %}"><i class="fa fa-briefcase"></i>
-                                <span>Послуги</span></a></li>
+                            <li>
+                                <a href="{% url 'adminlte:system-settings:services:index' %}">
+                                    <i class="fa fa-briefcase"></i><span>Послуги</span>
+                                </a>
+                            </li>
                         {% endif %}
                         {% if perms.authentication.tariffs %}
-                            <li><a href="{% url 'adminlte:system-settings:tariffs:list' %}"><i class="fa fa-money"></i>
-                                <span>Тарифи</span></a></li>
+                            <li>
+                                <a href="{% url 'adminlte:system-settings:tariffs:list' %}">
+                                    <i class="fa fa-money"></i><span>Тарифи</span>
+                                </a>
+                            </li>
                         {% endif %}
                         {% if perms.authentication.roles %}
-                            <li><a href="{% url 'adminlte:system-settings:permissions:index' %}"><i class="fa fa-user"></i> <span>Ролі</span></a>
+                            <li>
+                                <a href="{% url 'adminlte:system-settings:permissions:index' %}">
+                                    <i class="fa fa-user"></i> <span>Ролі</span>
+                                </a>
                             </li>
                         {% endif %}
                         {% if perms.authentication.users %}
-                            <li><a href="{% url 'adminlte:system-settings:users:list' %}"><i class="fa fa-user-plus"></i> <span>Користувачі</span></a>
+                            <li>
+                                <a href="{% url 'adminlte:system-settings:users:list' %}">
+                                    <i class="fa fa-user-plus"></i> <span>Користувачі</span>
+                                </a>
+                            </li>
                         {% endif %}
-                        </li>
                         {% if perms.authentication.payment_information %}
-                            <li><a href="{% url 'adminlte:system-settings:payment-credential:index' %}"><i class="fa fa-credit-card"></i>
-                                <span>Платіжні реквізити</span></a>
+                            <li>
+                                <a href="{% url 'adminlte:system-settings:payment-credential:index' %}">
+                                    <i class="fa fa-credit-card"></i><span>Платіжні реквізити</span>
+                                </a>
                             </li>
                         {% endif %}
                         {% if perms.authentication.payment_items %}
-                            <li><a href="{% url 'adminlte:system-settings:payment-items:list' %}"><i class="fa fa-list-ol"></i> <span>Статті платежів</span></a>
+                            <li>
+                                <a href="{% url 'adminlte:system-settings:payment-items:list' %}">
+                                    <i class="fa fa-list-ol"></i> <span>Статті платежів</span>
+                                </a>
                             </li>
                         {% endif %}
                     </ul>
