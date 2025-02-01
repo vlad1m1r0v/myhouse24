@@ -10,13 +10,22 @@ class AdminPaymentItemsDatatableView(AjaxDatatableView):
     search_values_separator = '+'
 
     column_defs = [
-        {'name': 'name', 'title': 'Назва', 'visible': True, 'orderable': False},
-        {'name': 'type', 'title': 'Прихід / Витрата', 'visible': True, },
-        {'name': 'button_group',
-         'title': '',
-         'placeholder': True, 'visible': True,
-         'searchable': False,
-         'orderable': False, },
+        {
+            'name': 'name',
+            'title': 'Назва',
+            'orderable': False
+        },
+        {
+            'name': 'type',
+            'title': 'Прихід / Витрата',
+        },
+        {
+            'name': 'button_group',
+            'title': '',
+            'placeholder': True,
+            'searchable': False,
+            'orderable': False,
+        },
     ]
 
     def customize_row(self, row, obj):

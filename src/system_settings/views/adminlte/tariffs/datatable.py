@@ -11,11 +11,29 @@ class AdminTariffsDatatableView(AjaxDatatableView):
     search_values_separator = '+'
 
     column_defs = [
-        {'name': 'name', 'title': 'Назва', 'visible': True, 'searchable': False},
-        {'name': 'description', 'title': 'Опис', 'visible': True, 'searchable': False, },
-        {'name': 'updated_at', 'title': 'Дата редагування', 'visible': True, 'searchable': False, },
-        {'name': 'button_group', 'title': '', 'placeholder': True, 'visible': True, 'searchable': False,
-         'orderable': False, },
+        {
+            'name': 'name',
+            'title': 'Назва',
+            'searchable': False
+        },
+        {
+            'name': 'description',
+            'title': 'Опис',
+            'searchable': False
+        },
+        {
+            'name': 'updated_at',
+            'title': 'Дата редагування',
+            'searchable': False
+        },
+        {
+            'name': 'button_group',
+            'title': '',
+            'placeholder': True,
+            'visible': True,
+            'searchable': False,
+            'orderable': False,
+        },
     ]
 
     def customize_row(self, row, obj):
