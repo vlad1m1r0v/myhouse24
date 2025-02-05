@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group
 from django.db.models import OuterRef, Subquery
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
-from src.authentication.models import CustomUser
+from src.authentication.models import CustomUser, STATUS_CHOICES
 from src.houses.models import House, HouseUser
 
 
@@ -44,7 +44,7 @@ class BaseAdminHouseUserFormSet(BaseInlineFormSet):
         super().__init__(*args, **kwargs)
 
         role_subquery = Subquery(Group.objects.filter(user=OuterRef('pk')).order_by('id')[:1].values('name'))
-        qs = CustomUser.objects.filter(is_staff=True).annotate(role=role_subquery)
+        qs = CustomUser.objects.filter(is_staff=True, status="active").annotate(role=role_subquery)
 
         self.user_choices = [*forms.ModelChoiceField(
             queryset=qs,
