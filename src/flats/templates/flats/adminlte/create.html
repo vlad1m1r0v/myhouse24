@@ -82,13 +82,15 @@
 {% block js %}
     <!--JQuery Validation-->
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-
     <!--Select2-->
     <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
     <!--Set default language locale for Select2 components-->
     <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
     <script>
         $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
     </script>
     <script>
         $(document).ready(function () {
@@ -210,9 +212,6 @@
                 const $tariff_select = $("#id_tariff");
 
                 $house_select.select2({
-                    width: '100%',
-                    placeholder: 'Виберіть...',
-                    allowClear: true,
                     ajax: {
                         url: '../api/houses/',
                         dataType: "json",
@@ -226,9 +225,6 @@
                 })
 
                 $section_select.select2({
-                    width: '100%',
-                    placeholder: 'Виберіть...',
-                    allowClear: true,
                     ajax: {
                         url: '../api/sections/',
                         data: function (params) {
@@ -242,9 +238,6 @@
                 });
 
                 $floor_select.select2({
-                    width: '100%',
-                    placeholder: 'Виберіть...',
-                    allowClear: true,
                     ajax: {
                         url: '../api/floors/',
                         data: function (params) {
@@ -258,9 +251,6 @@
                 });
 
                 $owner_select.select2({
-                    width: '100%',
-                    placeholder: 'Виберіть...',
-                    allowClear: true,
                     ajax: {
                         url: '../api/owners/',
                         processResults: data => ({results: data})
@@ -268,9 +258,6 @@
                 });
 
                 $tariff_select.select2({
-                    width: '100%',
-                    placeholder: 'Виберіть...',
-                    allowClear: true,
                     ajax: {
                         url: '../api/tariffs/',
                         processResults: data => ({results: data})
