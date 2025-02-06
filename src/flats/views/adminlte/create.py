@@ -5,7 +5,7 @@ from django.views.generic import CreateView
 
 from src.personal_accounts.models import PersonalAccount
 from .mixin import FlatPermissionRequiredMixin
-from ...forms.adminlte.house import AdminFlatForm
+from ...forms import AdminFlatForm
 
 
 class AdminFlatCreateView(FlatPermissionRequiredMixin,
@@ -39,7 +39,7 @@ class AdminFlatCreateView(FlatPermissionRequiredMixin,
                 messages.error(self.request, 'Особовий рахунок не знайдено')
 
         messages.success(self.request, 'Нову квартиру успішно створено')
-        # TODO: depending on submit button name we should redirect either to "create flat" URL or "flats list" URL
+        # TODO: depending on a submit button name we should redirect either to "create flat" URL or "flats list" URL
         return HttpResponseRedirect(self.success_url)
 
     def form_invalid(self, form):

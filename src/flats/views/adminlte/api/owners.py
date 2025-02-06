@@ -13,7 +13,7 @@ class AdminFlatOwnersView(FlatPermissionRequiredMixin,
         term = self.request.GET.get('term', '')
 
         owners = (CustomUser.objects
-                  .annotate(text=Concat('last_name', Value(' '), 'first_name', Value(' '), 'middle_name'))
+                  .annotate(text=Concat('first_name', Value(' '), 'last_name'))
                   .filter(is_staff=False, status='active', text__icontains=term).values('text', 'id'))
 
         return JsonResponse(data=list(owners), safe=False)

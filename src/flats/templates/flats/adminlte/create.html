@@ -219,7 +219,7 @@
                     },
                 });
 
-                $house_select.on('select2:unselect', function () {
+                $house_select.on('change', function () {
                     $section_select.val('').trigger('change').valid();
                     $floor_select.val('').trigger('change').valid();
                 })

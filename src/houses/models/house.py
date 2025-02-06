@@ -26,6 +26,9 @@ class HouseFloor(models.Model):
     house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='floors')
     name = models.CharField()
 
+    def __str__(self):
+        return self.name
+
 class HouseSection(models.Model):
     house = models.ForeignKey(House, on_delete=models.CASCADE, related_name='sections')
     name = models.CharField()

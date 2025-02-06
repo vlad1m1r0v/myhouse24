@@ -8,6 +8,9 @@ class Tariff(models.Model):
     description = models.TextField()
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
 
 class TariffService(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE,)

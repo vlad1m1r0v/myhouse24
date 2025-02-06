@@ -25,14 +25,20 @@ class AdminFlatForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        flat_instance = kwargs.get('instance')
+        instance = kwargs.get('instance')
         super().__init__(*args, **kwargs)
 
-        if flat_instance:
-            personal_account = PersonalAccount.objects.get(flat=flat_instance)
+        if instance:
+            self.fields['house'].widget.choices = [(instance.house.id, str(instance.house))]
+            self.fields['section'].widget.choices = [(instance.section.id, str(instance.section))]
+            self.fields['floor'].widget.choices = [(instance.floor.id, str(instance.floor))]
+            self.fields['owner'].widget.choices = [(instance.owner.id, str(instance.owner))] if instance.owner else []
+            self.fields['tariff'].widget.choices = [(instance.tariff.id, str(instance.tariff))]
+
+            personal_account = PersonalAccount.objects.get(flat=instance)
             self.fields['personal_account'].initial = personal_account
             self.fields['personal_account'].queryset = PersonalAccount.objects.filter(
-                Q(flat__isnull=True) | Q(flat=flat_instance)
+                Q(flat__isnull=True) | Q(flat=instance)
             )
         else:
             self.fields['personal_account'].queryset = PersonalAccount.objects.filter(flat__isnull=True)
