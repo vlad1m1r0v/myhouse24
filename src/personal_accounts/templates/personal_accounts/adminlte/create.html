@@ -1,0 +1,236 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Новий особовий рахунок
+{% endblock title %}
+{% block css %}
+    <style>
+        .page-header-spec {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .page-header-spec .form-group {
+            flex-basis: 45%;
+            margin: 0;
+        }
+    </style>
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+{% endblock css %}
+{% block header %}
+    Новий особовий рахунок
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Особові рахунки</a></li>
+    <li class="active">Новий особовий рахунок</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <form id="personal-account-form" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-xs-12 col-md-7 col-lg-6">
+                <div class="page-header-spec">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"> № </span>
+                            {{ form.no }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label>{{ form.status.label }}</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.house.label }}</label>
+                            {{ form.house }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.section.label }}</label>
+                            {{ form.section }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.flat.label }}</label>
+                            {{ form.flat }}
+                        </div>
+                        <p>
+                            <b>Власник: </b>
+                            <span id="owner-name">Не знайдено</span>
+                        </p>
+                        <p>
+                            <b>Телефон: </b>
+                            <span id="owner-phone">Не знайдено</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-right">
+                        <div class="form-group">
+                            {#TODO: change to personal accounts list page#}
+                            <a href="{% url 'adminlte:personal-accounts:create' %}"
+                               class="btn btn-default">Відмінити</a>
+                            <button type="submit" class="btn btn-success">Зберегти</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock content %}
+{% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        const $form = $('#personal-account-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus blur keyup change', 'input,select', function () {
+            validate_form();
+        });
+
+        $('.select').on('select2:opening select2:closing', function () {
+            $(this).trigger('blur');
+        })
+
+        function validate_form() {
+            const is_valid = $form.validate({
+                ignore: [],
+                rules: {
+                    no: {
+                        required: true,
+                        number: true,
+                    },
+                    house: {
+                        required: true,
+                    },
+                    section: {
+                        required: true,
+                    },
+                    flat: {
+                        required: true,
+                    },
+                },
+                messages: {
+                    no: {
+                        required: 'Введіть номер особового рахунку',
+                        number: 'Номер особового рахунку має бути числом',
+                    },
+                    house: {
+                        required: 'Вкажіть будинок',
+                    },
+                    section: {
+                        required: 'Вкажіть секцію',
+                    },
+                    flat: {
+                        required: 'Вкажіть квартиру',
+                    },
+                },
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
+
+        const $house_select = $("#id_house");
+        const $section_select = $("#id_section");
+        const $flat_select = $("#id_flat");
+
+        const $owner_name = $('#owner-name');
+        const $owner_phone = $('#owner-phone');
+
+        $house_select.select2({
+            ajax: {
+                url: '../api/houses/',
+                processResults: data => ({results: data})
+            }
+        });
+
+        $section_select.select2({
+            ajax: {
+                url: '../api/sections/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        house_id: $house_select.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $flat_select.select2({
+            ajax: {
+                url: '../api/flats/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        section_id: $section_select.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $flat_select.on('select2:select', function () {
+            $.ajax({
+                url: '../api/owner/',
+                data: {
+                    flat_id: $flat_select.val(),
+                },
+                method: 'GET',
+                success: function (owner) {
+                    $owner_phone.html(`<a href=tel:${owner.phone}>${owner.phone}</a>`);
+                    $owner_name.html(`<a href='/adminlte/flat-owners/${owner.identifier}/'>${owner.name}</a>`)
+                }
+            })
+        });
+
+        $flat_select.on('select2:unselect', function () {
+            $owner_phone.html('Не знайдено');
+            $owner_name.html('Не знайдено');
+        });
+
+        $house_select.on('change', function () {
+            $section_select.val('').trigger('change').valid();
+        });
+
+        $section_select.on('change', function () {
+            $flat_select.val('').trigger('change').valid();
+        });
+    </script>
+{% endblock js %}

@@ -18,4 +18,4 @@ class PersonalAccount(models.Model):
     flat = models.OneToOneField(Flat, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.no
+        return f"Особовий рахунок № {self.no}"
