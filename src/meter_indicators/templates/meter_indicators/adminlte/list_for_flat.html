@@ -1,0 +1,284 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Показники лічильників, квартира № {{ flat.no }}
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Daterange picker-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+
+        th.dt-orderable-asc, th.dt-orderable-desc {
+            color: #337ab7;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Показники лічильників, квартира № {{ flat.no }}
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li>Показники лічильників</li>
+    <li class="active">Показники лічильників, квартира № {{ flat.no }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right margin-bottom">
+                <a class="btn btn-success">Додати
+                    показник</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <table id="datatable"
+                       class="table table-bordered table-hover"
+                       style="width:100%; overflow-x: scroll">
+                    <thead>
+                    <tr>
+                        <th style="width: 80px; min-width: 80px">№</th>
+                        <th style="width: 200px; min-width: 200px">Статус</th>
+                        <th style="width: 80px; min-width: 80px">Дата</th>
+                        <th style="width: 100px; min-width: 100px">Місяць</th>
+                        <th style="width: 150px; min-width: 150px">Будинок</th>
+                        <th style="width: 150px; min-width: 150px">Секція</th>
+                        <th style="width: 100px; min-width: 100px">№ квартири</th>
+                        <th style="width: 200px; min-width: 200px">Послуга</th>
+                        <th style="width: 80px; min-width: 80px">Показник</th>
+                        <th style="width: 80px; min-width: 80px">Од. вим.</th>
+                        <th style="width: 60px; min-width: 60px"></th>
+                    </tr>
+                    <tr>
+                        <!--Number-->
+                        <th>
+                            <input id="no" type="text" class="form-control">
+                        </th>
+                        <!--Status-->
+                        <th>
+                            <select class="form-control select" id="status">
+                                <option value="new">Нове</option>
+                                <option value="accounted">Враховано</option>
+                                <option value="accounted_paid">Враховано та оплачено</option>
+                                <option value="zero">Нульове</option>
+                            </select>
+                        </th>
+                        <!--Date-->
+                        <th>
+                            <input id="date" type="text" class="form-control">
+                        </th>
+                        <!--Month-->
+                        <th></th>
+                        <!--House-->
+                        <th></th>
+                        <!--Section-->
+                        <th></th>
+                        <!--Flat number-->
+                        <th></th>
+                        <!--Service-->
+                        <th>
+                            <select name="" id="service" class="form-control select"></select>
+                        </th>
+                        <!--Value-->
+                        <th></th>
+                        <!--Unit-->
+                        <th></th>
+                        <!--Buttons-->
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <!--Daterange Picker-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        // Filters initialization
+        $no_input = $('#no');
+
+        const $status_select = $('#status');
+        $status_select.select2({minimumResultsForSearch: -1});
+
+        const $daterangefilter = $('#date');
+
+        $daterangefilter.daterangepicker({
+            autoUpdateInput: false,
+            opens: 'right',
+            locale: {
+                format: 'DD.MM.YYYY',
+                "applyLabel": "Ок",
+                "cancelLabel": "Скасувати",
+                "fromLabel": "Від",
+                "toLabel": "До",
+                "customRangeLabel": "Власний",
+                "daysOfWeek": [
+                    "Нд",
+                    "Пн",
+                    "Вт",
+                    "Ср",
+                    "Чт",
+                    "Пт",
+                    "Сб"
+                ],
+                "monthNames": [
+                    "Січень",
+                    "Лютий",
+                    "Березень",
+                    "Квітень",
+                    "Травень",
+                    "Червень",
+                    "Липень",
+                    "Серпень",
+                    "Вересень",
+                    "Жовтень",
+                    "Листопад",
+                    "Грудень"
+                ],
+                firstDay: 1
+            }
+        });
+
+
+        $daterangefilter.on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY')).trigger('change');
+        });
+
+        $daterangefilter.on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('').trigger('change');
+        });
+
+        const $service_select = $("#service");
+        $service_select.select2({
+            ajax: {
+                url: "{% url 'adminlte:meter-indicators:services' %}",
+                processResults: data => ({results: data})
+            }
+        });
+
+        $no_input.on('keyup', function () {
+            datatable.columns(0).search($(this).val()).draw();
+        });
+
+        $status_select.on('change', function () {
+            datatable.columns(1).search($(this).val()).draw();
+        });
+
+        $daterangefilter.on('change', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        const query_params = new URLSearchParams(document.location.search);
+        const flat_id = query_params.get('flat_id');
+        const service_id = query_params.get('service_id');
+        // if we have service_id in query params we can't change it in filter
+        if (service_id) $service_select.parent().hide();
+
+        $service_select.on('change', function () {
+            datatable.columns(7).search($(this).val()).draw();
+        });
+
+        // DataTable initialization
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            orderCellsTop: true,
+            bFilter: false,
+            iDisplayLength: 10,
+            lengthChange: true,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                // styles tweaking
+                // items and text positioning inside cells and head
+                {
+                    className: "dt-head-center",
+                    targets: '_all'
+                },
+                {
+                    className: "dt-left",
+                    targets: [2]
+                },
+                {
+                    className: "dt-center",
+                    targets: [0, 1, 2, 6, 8, 9, 10]
+                },
+                {
+                    className: "dt-center",
+                    targets: [1, 8, 9, 10]
+                },
+                {
+                    targets: [0, 1, 4, 5, 6, 7, 8, 9, 10],
+                    orderable: false,
+                },
+                {
+                    targets: '_all',
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle').css('padding', '10px');
+                    }
+                }],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+            },
+            ajax: {
+                url: "{% url 'adminlte:meter-indicators:datatable-for-flat' %}",
+                data: function (params) {
+                    params.flat_id = flat_id;
+                    params.service_id = service_id || $service_select.val();
+                    params.date = $daterangefilter.val();
+                    params.no = $no_input.val();
+                    params.status = $status_select.val();
+                },
+            },
+            columns: [
+                {data: "no"},
+                {data: "status"},
+                {data: "date"},
+                {data: "month"},
+                {data: "house"},
+                {data: "section"},
+                {data: "flat"},
+                {data: "service"},
+                {data: "value"},
+                {data: "unit"},
+                {data: "actions"}
+            ]
+        });
+    </script>
+{% endblock js %}

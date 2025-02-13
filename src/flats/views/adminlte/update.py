@@ -6,14 +6,14 @@ from django.views.generic import UpdateView
 from src.personal_accounts.models import PersonalAccount
 from .mixin import (
     FlatPermissionRequiredMixin,
-    FlatUserRequiredMixin
+    HouseUserRequiredMixin
 )
 from ...forms import AdminFlatForm
 from ...models import Flat
 
 
 class AdminFlatUpdateView(FlatPermissionRequiredMixin,
-                          FlatUserRequiredMixin,
+                          HouseUserRequiredMixin,
                           UpdateView):
     template_name = 'flats/adminlte/update.html'
     model = Flat

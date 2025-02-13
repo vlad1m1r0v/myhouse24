@@ -1,2 +1,2 @@
 from .permission_required import FlatPermissionRequiredMixin
-from .flat_user_required import FlatUserRequiredMixin
+from .house_user_required import HouseUserRequiredMixin

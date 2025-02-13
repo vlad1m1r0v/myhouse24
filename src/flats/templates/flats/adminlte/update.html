@@ -230,29 +230,45 @@
                     $floor_select.val('').trigger('change').valid();
                 })
 
+                // example of AJAX calls with lazy loading
                 $section_select.select2({
                     ajax: {
                         url: '../../api/sections/',
+                        delay: 250,
                         data: function (params) {
                             return {
                                 term: params.term,
+                                page: params.page || 1,
                                 house_id: $house_select.val()
                             }
                         },
-                        processResults: data => ({results: data})
-                    },
+                        processResults: data => ({
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        })
+                    }
                 });
 
                 $floor_select.select2({
                     ajax: {
-                        url: '../../api/floors/',
+                        url: '../' +
+                            '../api/floors/',
+                        delay: 250,
                         data: function (params) {
                             return {
                                 term: params.term,
+                                page: params.page || 1,
                                 house_id: $house_select.val()
                             }
                         },
-                        processResults: data => ({results: data}),
+                        processResults: data => ({
+                            results: data.results,
+                            pagination: {
+                                more: data.pagination.more
+                            }
+                        })
                     },
                 });
 

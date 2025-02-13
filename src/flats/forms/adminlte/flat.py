@@ -35,8 +35,14 @@ class AdminFlatForm(forms.ModelForm):
             self.fields['owner'].widget.choices = [(instance.owner.id, str(instance.owner))] if instance.owner else []
             self.fields['tariff'].widget.choices = [(instance.tariff.id, str(instance.tariff))]
 
-            personal_account = PersonalAccount.objects.get(flat=instance)
-            self.fields['personal_account'].initial = personal_account
+            try:
+                personal_account = PersonalAccount.objects.get(flat=instance)
+            except PersonalAccount.DoesNotExist:
+                personal_account = None
+
+            if personal_account:
+                self.fields['personal_account'].initial = personal_account
+
             self.fields['personal_account'].queryset = PersonalAccount.objects.filter(
                 Q(flat__isnull=True) | Q(flat=instance)
             )

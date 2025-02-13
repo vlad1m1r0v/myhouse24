@@ -238,7 +238,7 @@
                 {% endif %}
                 {% if perms.authentication.meter_indicators %}
                     <li>
-                        <a>
+                        <a href="{% url 'adminlte:meter-indicators:list' %}">
                             <i class="fa fa-dashboard"></i><span>Показники лічильників</span>
                         </a>
                     </li>

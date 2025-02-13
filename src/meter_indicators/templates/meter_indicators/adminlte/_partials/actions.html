@@ -1,0 +1,10 @@
+<div class="btn-group" style="display:flex; flex-wrap:nowrap;">
+    <a class="btn btn-default btn-sm" title="Зняти нові показники" target="_blank">
+        <i class="fa fa-dashboard"></i>
+    </a>
+    <a href="{% url 'adminlte:meter-indicators:list-for-flat' %}?flat_id={{ object.flat_id }}&service_id={{ object.service_id }}"
+       class="btn btn-default btn-sm" title="Відкрити історію показників для лічильника"
+    >
+        <i class="fa fa-eye"></i>
+    </a>
+</div>

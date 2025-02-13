@@ -1,0 +1,4 @@
+from .houses import AdminMeterIndicatorsHousesView
+from .sections import AdminMeterIndicatorsSectionsView
+from .flats import AdminMeterIndicatorsFlatsView
+from .services import AdminMeterIndicatorsServicesView

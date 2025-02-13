@@ -3,11 +3,15 @@ from django.urls import reverse_lazy
 from django.views.generic import UpdateView
 
 from src.authentication.models import CustomUser
-from .mixin import FlatOwnerPermissionRequiredMixin
+from .mixin import (
+    FlatOwnerPermissionRequiredMixin,
+    HouseUserRequiredMixin
+)
 from ...forms import AdminFlatOwnerForm
 
 
 class AdminFlatOwnerUpdateView(SuccessMessageMixin,
+                               HouseUserRequiredMixin,
                                FlatOwnerPermissionRequiredMixin,
                                UpdateView):
     model = CustomUser

@@ -1,0 +1,213 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Показники лічильників
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+
+        th.dt-orderable-asc, th.dt-orderable-desc {
+            color: #337ab7;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Показники лічильників
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Показники лічильників</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right margin-bottom">
+                <a class="btn btn-success">Додати
+                    показник</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <table id="datatable"
+                       class="table table-bordered table-hover"
+                       style="width:100%; overflow-x: scroll">
+                    <thead>
+                    <tr>
+                        <th style="width: 150px; min-width: 150px">Будинок</th>
+                        <th style="width: 150px; min-width: 150px">Секція</th>
+                        <th style="width: 150px; min-width: 150px">№ квартири</th>
+                        <th style="width: 150px; min-width: 150px">Лічильник</th>
+                        <th style="width: 100px; min-width: 100px">Показник</th>
+                        <th style="width: 100px; min-width: 100px">Од. вим.</th>
+                        <th style="width: 60px; min-width: 60px"></th>
+                    </tr>
+                    <tr>
+                        <th><select id="house" class="form-control select"></th>
+                        <th><select id="section" class="form-control select"></th>
+                        <th><select id="flat" class="form-control select"></th>
+                        <th><select id="service" class="form-control select"></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        // Select2 filters initialization
+        const $house_select = $("#house");
+        const $section_select = $("#section");
+        const $flat_select = $("#flat");
+        const $service_select = $("#service");
+
+        $house_select.select2({
+            ajax: {
+                url: 'api/houses/',
+                processResults: data => ({results: data})
+            }
+        });
+
+        $section_select.select2({
+            ajax: {
+                url: 'api/sections/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        house_id: $house_select.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            }
+        });
+
+        $flat_select.select2({
+            ajax: {
+                url: 'api/flats/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        section_id: $section_select.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            }
+        });
+
+        $service_select.select2({
+            ajax: {
+                url: 'api/services/',
+                processResults: data => ({results: data})
+            }
+        });
+
+        $house_select.on('change', function () {
+            $section_select.val('').trigger('change');
+        });
+
+        $section_select.on('change', function () {
+            $flat_select.val('').trigger('change');
+        });
+
+        $house_select.on('change', function () {
+            datatable.columns(0).search($(this).val());
+        });
+
+        $section_select.on('change', function () {
+            datatable.columns(1).search($(this).val());
+        });
+
+        $flat_select.on('change', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        $service_select.on('change', function () {
+            datatable.columns(3).search($(this).val()).draw();
+        });
+
+        // DataTable initialization
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            orderCellsTop: true,
+            bFilter: false,
+            iDisplayLength: 10,
+            lengthChange: true,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                {
+                    className: "dt-center",
+                    targets: [4, 5, 6]
+                },
+                {
+                    targets: [0, 1, 3, 4, 5],
+                    orderable: false,
+                },
+                {
+                    targets: '_all',
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle').css('padding', '10px');
+                    }
+                }],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+            },
+            ajax: {
+                url: "{% url 'adminlte:meter-indicators:datatable' %}",
+                data: function (params) {
+                    params.house = $house_select.val();
+                    params.section = $section_select.val();
+                    params.flat = $flat_select.val();
+                    params.service = $service_select.val();
+                },
+            },
+            columns: [
+                {data: "house"},
+                {data: "section"},
+                {data: "flat"},
+                {data: "service"},
+                {data: "value"},
+                {data: "unit"},
+                {data: "actions"},
+            ]
+        });
+    </script>
+{% endblock js %}
