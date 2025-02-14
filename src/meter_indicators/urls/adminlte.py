@@ -10,6 +10,7 @@ urlpatterns = [
         path('for-flat/', views.AdminMeterIndicatorsListForFlatView.as_view(), name='list-for-flat'),
         path('for-flat/datatable/', views.AdminMeterIndicatorsDatatableForFlatView.as_view(), name='datatable-for-flat'),
         path('datatable/', views.AdminMeterIndicatorsDatatableView.as_view(), name='datatable'),
+        path('<int:pk>/', views.AdminMeterIndicatorsDetailView.as_view(), name='detail'),
         path('api/houses/', views.AdminMeterIndicatorsHousesView.as_view(), name='houses'),
         path('api/sections/', views.AdminMeterIndicatorsSectionsView.as_view(), name='sections'),
         path('api/flats/', views.AdminMeterIndicatorsFlatsView.as_view(), name='flats'),

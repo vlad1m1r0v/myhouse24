@@ -18,6 +18,10 @@
         th.dt-orderable-asc, th.dt-orderable-desc {
             color: #337ab7;
         }
+
+        tbody tr td:not(:last-child) {
+            cursor: pointer;
+        }
     </style>
 {% endblock css %}
 {% block header %}
@@ -207,7 +211,12 @@
                 {data: "value"},
                 {data: "unit"},
                 {data: "actions"},
-            ]
+            ],
+            createdRow: function (row) {
+                $(row).find('td:not(:last-child)').on('click', function () {
+                    document.location.href = $(row).find('a:eq(1)').attr('href');
+                });
+            }
         });
     </script>
 {% endblock js %}

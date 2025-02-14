@@ -1,0 +1,145 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% load l10n %}
+{% load status_label %}
+{% block title %}
+    Показник лічильника
+{% endblock title %}
+{% block css %}
+    <!--Datepicker-->
+    <link rel="stylesheet"
+          href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+    <style>
+        .page-header-spec {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            margin-left: 15px;
+        }
+
+        .page-header-spec .form-group {
+            margin-bottom: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-header-spec .form-group {
+                margin-bottom: 15px;
+            }
+
+            .page-header-spec .label-mid {
+                margin: 0 15px 15px 15px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-header-spec .label-mid {
+                margin: 0 15px;
+            }
+        }
+
+        .action-buttons button {
+            margin-bottom: 15px;
+        }
+
+        table tr td:first-child {
+            font-weight: bold;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Оновлення показнику
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:meter-indicators:list' %}">Показники лічильників</a></li>
+    <li>
+        <a href="{% url 'adminlte:meter-indicators:list-for-flat' %}?flat_id={{ object.flat.id }}&service_id={{ object.service.id }}">
+            Показники лічильників, квартира № {{ object.flat.no }}
+        </a>
+    </li>
+    <li class="active"><a>Показник лічильника № {{ object.no }}</a></li>
+{% endblock breadcrumb %}
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <div class="page-header-spec">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"> № </span>
+                            <input type="text" value="{{ object.no }}" class="form-control" disabled>
+                        </div>
+                    </div>
+                    <span class="label-mid">від</span>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                            <input type="text" value="{{ object.date|date:'d.m.Y' }}" class="form-control" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title"></h3>
+                <div class="box-tools">
+                    <a class="btn btn-primary btn-sm">
+                        <span class="hidden-xs">Редагувати показник</span>
+                        <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4">
+                        <table class="table table-bordered table-striped table-view">
+                            <tbody>
+                            <tr>
+                                <td>Послуга</td>
+                                <td>{{ object.service.name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Будинок</td>
+                                <td>
+                                    <a href="{% url 'adminlte:houses:detail' pk=object.house.id %}">{{ object.house.name }}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Секція</td>
+                                <td>{{ object.section.name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Квартира</td>
+                                <td>{{ object.flat.no }}</td>
+                            </tr>
+                            <tr>
+                                <td>Користувач</td>
+                                <td>{{ object.flat.owner }}</td>
+                            </tr>
+                            <tr>
+                                <td>Поточні показники</td>
+                                <td>{{ object.value|unlocalize }}</td>
+                            </tr>
+                            <tr>
+                                <td>Одиниця вимірювання</td>
+                                <td>{{ object.service.unit.unit }}</td>
+                            </tr>
+                            <tr>
+                                <td>Статус</td>
+                                <td>
+                                    {% status_label obj=object %}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock content %}
