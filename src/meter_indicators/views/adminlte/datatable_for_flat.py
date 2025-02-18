@@ -111,6 +111,6 @@ class AdminMeterIndicatorsDatatableForFlatView(AjaxDatatableView):
         row['unit'] = obj.service.unit.unit
 
         row['actions'] = render_to_string(
-            template_name='meter_indicators/adminlte/_partials/actions.html',
+            template_name='meter_indicators/adminlte/_partials/actions_for_flat.html',
             context={'object': obj}
         )

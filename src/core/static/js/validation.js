@@ -60,3 +60,8 @@ $.validator.addMethod("telegram", function (value, element) {
     const telegramRegex = /^https:\/\/t\.me\/\w{3,}$/;
      return this.optional(element) || telegramRegex.test(value);
 }, "Вкажіть валідну адресу в Telegram");
+
+$.validator.addMethod("ddmmyyyy", function (value, element) {
+    const pattern =/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/;
+    return this.optional(element) ||  pattern.test(value);
+}, "Вкажіть валідну дату");

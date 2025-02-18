@@ -4,3 +4,6 @@ from .datatable import AdminMeterIndicatorsDatatableView
 from .list_for_flat import AdminMeterIndicatorsListForFlatView
 from .datatable_for_flat import AdminMeterIndicatorsDatatableForFlatView
 from .detail import AdminMeterIndicatorsDetailView
+from .create import AdminMeterIndicatorsCreateView
+from .update import AdminMeterIndicatorsUpdateView
+from .delete import AdminMeterIndicatorsDeleteView

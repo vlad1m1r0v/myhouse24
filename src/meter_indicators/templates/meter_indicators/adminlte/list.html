@@ -35,8 +35,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right margin-bottom">
-                <a class="btn btn-success">Додати
-                    показник</a>
+                <a class="btn btn-success" href="{% url 'adminlte:meter-indicators:create' %}">Додати показник</a>
             </div>
         </div>
     </div>
@@ -54,7 +53,7 @@
                     </div>
                 </div>
                 <table id="datatable"
-                       class="table table-bordered table-hover"
+                       class="table table-bordered table-hover table-striped"
                        style="width:100%; overflow-x: scroll">
                     <thead>
                     <tr>

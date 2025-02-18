@@ -23,12 +23,23 @@ class AdminMeterIndicatorForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
+        initial = kwargs.get('initial', {})
+
         super().__init__(*args, **kwargs)
 
-        if instance:
-            self.fields['house'].widget.choices = [(instance.house.id, str(instance.house))]
-            self.fields['section'].widget.choices = [(instance.section.id, str(instance.section))]
-            self.fields['flat'].widget.choices = [(instance.flat.id, str(instance.flat))]
+        house = instance.house if instance else initial.get('house')
+        section = instance.section if instance else initial.get('section')
+        flat = instance.flat if instance else initial.get('flat')
+        service = instance.service if instance else initial.get('service')
+
+        if house:
+            self.fields['house'].widget.choices = [(house.id, str(house))]
+        if section:
+            self.fields['section'].widget.choices = [(section.id, str(section))]
+        if flat:
+            self.fields['flat'].widget.choices = [(flat.id, str(flat))]
+        if service:
+            self.fields['service'].widget.choices = [(service.id, str(service))]
 
     no = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
@@ -50,27 +61,21 @@ class AdminMeterIndicatorForm(forms.ModelForm):
     house = forms.CharField(
         label='Будинок',
         widget=forms.Select(attrs={'class': 'form-control select'}),
-        required=False
     )
 
     section = forms.CharField(
         label='Секція',
         widget=forms.Select(attrs={'class': 'form-control select'}),
-        required=False,
     )
 
     flat = forms.CharField(
-        widget=forms.Select(attrs={'class': 'form-control select'}),
         label='Квартира',
-        required=False
+        widget=forms.Select(attrs={'class': 'form-control select'}),
     )
 
-    service = forms.ModelChoiceField(
-        required=False,
-        queryset=Service.objects,
+    service = forms.CharField(
         label='Послуга',
         widget=forms.Select(attrs={'class': 'form-control'}),
-        empty_label='Виберіть...'
     )
 
     value = forms.FloatField(
@@ -92,6 +97,12 @@ class AdminMeterIndicatorForm(forms.ModelForm):
 
     def clean_flat(self):
         try:
-            return Flat.objects.get(id=self.cleaned_data['section'])
+            return Flat.objects.get(id=self.cleaned_data['flat'])
         except Flat.DoesNotExist:
             raise ValidationError('Вибраної квартири не знайдено')
+
+    def clean_service(self):
+        try:
+            return Service.objects.get(id=self.cleaned_data['service'])
+        except Service.DoesNotExist:
+            raise ValidationError('Вибраної послуги не знайдено')
