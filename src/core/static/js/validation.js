@@ -65,3 +65,8 @@ $.validator.addMethod("ddmmyyyy", function (value, element) {
     const pattern =/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/;
     return this.optional(element) ||  pattern.test(value);
 }, "Вкажіть валідну дату");
+
+$.validator.addMethod("hhmm", function (value, element) {
+    const pattern =/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+    return this.optional(element) ||  pattern.test(value);
+}, "Вкажіть валідний час");

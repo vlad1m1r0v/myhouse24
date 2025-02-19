@@ -1,0 +1,432 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Нова заявка
+{% endblock title %}
+{% block css %}
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Datepicker-->
+    <link rel="stylesheet"
+          href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+    <!--TimePicker-->
+    <link rel="stylesheet" href="{% static 'plugins/timepicker/bootstrap-timepicker.css' %}">
+    <style>
+        .page-header-spec {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            margin-left: 15px;
+        }
+
+        .page-header-spec .form-group {
+            margin-bottom: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-header-spec .form-group {
+                margin-bottom: 15px;
+            }
+
+            .page-header-spec .label-mid {
+                margin: 0 15px 15px 15px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-header-spec .label-mid {
+                margin: 0 15px;
+            }
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Нова заявка
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Заявки виклику майстра</a></li>
+    <li class="active">Нова заявка</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <form id="master-call-request-form" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <div class="page-header-spec">
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                            {{ form.date }}
+                        </div>
+                    </div>
+                    <span class="label-mid">від</span>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                            {{ form.time }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label>{{ form.flat_owner.label }}
+                                <a id="profile-link" target="_blank" style="display: none;"><i
+                                        class="fa fa-external-link"></i></a>
+                            </label>
+                            {{ form.flat_owner }}
+                        </div>
+                        <p><b>Телефон:</b> <a id="phone-number-link"></a></p>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <p><b>Будинок: </b> <a id="house-link"></a></p>
+                        <p><b>Поверх: </b><span id="floor-number"></span></p>
+                        <p><b>Секція: </b><span id="section-number"></span></p>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label>{{ form.description.label }}</label>
+                            {{ form.description }}
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="form-group">
+                            <label>{{ form.flat.label }}</label>
+                            {{ form.flat }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.master_type.label }}</label>
+                            {{ form.master_type }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.status.label }}</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.master.label }}</label>
+                            {{ form.master }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label>{{ form.comment.label }}</label>
+                            {{ form.comment }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-right">
+                        <div class="form-group">
+                            <a
+                                    class="btn btn-default">Відмінити</a>
+                            <button type="submit" class="btn btn-success">Зберегти</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock content %}
+{% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Extend JQuery Validation methods-->
+    <script src="{% static 'js/validation.js' %}"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <!--Datepicker-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <!--Datepicker Localization-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
+    <!--TimePicker-->
+    <script src="{% static 'plugins/timepicker/bootstrap-timepicker.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        const $form = $('#master-call-request-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus blur keyup change', 'input,textarea,select', function () {
+            validate_form();
+        });
+
+        const $select = $('.select');
+
+        $select.on('select2:opening select2:closing', function () {
+            $(this).trigger('blur');
+        })
+
+        function validate_form() {
+            const is_valid = $form.validate({
+                    ignore: [],
+                    rules: {
+                        time: {
+                            required: true,
+                            hhmm: true,
+                        },
+                        date: {
+                            required: true,
+                            ddmmyyyy: true,
+                        },
+                        flat_owner: {
+                            required: true,
+                        },
+                        description: {
+                            required: true,
+                            minlength: 20,
+                        },
+                        flat: {
+                            required: true,
+                        },
+                        status: {
+                            required: true,
+                        },
+                        comment: {
+                            required: true,
+                            minlength: 20,
+                        }
+                    },
+                    messages: {
+                        time: {
+                            required: 'Вкажіть час',
+                        },
+                        date: {
+                            required: 'Вкажіть дату',
+                        },
+                        flat_owner: {
+                            required: "Виберіть власника квартири"
+                        },
+                        description: {
+                            required: "Вкажіть опис",
+                            minlength: "Опис має містити хоча б 20 символів",
+                        },
+                        flat: {
+                            required: "Виберіть квартиру"
+                        },
+                        status: {
+                            required: "Виберіть статус"
+                        },
+                        comment: {
+                            required: "Введіть коментар",
+                            minlength: "Коментар має містити хоча б 20 символів",
+                        }
+                    },
+                    errorElement: 'small',
+                    errorPlacement: function (error, element) {
+                        error.css({'color': 'red'});
+                        console.log('.form-group:', element.closest('.form-group'));
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function (element) {
+                        $(element).closest('.form-group').addClass('has-error');
+                    },
+                    unhighlight: function (element) {
+                        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                    }
+                }
+            ).checkForm();
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
+        const $date = $('#id_date');
+
+        $date.datepicker({
+            autoclose: true,
+            language: 'uk',
+        }).on('changeDate', function () {
+            $date.trigger('change').valid();
+        });
+
+        $('.kv-date-calendar').click(function () {
+            $date.focus();
+        });
+
+        $('#id_time').timepicker({
+            showInputs: false,
+            showMeridian: false,
+        });
+
+        $('#id_time').on('change', function () {
+            $(this).valid();
+        })
+
+        const $flat_owner = $('#id_flat_owner');
+        const $profile_link = $('#profile-link');
+        const $phone_link = $('#phone-number-link');
+
+        $flat_owner.select2({
+            ajax: {
+                url: '../api/owners/',
+                processResults: data => ({
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            phone: item.phone,
+                            id: item.id
+                        }
+                    })
+                })
+            },
+            templateSelection: function (container) {
+                $(container.element).attr("data-phone", container.phone);
+                return container.text;
+            }
+        });
+
+        function on_owner_select() {
+            $profile_link.attr('href', `../../../flat-owners/${$flat_owner.val()}/`);
+            $profile_link.show();
+
+            const phone_number = $flat_owner.find(":selected").data('phone');
+            $phone_link.attr('href', `tel:${phone_number}`);
+            $phone_link.text(phone_number);
+        }
+
+        $flat_owner.on('select2:select', on_owner_select);
+
+        $flat_owner.on('select2:unselect', function () {
+            $profile_link.hide();
+            $phone_link.attr('href', '');
+            $phone_link.text('');
+            $flat.empty().trigger('select2:unselect').valid();
+        });
+
+        const $flat = $('#id_flat');
+
+        $flat.select2({
+            ajax: {
+                url: '../api/flats/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        owner_id: $flat_owner.val()
+                    }
+                },
+                processResults: data => ({
+                    results: $.map(data, function (item) {
+                        return {
+                            text: item.text,
+                            house_id: item.house_id,
+                            house_name: item.house_name,
+                            section_name: item.section_name,
+                            floor_name: item.floor_name,
+                            id: item.id
+                        }
+                    })
+                })
+            },
+            templateSelection: function (container) {
+                $(container.element).attr("data-house-id", container.house_id);
+                $(container.element).attr("data-house-name", container.house_name);
+                $(container.element).attr("data-section-name", container.section_name);
+                $(container.element).attr("data-floor-name", container.floor_name);
+                return container.text;
+            }
+        });
+
+        const $house_link = $('#house-link');
+        const $floor_number = $('#floor-number');
+        const $section_number = $('#section-number');
+
+        function on_flat_select() {
+            const $selected = $flat.find(":selected")
+
+            $house_link.attr('href', `../../../houses/${$selected.data('house-id')}/`);
+            $house_link.text($selected.data('house-name'));
+            $floor_number.text($selected.data('floor-name'));
+            $section_number.text($selected.data('section-name'));
+        }
+
+        $flat.on('select2:select', on_flat_select);
+
+        $flat.on('select2:unselect', function () {
+            $house_link.text('');
+            $floor_number.text('');
+            $section_number.text('');
+        });
+
+        const $master_type = $('#id_master_type')
+
+        const $master = $('#id_master');
+
+        $master.select2({
+            ajax: {
+                url: '../api/masters/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        group_id: $master_type.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $master_type.on('change', function () {
+            $master.empty().trigger('select2:unselect');
+        });
+
+        $('#id_comment').wysihtml5({
+            locale: "ua-UA",
+            toolbar: {
+                "font-styles": true,
+                "emphasis": true,
+                "lists": true,
+                "html": false,
+                "link": false,
+                "image": false,
+                "color": false,
+                "blockquote": false,
+                "fa": true,
+            },
+            "events": {
+                load: function () {
+                    const editor = this;
+                    const $textarea = $(editor.editableElement);
+
+                    $(editor.currentView.doc.body).on("keyup", function () {
+                        let content = event.currentTarget.innerHTML;
+                        content = clean_html(content)
+                        $textarea.val(content);
+                        $textarea.trigger('keyup');
+                    })
+                }
+            }
+        });
+
+        function clean_html(html) {
+            const clean_content = html
+                .replace(/<p><br><\/p>/g, '')
+                .replace(/<br>/g, '')
+                .replace(/<[^>]+>/g, '')
+                .trim();
+
+            return clean_content;
+        }
+    </script>
+{% endblock js %}
