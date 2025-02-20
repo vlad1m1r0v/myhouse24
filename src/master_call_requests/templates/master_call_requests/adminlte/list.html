@@ -1,0 +1,315 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Заявки виклику майстра
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Daterange picker-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+
+        th.dt-orderable-asc, th.dt-orderable-desc {
+            color: #337ab7;
+        }
+
+        tbody tr td:not(:last-child) {
+            cursor: pointer;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Заявки виклику майстра
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Заявки виклику майстра</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right margin-bottom">
+                <a href="{% url 'adminlte:master-call-requests:create' %}" class="btn btn-success">Додати заявку</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <table id="datatable"
+                       class="table table-bordered table-hover table-striped"
+                       style="width:100%; overflow-x: scroll">
+                    <thead>
+                    <tr>
+                        <th>№ заявки</th>
+                        <th style="width: 200px; min-width: 200px">Зручний час</th>
+                        <th style="width: 200px; min-width: 200px">Тип майстра</th>
+                        <th style="width: 250px; min-width: 250px">Опис</th>
+                        <th style="width: 250px; min-width: 250px">Квартира</th>
+                        <th style="width: 200px; min-width: 200px">Власник</th>
+                        <th style="width: 200px; min-width: 200px">Телефон</th>
+                        <th style="width: 200px; min-width: 200px">Майстер</th>
+                        <th style="width: 150px; min-width: 150px">Статус</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>{{ filters.no }}</th>
+                        <th>{{ filters.date }}</th>
+                        <th>{{ filters.master_type }}</th>
+                        <th>{{ filters.description }}</th>
+                        <th>{{ filters.flat }}</th>
+                        <th>{{ filters.owner }}</th>
+                        <th>{{ filters.phone }}</th>
+                        <th>{{ filters.master }}</th>
+                        <th>{{ filters.status }}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <!--Daterange Picker-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('allowClear', true);
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+    </script>
+    <script>
+        // setup filters
+        const $daterangefilter = $('#id_date');
+
+        $daterangefilter.daterangepicker({
+            autoUpdateInput: false,
+            opens: 'right',
+            locale: {
+                format: 'DD.MM.YYYY',
+                "applyLabel": "Ок",
+                "cancelLabel": "Скасувати",
+                "fromLabel": "Від",
+                "toLabel": "До",
+                "customRangeLabel": "Власний",
+                "daysOfWeek": [
+                    "Нд",
+                    "Пн",
+                    "Вт",
+                    "Ср",
+                    "Чт",
+                    "Пт",
+                    "Сб"
+                ],
+                "monthNames": [
+                    "Січень",
+                    "Лютий",
+                    "Березень",
+                    "Квітень",
+                    "Травень",
+                    "Червень",
+                    "Липень",
+                    "Серпень",
+                    "Вересень",
+                    "Жовтень",
+                    "Листопад",
+                    "Грудень"
+                ],
+                firstDay: 1
+            }
+        });
+
+        const $owner = $('#id_owner');
+
+        $owner.select2({
+            ajax: {
+                url: 'api/owners/',
+                processResults: data => ({results: data})
+            }
+        });
+
+        const $master_type = $('#id_master_type')
+
+        $master_type.select2({
+            minimumResultsForSearch: -1,
+        });
+
+        const $master = $('#id_master');
+
+        $master_type.on('change', function () {
+            $master.empty().trigger('select2:unselect');
+        });
+
+        $master.select2({
+            ajax: {
+                url: 'api/masters/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        group_id: $master_type.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        const $no = $('#id_no');
+        const $description = $('#id_description');
+        const $flat = $('#id_flat');
+        const $phone = $('#id_phone');
+        const $status = $('#id_status');
+
+        $no.on('keyup', function () {
+            datatable.columns(0).search($(this).val()).draw();
+        });
+
+        $master_type.on('change', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        $description.on('keyup', function () {
+            datatable.columns(3).search($(this).val()).draw();
+        });
+
+        $flat.on('keyup', function () {
+            datatable.columns(4).search($(this).val()).draw();
+        });
+
+        $owner.on('change', function () {
+            datatable.columns(5).search($(this).val()).draw();
+        });
+
+        $phone.on('keyup', function () {
+            datatable.columns(6).search($(this).val()).draw();
+        });
+
+        $master.on('change', function () {
+            datatable.columns(7).search($(this).val()).draw();
+        });
+
+        $status.on('change', function () {
+            datatable.columns(8).search($(this).val()).draw();
+        });
+
+        // DataTable initialization
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            orderCellsTop: true,
+            bFilter: false,
+            iDisplayLength: 10,
+            lengthChange: true,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                {
+                    className: "dt-center",
+                    targets: [0, 1, 2, 5, 6, 7, 8, 9]
+                },
+                {
+                    targets: [3, 4, 5, 6, 7, 8, 9],
+                    orderable: false,
+                },
+                {
+                    targets: '_all',
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle').css('padding', '10px');
+                    }
+                }],
+            ajax: {
+                url: "{% url 'adminlte:master-call-requests:datatable' %}",
+                data: function (params) {
+                    params.no = $no.val();
+                    params.date = $daterangefilter.val();
+                    params.master_type = $master_type.val();
+                    params.description = $description.val();
+                    params.flat = $flat.val();
+                    params.owner = $owner.val();
+                    params.phone = $phone.val();
+                    params.master = $master.val();
+                    params.status = $status.val();
+                },
+            },
+            columns: [
+                {data: 'no'},
+                {data: 'datetime'},
+                {data: 'master_type'},
+                {data: 'description'},
+                {data: 'flat'},
+                {data: 'owner'},
+                {data: 'phone'},
+                {data: 'master'},
+                {data: 'status'},
+                {data: 'actions'}
+            ],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+            },
+            createdRow: function (row, data) {
+                $(row).find('td:not(:last-child)').on('click', function () {
+                    document.location.href = `${data.no}/`;
+                });
+
+                $(row).find('.delete-button').on('click', async function () {
+                    const result = await Swal.fire({
+                        title: "Ви дійсно хочете видалити цей об'єкт?",
+                        icon: "question",
+                        showDenyButton: true,
+                        confirmButtonText: "Видалити",
+                        denyButtonText: "Відмінити"
+                    });
+
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `${data.no}/delete/`,
+                            method: "DELETE", headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            success: function () {
+                                Swal.fire("Об'єкт успішно видалено", "", "success");
+                                datatable.ajax.reload();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        $daterangefilter.on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY')).trigger('change');
+            datatable.columns(1).search($(this).val()).draw();
+        });
+
+        $daterangefilter.on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('').trigger('change');
+            datatable.columns(1).search($(this).val()).draw();
+        });
+    </script>
+{% endblock js %}

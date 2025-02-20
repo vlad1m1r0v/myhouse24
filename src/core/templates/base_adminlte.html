@@ -231,7 +231,7 @@
                 </li>
                 {% if perms.authentication.service_call_requests %}
                     <li>
-                        <a>
+                        <a href="{% url 'adminlte:master-call-requests:list' %}">
                             <i class="fa fa-wrench"></i><span>Заявки виклику майстра</span>
                         </a>
                     </li>

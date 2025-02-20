@@ -1,7 +1,7 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% load l10n %}
-{% load status_label %}
+{% load meter_indicator_status %}
 {% block title %}
     Показник лічильника
 {% endblock title %}
@@ -132,7 +132,7 @@
                             <tr>
                                 <td>Статус</td>
                                 <td>
-                                    {% status_label obj=object %}
+                                    {% meter_indicator_status obj=object %}
                                 </td>
                             </tr>
                             </tbody>

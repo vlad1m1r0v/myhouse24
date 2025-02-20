@@ -18,6 +18,8 @@ class AdminMasterCallRequestsFlatOwnersView(MasterCallRequestPermissionRequiredM
 
         filters &= Q(is_staff=False)
 
+        filters &= Q(status='active')
+
         if term:
             filters &= Q(text__icontains=term)
 

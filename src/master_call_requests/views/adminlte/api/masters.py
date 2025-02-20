@@ -16,6 +16,8 @@ class AdminMasterCallRequestMastersView(
 
         filters = Q()
 
+        filters &= Q(status='active')
+
         if term:
             filters &= Q(text__icontains=term)
 

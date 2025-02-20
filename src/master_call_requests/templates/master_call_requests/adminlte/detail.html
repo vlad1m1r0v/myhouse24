@@ -1,0 +1,144 @@
+{% extends 'base_adminlte.html' %}
+{% load master_call_request_status %}
+{% load static %}
+{% load l10n %}
+{% block title %}
+    Заявка № {{ object.id }}
+{% endblock title %}
+{% block css %}
+    <!--Datepicker-->
+    <link rel="stylesheet"
+          href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+    <style>
+        .page-header-spec {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            margin-left: 15px;
+        }
+
+        .page-header-spec .form-group {
+            margin-bottom: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-header-spec .form-group {
+                margin-bottom: 15px;
+            }
+
+            .page-header-spec .label-mid {
+                margin: 0 15px 15px 15px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-header-spec .label-mid {
+                margin: 0 15px;
+            }
+        }
+
+        .action-buttons button {
+            margin-bottom: 15px;
+        }
+
+        table tr td:first-child {
+            font-weight: bold;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Заявка № {{ object.id }}
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Заявки виклику майстра</a></li>
+    <li class="active">Заявка № {{ object.id }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group date">
+                            <span class="input-group-addon kv-date-calendar">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                        <input value="{{ object.date|date:'d.m.Y' }}" class="form-control" disabled>
+                    </div>
+                </div>
+                <span class="label-mid">від</span>
+                <div class="form-group">
+                    <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                        <input value="{{ object.time }}" class="form-control" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title"></h3>
+                <div class="box-tools">
+                    <a href="{% url 'adminlte:master-call-requests:update' pk=object.id %}" class="btn btn-primary btn-sm">
+                        <span class="hidden-xs">Редагувати заявку</span>
+                        <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-4">
+                        <table class="table table-bordered table-striped table-view">
+                            <tbody>
+                            <tr>
+                                <td>Статус</td>
+                                <td>
+                                    {% master_call_request_status obj=object %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Власник</td>
+                                <td>{{ object.flat_owner.first_name }} {{ object.flat_owner.last_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Номер</td>
+                                <td>{{ object.flat_owner.phone_number }}</td>
+                            </tr>
+                            <tr>
+                                <td>Квартира</td>
+                                <td>{{ object.flat.no }}, {{ object.flat.house.name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Тип майстра</td>
+                                <td>{% if object.master_type %}{{ object.master_type.name }}{% else %}Не
+                                    вказано{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>Майстер</td>
+                                <td>
+                                    {% if object.master %}
+                                        {{ object.master }}
+                                    {% else %}
+                                        Не вказано
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Опис</td>
+                                <td>{{ object.description }}</td>
+                            </tr>
+                            <tr>
+                                <td>Додано</td>
+                                <td>{{ object.date|date:'d.m.Y' }} - {{ object.time }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

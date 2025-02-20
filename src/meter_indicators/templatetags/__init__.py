@@ -1,1 +1,1 @@
-from .status_label import status_label
+from .meter_indicator_status import meter_indicator_status

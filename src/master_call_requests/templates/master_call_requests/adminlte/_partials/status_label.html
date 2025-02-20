@@ -1,0 +1,7 @@
+{% if object.status == 'in_progress' %}
+    <small class='label label-warning'>{{ object.get_status_display }}</small>
+{% elif object.status == 'done' %}
+    <small class='label label-success'>{{ object.get_status_display }}</small>
+{% elif object.status == 'new' %}
+    <small class='label label-primary'>{{ object.get_status_display }}</small>
+{% endif %}

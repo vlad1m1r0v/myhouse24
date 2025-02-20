@@ -75,7 +75,7 @@ class AdminMeterIndicatorForm(forms.ModelForm):
 
     service = forms.CharField(
         label='Послуга',
-        widget=forms.Select(attrs={'class': 'form-control'}),
+        widget=forms.Select(attrs={'class': 'form-control select'}),
     )
 
     value = forms.FloatField(

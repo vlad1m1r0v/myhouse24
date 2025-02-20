@@ -47,8 +47,8 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Заявки виклику майстра</a></li>
-    <li><a>Заявка № {{ object.pk }}</a></li>
+    <li><a href="{% url 'adminlte:master-call-requests:list' %}">Заявки виклику майстра</a></li>
+    <li><a href="{% url 'adminlte:master-call-requests:detail' pk=object.id %}">Заявка № {{ object.pk }}</a></li>
     <li class="active">Редагування</li>
 {% endblock breadcrumb %}
 {% block content %}
@@ -132,7 +132,7 @@
                 <div class="row">
                     <div class="col-xs-12 text-right">
                         <div class="form-group">
-                            <a
+                            <a      href="{% url 'adminlte:master-call-requests:list' %}"
                                     class="btn btn-default">Відмінити</a>
                             <button type="submit" class="btn btn-success">Зберегти</button>
                         </div>
