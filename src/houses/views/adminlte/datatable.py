@@ -1,56 +1,54 @@
 from ajax_datatable import AjaxDatatableView
-from django.urls import reverse
+from django.db.models import Q
+from django.template.loader import render_to_string
 
 from src.houses.models import House
 
 
 class AdminHousesDatatableView(AjaxDatatableView):
     model = House
-    title = 'Домівки'
-    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
-    search_values_separator = '+'
+
+    disable_queryset_optimization = True
+    disable_queryset_optimization_only = True
+    disable_queryset_optimization_select_related = True
+    disable_queryset_optimization_prefetch_related = True
 
     column_defs = [
-        {
-            'name': 'id',
-            'title': '#',
-            'visible': True,
-        },
-        {
-            'name': 'name',
-            'title': 'Назва',
-            'visible': True,
-        },
-        {
-            'name': 'address',
-            'title': 'Адреса',
-            'visible': True
-        },
-        {
-            'name': 'button_group',
-            'title': '',
-            'placeholder': True,
-            'visible': True,
-            'searchable': False,
-            'orderable': False,
-        },
+        {'name': 'pk'},
+        {'name': 'name'},
+        {'name': 'address'},
+        {'name': 'actions'}
     ]
-
-    def customize_row(self, row, obj):
-        row['button_group'] = \
-            f"""
-            <div class="btn-group pull-right">
-                 <a href={reverse('adminlte:houses:update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
-                    <i class="fa fa-pencil"></i>
-                </a>
-                <button data-href={reverse('adminlte:houses:delete', kwargs={'pk': obj.id})} class="btn btn-default btn-sm delete-button" title="Видалити">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
-            """
 
     def get_initial_queryset(self, request=None):
         user = request.user
         if user.is_superuser:
             return super().get_initial_queryset(request)
         return super().get_initial_queryset(request).filter(users__user=user)
+
+    def filter_queryset(self, params, qs):
+        name = self.request.GET.get('name')
+        address = self.request.GET.get('address')
+
+        filters = Q()
+
+        if name:
+            filters &= Q(name__icontains=name)
+
+        if address:
+            filters &= Q(address__icontains=address)
+
+        qs = qs.filter(filters)
+        return qs
+
+    def customize_row(self, row, obj):
+        row['pk'] = obj.pk
+
+        row['name'] = obj.name
+
+        row['address'] = obj.address
+
+        row['actions'] = render_to_string(
+            template_name='houses/adminlte/_partials/actions.html',
+            context={'object': obj}
+        )
