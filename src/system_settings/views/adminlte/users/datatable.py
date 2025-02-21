@@ -1,87 +1,76 @@
 from ajax_datatable import AjaxDatatableView
 from django.contrib.auth.models import Group
-from django.db.models import Value, Subquery, OuterRef, Q
-from django.db.models.functions import Concat, Coalesce
-from django.urls import reverse
+from django.db.models import Q, Value, Subquery, OuterRef, F
+from django.db.models.functions import Concat
+from django.template.loader import render_to_string
 
-from src.authentication.models import CustomUser, STATUS_CHOICES
+from src.authentication.models import CustomUser
 
 
 class AdminUsersDatatableView(AjaxDatatableView):
     model = CustomUser
-    title = 'Користувачі'
-    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
-    search_values_separator = '+'
 
     column_defs = [
-        {
-            'name': 'id',
-            'title': '#',
-        },
-        {
-            'name': 'full_name',
-            'title': 'Користувач',
-        },
-        {
-            'name': 'role',
-            'title': 'Роль',
-            'choices': [(group.name, group.name) for group in Group.objects.all()],
-        },
-        {
-            'name': 'phone_number',
-            'title': 'Номер телефону',
-        },
-        {
-            'name': 'email',
-            'title': 'Електронна пошта',
-        },
-        {
-            'name': 'status',
-            'title': 'Статус',
-            'choices': STATUS_CHOICES,
-        },
-        {
-            'name': 'button_group',
-            'title': '',
-            'placeholder': True,
-            'searchable': False,
-            'orderable': False,
-        },
+        {'name': 'pk'},
+        {'name': 'name'},
+        {'name': 'role'},
+        {'name': 'phone'},
+        {'name': 'email'},
+        {'name': 'status'},
+        {'name': 'actions'}
     ]
 
     def get_initial_queryset(self, request=None):
-        return self.model.objects.filter(Q(is_staff=True) | Q(is_superuser=True)).annotate(
-            full_name=Concat('first_name', Value(' '), 'last_name')
-        ).annotate(
-            role=Coalesce(
-                Subquery(
-                    Group.objects.filter(user=OuterRef('pk')).values('name')[:1]
-                ),
-                Value(None)
-            )
-        )
+        return (self.model.objects.
+                filter(Q(is_staff=True) | Q(is_superuser=True)).
+                annotate(phone=F('phone_number')).
+                annotate(name=Concat('first_name', Value(' '), 'last_name')).
+                annotate(role=Subquery(Group.objects.filter(user=OuterRef('pk')).values('name')[:1])).
+                order_by('pk'))
+
+    def filter_queryset(self, params, qs):
+        name = self.request.GET.get('name')
+        role = self.request.GET.get('role')
+        phone = self.request.GET.get('phone')
+        email = self.request.GET.get('email')
+        status = self.request.GET.get('status')
+
+        filters = Q()
+
+        if name:
+            filters &= Q(name__icontains=name)
+
+        if role:
+            filters &= Q(role=role)
+
+        if phone:
+            filters &= Q(phone__icontains=phone)
+
+        if email:
+            filters &= Q(email__icontains=email)
+
+        if status:
+            filters &= Q(status=status)
+
+        return qs.filter(filters)
 
     def customize_row(self, row, obj):
-        row['name'] = str(obj)
+        row['pk'] = obj.pk
 
-        if obj.status == 'new':
-            row['status'] = f"<small class='label label-warning'>{obj.get_status_display()}</small>"
-        elif obj.status == 'active':
-            row['status'] = f"<small class='label label-success'>{obj.get_status_display()}</small>"
-        else:
-            row['status'] = f"<small class='label label-danger'>{obj.get_status_display()}</small>"
+        row['name'] = obj.name
 
-        row['button_group'] = \
-            f"""
-            <div class="btn-group pull-right">
-                <a class="btn btn-default btn-sm invite-button" data-href={reverse('adminlte:system-settings:users:invite', kwargs={'pk': obj.id})} title='Надіслати запрошення'>
-                    <i class="fa fa-repeat"></i>
-                </a>
-                 <a href={reverse('adminlte:system-settings:users:update', kwargs={'pk': obj.id})} class="btn btn-default btn-sm" title="Редагувати">
-                    <i class="fa fa-pencil"></i>
-                </a>
-                <button {'disabled' if self.request.user.id == obj.id or obj.is_superuser else ''} {'data-href=' + reverse('adminlte:system-settings:users:delete', kwargs={'pk': obj.id}) if self.request.user.id != obj.id else ''} class="btn btn-default btn-sm delete-button"  title="Видалити">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
-            """
+        row['role'] = obj.role
+
+        row['phone'] = obj.phone
+
+        row['email'] = obj.email
+
+        row['status'] = render_to_string(
+            template_name='system_settings/adminlte/users/_partials/status_label.html',
+            context={'object': obj}
+        )
+
+        row['actions'] = render_to_string(
+            template_name='system_settings/adminlte/users/_partials/actions.html',
+            context={'object': obj, 'disabled': self.request.user.pk == obj.pk}
+        )
