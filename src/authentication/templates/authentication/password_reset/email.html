@@ -1,84 +1,79 @@
 <!DOCTYPE html>
 <html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
     <title>Скидання пароля</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding: 0;
-        }
+      header,
+      section,
+      footer {
+        font-family: Roboto, sans-serif;
+        width: 600px;
+        padding: 10px;
+      }
 
-        .container {
-            background-color: #ffffff;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            border: 1px solid #ddd;
-        }
+      section {
+        background: #ecf0f5;
+        border-left: 1px solid lightgray;
+        border-right: 1px solid lightgray;
+      }
 
-        .header {
-            background-color: #ffd700;
-            padding: 20px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
+      section h3 {
+        text-align: center;
+      }
 
-        .content {
-            padding: 20px;
-            font-size: 16px;
-            color: #333;
-        }
+      section p,
+      section a {
+        color: #444444;
+      }
 
-        .footer {
-            background-color: #ffd700;
-            padding: 10px;
-            text-align: center;
-            font-size: 12px;
-            color: #333;
-        }
+      section p > a {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #e7e7e7;
+        margin: 5px;
+        padding: 5px;
+        border: 1px solid lightgray;
+        border-radius: 3px;
+      }
 
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            margin-top: 20px;
-            background-color: #007bff;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
+      header,
+      footer {
+        text-align: center;
+        color: #00a65a;
+        border: 1px solid lightgray;
+      }
 
-        .button:hover {
-            background-color: #0056b3;
-        }
+      header {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      footer {
+        font-size: 12px;
+      }
     </style>
-</head>
-<body>
-<div class="container">
-    <div class="header">
-        MyHouse24
-    </div>
-    <div class="content">
-        <h1 style="text-align: center; color: #007bff;">СКИДАННЯ ПАРОЛЯ</h1>
-        <p>Ви отримали цей лист, тому що надіслали запит на скидання пароля для вашого облікового запису на
-            сайті MyHouse24.</p>
-        <p>Будь ласка, перейдіть за наступним посиланням і виберіть новий пароль:</p>
-        <p style="text-align: center;">
-            <a href="{{ protocol }}://{{ domain }}{% url 'authentication:password-reset:confirm' uidb64=uid token=token %}"
-               class="button">Скинути пароль</a>
-        </p>
-        <p>Ваш логін, якщо ви його забули: <strong>{{ user.email }}</strong></p>
-    </div>
-    <div class="footer">
-        © 2024 MyHouse24. Всі права захищені.
-    </div>
-</div>
-</body>
+  </head>
+  <header>MyHouse24</header>
+  <section>
+    <h3>Скидання пароля 🔑</h3>
+    <p>
+      Ви отримали цей лист, тому що надіслали запит на скидання пароля для
+      вашого облікового запису на сайті MyHouse24.
+      <a
+        href="{{ protocol }}://{{ domain }}{% url 'authentication:password-reset:confirm' uidb64=uid token=token %}">
+          Скинути пароль
+      </a
+      >
+    </p>
+  </section>
+  <footer>© 2024 MyHouse24. Всі права захищені.</footer>
 </html>

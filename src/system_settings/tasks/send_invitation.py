@@ -1,13 +1,16 @@
 from celery import shared_task
-from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.conf import settings
 
 
 @shared_task
-def send_invitation_email(email):
+def send_invitation_email(email, login_url):
     subject = "Запрошення до MyHouse24"
-    message = render_to_string('system_settings/adminlte/users/send_invitation.html')
+    message = render_to_string(
+        template_name='system_settings/adminlte/users/send_invitation.html',
+        context={'login_url': login_url},
+    )
 
     email_message = EmailMessage(
         subject,

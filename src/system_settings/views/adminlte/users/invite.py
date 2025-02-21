@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.urls import reverse
 from django.views import View
 
 from src.system_settings.tasks import send_invitation_email
@@ -11,7 +12,10 @@ class AdminUserInviteView(
     UserPermissionRequiredMixin,
     View
 ):
-    def post(self, request, *args, **kwargs):
+    def post(self, *args, **kwargs):
         email = CustomUser.objects.get(pk=kwargs['pk']).email
-        send_invitation_email.delay(email)
+        login_path = reverse('authentication:adminlte:login')
+        login_url = self.request.build_absolute_uri(login_path)
+
+        send_invitation_email.delay(email, login_url)
         return JsonResponse(status=200, data={'success': True})

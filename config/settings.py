@@ -59,7 +59,8 @@ INSTALLED_APPS = [
     'src.flats.apps.FlatsConfig',
     'src.personal_accounts.apps.PersonalAccountsConfig',
     'src.meter_indicators.apps.MeterIndicatorsConfig',
-    'src.master_call_requests.apps.MasterCallRequestsConfig'
+    'src.master_call_requests.apps.MasterCallRequestsConfig',
+    'src.payment_receipts.apps.PaymentReceiptsConfig'
 ]
 
 MIDDLEWARE = [
