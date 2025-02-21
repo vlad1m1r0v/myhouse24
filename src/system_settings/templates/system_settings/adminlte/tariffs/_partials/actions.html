@@ -1,0 +1,14 @@
+<div class="btn-group pull-right">
+    <a href="{% url 'adminlte:system-settings:tariffs:create' %}?tariff_id={{ object.id }}"
+       class="btn btn-default btn-sm"
+       title='Копіювати'>
+        <i class="fa fa-clone"></i>
+    </a>
+    <a href="{% url 'adminlte:system-settings:tariffs:update' pk=object.pk %}" class="btn btn-default btn-sm"
+       title="Редагувати">
+        <i class="fa fa-pencil"></i>
+    </a>
+    <button class="btn btn-default btn-sm delete-button">
+        <i class="fa fa-trash" title="Видалити"></i>
+    </button>
+</div>
