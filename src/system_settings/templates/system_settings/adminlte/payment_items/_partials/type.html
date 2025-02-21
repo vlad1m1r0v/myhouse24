@@ -1,0 +1,5 @@
+{% if object.type == 'income' %}
+    <p class='text-green'>{{ object.get_type_display }}</p>
+{% else %}
+    <p class='text-red'>{{ object.get_type_display }}</p>
+{% endif %}

@@ -1,47 +1,31 @@
 from ajax_datatable import AjaxDatatableView
-from django.urls import reverse
+from django.template.loader import render_to_string
+
 from src.system_settings.models import PaymentItem
 
 
 class AdminPaymentItemsDatatableView(AjaxDatatableView):
     model = PaymentItem
-    title = 'Статті платежів'
-    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'Всі']]
-    search_values_separator = '+'
 
     column_defs = [
-        {
-            'name': 'name',
-            'title': 'Назва',
-            'orderable': False
-        },
-        {
-            'name': 'type',
-            'title': 'Прихід / Витрата',
-        },
-        {
-            'name': 'button_group',
-            'title': '',
-            'placeholder': True,
-            'searchable': False,
-            'orderable': False,
-        },
+        {'name': 'pk'},
+        {'name': 'name'},
+        {'name': 'type'},
+        {'name': 'actions'},
     ]
 
-    def customize_row(self, row, obj):
-        if obj.type == 'income':
-            row['type'] = f"<p class='text-green'>{obj.get_type_display()}</p>"
-        else:
-            row['type'] = f"<p class='text-red'>{obj.get_type_display()}</p>"
+    def get_initial_queryset(self, request=None):
+        return self.model.objects.order_by('id')
 
-        row['button_group'] = \
-            f"""
-            <div class="btn-group pull-right">
-                <a class="btn btn-default btn-sm" href={reverse('adminlte:system-settings:payment-items:update', kwargs={'pk': obj.id})} title="Редагувати">
-                    <i class="fa fa-pencil"></i>
-                </a> 
-                <button class="btn btn-default btn-sm delete-button" data-href={reverse('adminlte:system-settings:payment-items:delete', kwargs={'pk': obj.id})} title="Видалити">
-                    <i class="fa fa-trash"></i>
-                </button>
-            </div>
-            """
+    def customize_row(self, row, obj):
+        row['name'] = obj.name
+
+        row['type'] = render_to_string(
+            template_name='system_settings/adminlte/payment_items/_partials/type.html',
+            context={'object': obj}
+        )
+
+        row['actions'] = render_to_string(
+            template_name='system_settings/adminlte/payment_items/_partials/actions.html',
+            context={'object': obj}
+        )

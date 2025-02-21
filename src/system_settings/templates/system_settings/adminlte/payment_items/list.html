@@ -4,105 +4,136 @@
     Статті платежів
 {% endblock title %}
 {% block css %}
-    <link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}">
-    <link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet"/>
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
     <style>
         .box {
             padding: 0 6px;
             overflow-x: hidden;
         }
 
-        th:last-child {
-            width: 80px;
-            min-width: 80px;
+        th.dt-orderable-asc, th.dt-orderable-desc {
+            color: #337ab7;
+        }
+
+        tbody tr td:not(:last-child) {
+            cursor: pointer;
         }
     </style>
 {% endblock css %}
 {% block header %}
-    Cтатті платежів
+    Статті платежів
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li class="active">Cтатті платежів</li>
+    <li class="active">Статті платежів</li>
 {% endblock breadcrumb %}
 {% block content %}
     <div class="row">
         <div class="col-xs-12">
             <div class="pull-right margin-bottom">
-                <a href="{% url 'adminlte:system-settings:payment-items:create' %}" class="btn btn-success">Додати статтю</a>
+                <a class="btn btn-success" href="{% url 'adminlte:system-settings:payment-items:create' %}">Додати
+                    статтю</a>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
                 <table id="datatable"
-                       class="table table-striped table-bordered table-hover"
-                       style="width:100%">
+                       class="table table-bordered table-hover table-striped"
+                       style="width:100%; overflow-x: scroll">
+                    <thead>
+                    <tr>
+                        <th>Назва</th>
+                        <th>Прихід / Витрата</th>
+                        <th></th>
+                    </tr>
+                    </thead>
                 </table>
             </div>
         </div>
     </div>
-
 {% endblock content %}
 {% block js %}
-    <script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
-    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ajax_datatable/js/utils.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/initialize_datatable.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/restructure_datatable.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/adjust_rows_datatable.js' %}"></script>
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
     <script>
-        $(document).ready(function () {
-            const $datatable = $('#datatable');
-
-            AjaxDatatableViewUtils.initialize_table(
-                $datatable,
-                "{% url 'adminlte:system-settings:payment-items:datatable' %}",
+        // DataTable initialization
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            orderCellsTop: true,
+            bFilter: false,
+            iDisplayLength: 10,
+            lengthChange: true,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
                 {
-                    scrollX: false,
-                }
-            );
+                    targets: [1, 2],
+                    className: "dt-center",
+                },
+                {
+                    targets: [0, 2],
+                    orderable: false,
+                },
+                {
+                    targets: '_all',
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle').css('padding', '10px');
+                    }
+                }],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+            },
+            ajax: {
+                url: "{% url 'adminlte:system-settings:payment-items:datatable' %}",
+            },
+            columns: [
+                {data: "name"},
+                {data: "type"},
+                {data: "actions"},
+            ],
+            createdRow: function (row, data) {
+                $(row).find('td:not(:last-child)').on('click', function () {
+                    document.location.href = `${data.pk}/update/`;
+                });
 
-            $datatable.on('initComplete', function () {
-                restructure_datatable();
+                $(row).find('.delete-button').on('click', async function () {
+                    const result = await Swal.fire({
+                        title: "Ви дійсно хочете видалити цей об'єкт?",
+                        icon: "question",
+                        showDenyButton: true,
+                        confirmButtonText: "Видалити",
+                        denyButtonText: "Відмінити"
+                    });
 
-                $('#datatable_length, #datatable_filter').hide();
-            });
-
-            $datatable.on('drawCallback', function () {
-                adjust_rows();
-            })
-        })
-
-        $(document).on('click', '.delete-button', async function () {
-            const $button = $(this);
-
-            const result = await Swal.fire({
-                title: "Ви дійсно хочете видалити цей об'єкт?",
-                icon: "question",
-                showDenyButton: true,
-                confirmButtonText: "Видалити",
-                denyButtonText: "Відмінити"
-            });
-
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: $button.attr('data-href'),
-                    method: "DELETE", headers: {
-                        "X-CSRFToken": "{{ csrf_token }}"
-                    },
-                    success: function () {
-                        Swal.fire("Об'єкт успішно видалено", "", "success");
-                        $button.closest('tr').remove();
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `${data.pk}/delete/`,
+                            method: "DELETE", headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            success: function () {
+                                Swal.fire("Об'єкт успішно видалено", "", "success");
+                                datatable.ajax.reload();
+                            }
+                        });
                     }
                 });
             }
         });
-
-        $(document).on('click', 'tbody tr td:not(:last-child)', function() {
-            window.location.assign($(this).closest('tr').find('.btn').attr('href'));
-        })
     </script>
 {% endblock js %}
