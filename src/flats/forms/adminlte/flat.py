@@ -81,6 +81,7 @@ class AdminFlatForm(forms.ModelForm):
     tariff = forms.CharField(
         label='Тариф',
         widget=forms.Select(attrs={'class': 'form-control select'}),
+        required=False
     )
 
     new_personal_account = forms.CharField(

@@ -13,7 +13,7 @@ class Flat(models.Model):
     section = models.ForeignKey(HouseSection, on_delete=models.CASCADE)
     floor = models.ForeignKey(HouseFloor, on_delete=models.CASCADE)
     owner = models.ForeignKey(CustomUser, blank=True, null=True, on_delete=models.SET_NULL, related_name='flats')
-    tariff = models.ForeignKey(Tariff, on_delete=models.CASCADE)
+    tariff = models.ForeignKey(Tariff, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"Квартира № {self.no}"
