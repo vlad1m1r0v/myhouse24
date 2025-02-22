@@ -65,16 +65,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for group_id, forms in grouped_formset.items %}
+                        {% for group_name, forms in grouped_formset.items %}
                             <tr>
-                                <!-- Render the group name based on the group ID -->
                                 <td>
-                                    {% if group_id == 1 %} Директор
-                                    {% elif group_id == 2 %} Керуючий
-                                    {% elif group_id == 3 %} Бухгалтер
-                                    {% elif group_id == 4 %} Електрик
-                                    {% elif group_id == 5 %} Сантехнік
-                                    {% endif %}
+                                    {{ group_name }}
                                 </td>
                                 {% for form in forms %}
                                     <td>
