@@ -1,0 +1,6 @@
+from .houses import AdminReceiptsHousesView
+from .sections import AdminReceiptsSectionsView
+from .flats import AdminReceiptsFlatsView
+from .tariffs import AdminReceiptsTariffsView
+from .flat_info import AdminReceiptsFlatInfoView
+from .flat_info_by_account import AdminReceiptsFlatInfoByAccountView

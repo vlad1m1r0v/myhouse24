@@ -1,0 +1,449 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Нова квитанція
+{% endblock title %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <style>
+        .page-header-spec {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            margin-left: 15px;
+        }
+
+        .page-header-spec .form-group {
+            margin-bottom: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-header-spec .form-group {
+                margin-bottom: 15px;
+            }
+
+            .page-header-spec .label-mid {
+                margin: 0 15px 15px 15px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-header-spec .label-mid {
+                margin: 0 15px;
+            }
+        }
+
+        .action-buttons .btn {
+            margin-bottom: 15px;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Нова квитанція
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Квитанції</a></li>
+    <li class="active">Нова квитанція</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <form id="receipt-form" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-xs-12 col-md-7 col-lg-6">
+                <div class="page-header-spec">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"> № </span>
+                            {{ form.no }}
+                        </div>
+                    </div>
+                    <span class="label-mid">від</span>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                            {{ form.date }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-7 col-lg-6">
+                <div class="btn-group pull-right margin-bottom">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        Виберіть дію <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="set-tariff-services">Встановити всі послуги відповідно до тарифу</a></li>
+                        <li><a class="add-meter-indicators">Додати показники лічильників</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label>{{ form.house.label }}</label>
+                            {{ form.house }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.section.label }}</label>
+                            {{ form.section }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.flat.label }}</label>
+                            {{ form.flat }}
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            {{ form.is_complete }}
+                            <label>{{ form.is_complete.label }}</label>
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.status.label }}</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.tariff.label }}</label>
+                            {{ form.tariff }}
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>{{ form.date_from.label }}</label>
+                                    <div class="input-group date">
+                                        <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </span>
+                                        {{ form.date_from }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="form-group">
+                                    <label>{{ form.date_to.label }}</label>
+                                    <div class="input-group date">
+                                        <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </span>
+                                        {{ form.date_to }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label>{{ form.personal_account.label }}</label>
+                            {{ form.personal_account }}
+                        </div>
+                        <p><b>Власник:</b> <a id="user-name"></a></p>
+                        <p><b>Телефон:</b> <a id="user-phone"></a></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="table-responsive no-padding">
+                            <table id="receipt-services" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="min-width: 300px; width: 100%;">Послуга</th>
+                                    <th style="min-width: 150px; width: 100px;">Витрата</th>
+                                    <th style="min-width: 150px; min-width: 150px;">Од. вим.</th>
+                                    <th style="min-width: 150px;">Ціна за од. вим.</th>
+                                    <th style="min-width: 200px; width: 200px;">Вартість</th>
+                                    <th style="min-width: 40px; width: 40px; "></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{ formset.management_form }}
+                                {% for receipt_service in formset %}
+                                    <tr>
+                                        <td>{{ receipt_service.service }}</td>
+                                        <td>{{ receipt_service.value }}</td>
+                                        <td>{{ receipt_service.unit }}</td>
+                                        <td>{{ receipt_service.price }}</td>
+                                        <td><input type="number" class="form-control"></td>
+                                        <td>
+                                            <div style="display:none">
+                                                {{ receipt_service.DELETE }}
+                                            </div>
+                                            <button type="button" class="btn btn-default btn-sm delete-service"
+                                                    title="Видалити послугу">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <td colspan="4" valing="middle">
+                                    <button id="add-service" type="button" class="btn btn-default btn-hover-change">
+                                        Додати послугу
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        Встановити всі послуги відповідно до тарифу
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        Додати показники лічильників
+                                    </button>
+                                </td>
+                                <td style="min-width: 180px;">
+                                    <div class="h4">
+                                        Загалом: <b><span id="total-cost">0.00</span></b> грн
+                                    </div>
+                                </td>
+                                <td style="width: 40px; min-width: 40px;"></td>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row"></div>
+            </div>
+        </div>
+    </form>
+{% endblock content %}
+{% block js %}
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <!--Datepicker-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <!--Datepicker Localization-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        // select2 and date pickers
+        const $no = $("#id_no");
+        const $house = $("#id_house");
+        const $section = $("#id_section");
+        const $flat = $("#id_flat");
+        const $account = $("#id_personal_account");
+        const $tariff = $("#id_tariff");
+        const $user_name = $('#user-name');
+        const $user_phone = $('#user-phone');
+
+        // no
+        $no.val(Date.now());
+
+        // date
+        const $date = $('.date');
+
+        $date.datepicker({
+            autoclose: true,
+            language: 'uk',
+        }).on('changeDate', function () {
+            $date.trigger('change');
+        });
+
+        $date.datepicker("setDate", new Date());
+
+        $('.kv-date-calendar').click(function () {
+            $(this).closest('.date').focus();
+        })
+
+
+        // select2
+        $house.select2({
+            ajax: {
+                url: '../api/houses/',
+                processResults: data => ({results: data})
+            },
+        });
+
+        $section.select2({
+            ajax: {
+                url: '../api/sections/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        house_id: $house.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $flat.select2({
+            ajax: {
+                url: '../api/flats/',
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        section_id: $section.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $flat.on('select2:select', on_flat_select);
+
+        async function on_flat_select() {
+            const response = await fetch(`../api/flat-info/?flat_id=${$flat.val()}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const info = await response.json();
+                $account.val(info.account_no);
+                $user_name.attr('href', `../../flat-owners/${info.owner_id}/`);
+                $user_name.text(info.owner_name);
+                $user_phone.attr('href', `tel:${info.owner_phone}`);
+                $user_phone.text(info.owner_phone);
+
+                const tariff_data = {'id': info.tariff_id, 'text': info.tariff_name};
+
+                if ($tariff.find("option[value='" + tariff_data.id + "']").length) {
+                    $tariff.val(tariff_data.id).trigger('change');
+                } else {
+                    const option = new Option(tariff_data.text, tariff_data.id, true, true);
+                    $tariff.append(option).trigger('change');
+                }
+            }
+        };
+
+        $tariff.select2({
+            ajax: {
+                url: '../api/tariffs/',
+                processResults: data => ({results: data})
+            },
+        });
+
+        $account.on('blur', on_account_unfocus);
+
+        async function on_account_unfocus() {
+            const response = await fetch(`../api/flat-info-by-account/?account_no=${$account.val()}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const info = await response.json();
+                $user_name.attr('href', `../../flat-owners/${info.owner_id}/`);
+                $user_name.text(info.owner_name);
+                $user_phone.attr('href', `tel:${info.owner_phone}`);
+                $user_phone.text(info.owner_phone);
+
+                // preselect house
+                const house_data = {'id': info.house_id, 'text': info.house_name};
+
+                if ($house.find("option[value='" + house_data.id + "']").length) {
+                    $house.val(house_data.id).trigger('change');
+                } else {
+                    const option = new Option(house_data.text, house_data.id, true, true);
+                    $house.append(option).trigger('change');
+                }
+
+                // preselect section
+                const section_data = {'id': info.section_id, 'text': info.section_name};
+
+                if ($section.find("option[value='" + section_data.id + "']").length) {
+                    $section.val(section_data.id).trigger('change');
+                } else {
+                    const option = new Option(section_data.text, section_data.id, true, true);
+                    $section.append(option).trigger('change');
+                }
+
+                // preselect flat
+                const flat_data = {'id': info.flat_id, 'text': info.flat_name};
+
+                if ($flat.find("option[value='" + flat_data.id + "']").length) {
+                    $flat.val(flat_data.id).trigger('change');
+                } else {
+                    const option = new Option(flat_data.text, flat_data.id, true, true);
+                    $flat.append(option).trigger('change');
+                }
+
+                // preselect tariff
+                const tariff_data = {'id': info.tariff_id, 'text': info.tariff_name};
+
+                if ($tariff.find("option[value='" + tariff_data.id + "']").length) {
+                    $tariff.val(tariff_data.id).trigger('change');
+                } else {
+                    const option = new Option(tariff_data.text, tariff_data.id, true, true);
+                    $tariff.append(option).trigger('change');
+                }
+            }
+        };
+
+        // formset
+        const $service_extra_form = $('#receipt-services tbody tr:last-child');
+        const $service_form_clone = $service_extra_form.clone(true);
+        $service_extra_form.hide();
+
+        // add form
+        $('#add-service').on('click', function () {
+            const $total_forms = $('#id_receiptservice_set-TOTAL_FORMS');
+            const count = parseInt($total_forms.val());
+
+            const form_markup = $service_form_clone.prop('outerHTML');
+            const regex = /receiptservice_set-(\d+)-/g;
+            const form = form_markup.replace(regex, `receiptservice_set-${count}-`);
+
+            $('#receipt-services tbody').append(form);
+
+            $total_forms.attr('value', count + 1);
+        });
+
+        // delete form
+        $(document).on('click', '.delete-service', function () {
+            $(this).closest('td').find('input[type=checkbox]').attr('checked', true);
+            $(this).closest('tr').hide();
+            update_total_cost();
+        });
+
+        // syncing services and units selects
+        $(document).on('change', '#receipt-services > tbody > tr > td:nth-child(1) select', function () {
+            const unit_id = $(this).find('option:selected').data('unit-id');
+            $(this).closest('tr').find('td:nth-child(3) > select').val(unit_id);
+        });
+
+        // calculate cost based on price and value
+        function update_total_cost() {
+            let total = 0;
+
+            $('#receipt-services tr:visible td:nth-child(5) input').each(function () {
+                total += parseFloat($(this).val()) || 0;
+            });
+
+            $('#total-cost').text(total.toFixed(2));
+        }
+
+        $(document).on('change', "#receipt-services tbody tr td:nth-child(2) input, #receipt-services tbody tr td:nth-child(4) input", function () {
+            const $tr = $(this).closest('tr');
+            const value = parseFloat($tr.find('td:nth-child(2) input').val()) || 0;
+            const price = parseFloat($tr.find('td:nth-child(4) input').val()) || 0;
+
+            const cost = value * price;
+            $tr.find('td:nth-child(5) input').val(cost.toFixed(2));
+
+            update_total_cost();
+        });
+    </script>
+{% endblock js %}

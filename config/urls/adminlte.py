@@ -12,5 +12,6 @@ urlpatterns = [
         path('', include('src.flats.urls.adminlte')),
         path('', include('src.flat_owners.urls.adminlte')),
         path('', include('src.personal_accounts.urls.adminlte')),
+        path('', include('src.payment_receipts.urls.adminlte'))
     ]))
 ]

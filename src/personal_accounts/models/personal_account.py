@@ -13,9 +13,9 @@ STATUS_CHOICES = [
 class PersonalAccount(models.Model):
     no = models.CharField(max_length=20)
     status = models.CharField(choices=STATUS_CHOICES, default="active")
-    house = models.ForeignKey(House, null=True, blank=True, on_delete=models.CASCADE)
-    section = models.ForeignKey(HouseSection, null=True, blank=True, on_delete=models.CASCADE)
-    flat = models.OneToOneField(Flat, null=True, blank=True, on_delete=models.CASCADE)
+    house = models.ForeignKey(House, null=True, blank=True, on_delete=models.SET_NULL)
+    section = models.ForeignKey(HouseSection, null=True, blank=True, on_delete=models.SET_NULL)
+    flat = models.OneToOneField(Flat, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"Особовий рахунок № {self.no}"
