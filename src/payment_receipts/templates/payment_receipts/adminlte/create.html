@@ -78,8 +78,8 @@
                         Виберіть дію <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="set-tariff-services">Встановити всі послуги відповідно до тарифу</a></li>
-                        <li><a class="add-meter-indicators">Додати показники лічильників</a></li>
+                        <li><a class="set-services">Встановити всі послуги відповідно до тарифу</a></li>
+                        <li><a class="add-indicators">Додати показники лічильників</a></li>
                     </ul>
                 </div>
             </div>
@@ -190,10 +190,10 @@
                                     <button id="add-service" type="button" class="btn btn-default btn-hover-change">
                                         Додати послугу
                                     </button>
-                                    <button type="button" class="btn btn-default">
+                                    <button type="button" class="set-services btn btn-default">
                                         Встановити всі послуги відповідно до тарифу
                                     </button>
-                                    <button type="button" class="btn btn-default">
+                                    <button type="button" class="add-indicators btn btn-default">
                                         Додати показники лічильників
                                     </button>
                                 </td>
@@ -397,8 +397,7 @@
         const $service_form_clone = $service_extra_form.clone(true);
         $service_extra_form.hide();
 
-        // add form
-        $('#add-service').on('click', function () {
+        function append_form() {
             const $total_forms = $('#id_receiptservice_set-TOTAL_FORMS');
             const count = parseInt($total_forms.val());
 
@@ -409,13 +408,16 @@
             $('#receipt-services tbody').append(form);
 
             $total_forms.attr('value', count + 1);
-        });
+        }
+
+        // add form
+        $('#add-service').on('click', append_form);
 
         // delete form
         $(document).on('click', '.delete-service', function () {
             $(this).closest('td').find('input[type=checkbox]').attr('checked', true);
             $(this).closest('tr').hide();
-            update_total_cost();
+            update_costs();
         });
 
         // syncing services and units selects
@@ -425,7 +427,17 @@
         });
 
         // calculate cost based on price and value
-        function update_total_cost() {
+        function update_costs() {
+            $('#receipt-services tbody tr:visible').each(function () {
+                const $tr = $(this);
+
+                const value = parseFloat($tr.find('td:nth-child(2) input').val()) || 0;
+                const price = parseFloat($tr.find('td:nth-child(4) input').val()) || 0;
+
+                const cost = value * price;
+                $tr.find('td:nth-child(5) input').val(cost.toFixed(2));
+            });
+
             let total = 0;
 
             $('#receipt-services tr:visible td:nth-child(5) input').each(function () {
@@ -436,14 +448,66 @@
         }
 
         $(document).on('change', "#receipt-services tbody tr td:nth-child(2) input, #receipt-services tbody tr td:nth-child(4) input", function () {
-            const $tr = $(this).closest('tr');
-            const value = parseFloat($tr.find('td:nth-child(2) input').val()) || 0;
-            const price = parseFloat($tr.find('td:nth-child(4) input').val()) || 0;
+            update_costs();
+        });
 
-            const cost = value * price;
-            $tr.find('td:nth-child(5) input').val(cost.toFixed(2));
+        $(document).on('click', '.set-services', async function () {
+            const response = await fetch(`../api/services/?tariff_id=${$tariff.val()}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
 
-            update_total_cost();
+            if (response.ok) {
+                const services = await response.json();
+
+                // firstly delete all created forms inside formset
+                $('#receipt-services tbody tr .delete-service').each(function () {
+                    $(this).trigger('click');
+                })
+
+                services.forEach((service) => {
+                    append_form();
+
+                    const new_form = $('#receipt-services tbody tr:last-child');
+                    new_form.find('td:nth-child(1) select').val(service.service_id);
+                    new_form.find('td:nth-child(3) select').val(service.unit_id);
+                    new_form.find('td:nth-child(4) input').val(service.price);
+                })
+            }
+        });
+
+        $(document).on('click', '.add-indicators', async function () {
+            const from = $('#id_date_from').val();
+            const to = $('#id_date_to').val();
+
+            const response = await fetch(`../api/indicators/?flat_id=${$flat.val()}&date_from=${from}&date_to=${to}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const indicators = await response.json();
+
+                $('#receipt-services tbody tr:visible').each(function () {
+                    const $tr = $(this);
+
+                    const service_id = parseFloat($tr.find('td:nth-child(1) select').val());
+
+                    const indicator = indicators.find((item) => item.service_id === service_id);
+
+                    if (indicator) $tr.find('td:nth-child(2) input').val(indicator.value);
+                });
+
+                update_costs();
+            }
         });
     </script>
 {% endblock js %}

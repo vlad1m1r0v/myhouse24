@@ -4,3 +4,5 @@ from .flats import AdminReceiptsFlatsView
 from .tariffs import AdminReceiptsTariffsView
 from .flat_info import AdminReceiptsFlatInfoView
 from .flat_info_by_account import AdminReceiptsFlatInfoByAccountView
+from .services import AdminReceiptsServicesView
+from .indicators import AdminReceiptsIndicatorsView

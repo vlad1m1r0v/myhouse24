@@ -13,5 +13,7 @@ urlpatterns = [
         path('api/tariffs/', views.AdminReceiptsTariffsView.as_view(), name='tariffs'),
         path('api/flat-info/', views.AdminReceiptsFlatInfoView.as_view(), name='flat-info'),
         path('api/flat-info-by-account/', views.AdminReceiptsFlatInfoByAccountView.as_view(), name='flat-info-by-account'),
+        path('api/services/', views.AdminReceiptsServicesView.as_view(), name='services'),
+        path('api/indicators/', views.AdminReceiptsIndicatorsView.as_view(), name='indicators'),
     ]))
 ]
