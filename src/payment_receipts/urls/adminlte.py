@@ -15,5 +15,6 @@ urlpatterns = [
         path('api/flat-info-by-account/', views.AdminReceiptsFlatInfoByAccountView.as_view(), name='flat-info-by-account'),
         path('api/services/', views.AdminReceiptsServicesView.as_view(), name='services'),
         path('api/indicators/', views.AdminReceiptsIndicatorsView.as_view(), name='indicators'),
+        path('api/datatable/', views.AdminReceiptsIndicatorsDatatableView.as_view(), name='datatable-for-form'),
     ]))
 ]

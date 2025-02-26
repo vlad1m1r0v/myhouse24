@@ -4,6 +4,9 @@
     Нова квитанція
 {% endblock title %}
 {% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--Select2-->
     <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
     <style>
@@ -208,12 +211,41 @@
                         </div>
                     </div>
                 </div>
-                <div class="row"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Показники рахунків</h3>
+                    </div>
+                    <div class="box-body table-responsive no-padding">
+                        <table id="datatable" class="table table-bordered table-hover table-striped table-nowrap">
+                            <thead>
+                            <tr>
+                                <th style="width: 80px; min-width: 80px">№</th>
+                                <th style="width: 200px; min-width: 200px">Статус</th>
+                                <th style="width: 80px; min-width: 80px">Дата</th>
+                                <th style="width: 100px; min-width: 100px">Місяць</th>
+                                <th style="width: 150px; min-width: 150px">Будинок</th>
+                                <th style="width: 150px; min-width: 150px">Секція</th>
+                                <th style="width: 100px; min-width: 100px">№ квартири</th>
+                                <th style="width: 200px; min-width: 200px">Послуга</th>
+                                <th style="width: 80px; min-width: 80px">Показник</th>
+                                <th style="width: 80px; min-width: 80px">Од. вим.</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
 {% endblock content %}
 {% block js %}
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
     <!--Select2-->
     <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
     <!--Set default language locale for Select2 components-->
@@ -236,6 +268,8 @@
         const $flat = $("#id_flat");
         const $account = $("#id_personal_account");
         const $tariff = $("#id_tariff");
+        const $date_from = $('#id_date_from');
+        const $date_to = $('#id_date_to');
         const $user_name = $('#user-name');
         const $user_phone = $('#user-phone');
 
@@ -481,10 +515,7 @@
         });
 
         $(document).on('click', '.add-indicators', async function () {
-            const from = $('#id_date_from').val();
-            const to = $('#id_date_to').val();
-
-            const response = await fetch(`../api/indicators/?flat_id=${$flat.val()}&date_from=${from}&date_to=${to}`,
+            const response = await fetch(`../api/indicators/?flat_id=${$flat.val()}&date_from=${$date_from.val()}&date_to=${$date_to.val()}`,
                 {
                     method: 'GET',
                     headers: {
@@ -508,6 +539,88 @@
 
                 update_costs();
             }
+        });
+
+        //Datatable
+        $date_from.on('change', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        $date_to.on('change', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        })
+
+        $house.on('change', function () {
+            datatable.columns(4).search($(this).val()).draw();
+        });
+
+        $section.on('change', function () {
+            datatable.columns(5).search($(this).val()).draw();
+        })
+
+        $flat.on('change', function () {
+            datatable.columns(6).search($(this).val()).draw();
+        });
+
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            lengthChange: false,
+            searching: false,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                {
+                    className: "dt-head-center",
+                    orderable: false,
+                    targets: '_all'
+                },
+                {
+                    className: "dt-left",
+                    targets: [2]
+                },
+                {
+                    className: "dt-center",
+                    targets: [0, 1, 2, 3, 5, 6, 8, 9]
+                },
+                {
+                    className: "dt-center",
+                    targets: [1, 8, 9]
+                }],
+            rowCallback: function (row) {
+                $('td', row).css({
+                    'vertical-align': 'middle',
+                    'padding': '10px'
+                });
+
+                $('td:eq(8), td:eq(9)', row).css('background-color', '#DFD5');
+            },
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+            },
+            ajax: {
+                url: "../api/datatable/",
+                data: function (params) {
+                    params.house_id = $house.val();
+                    params.section_id = $section.val();
+                    params.flat_id = $flat.val();
+
+                    params.date_from = $date_from.val();
+                    params.date_to = $date_to.val();
+                },
+            },
+            columns: [
+                {data: "no"},
+                {data: "status"},
+                {data: "date"},
+                {data: "month"},
+                {data: "house"},
+                {data: "section"},
+                {data: "flat"},
+                {data: "service"},
+                {data: "value"},
+                {data: "unit"},
+            ],
         });
     </script>
 {% endblock js %}
