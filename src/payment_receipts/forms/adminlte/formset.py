@@ -4,8 +4,8 @@ from django.forms import (
 )
 
 from src.payment_receipts.models import (
-    ReceiptService,
-    Receipt
+    Receipt,
+    ReceiptService
 )
 from src.system_settings.models import (
     Service,
@@ -24,9 +24,10 @@ class ServiceSelect(forms.Select):
 class AdminReceiptServiceForm(forms.ModelForm):
     class Meta:
         model = ReceiptService
-        fields = ['service', 'unit', 'price', 'value']
+        fields = ['meter_indicator', 'service', 'unit', 'price', 'value']
 
         widgets = {
+            'meter_indicator': forms.HiddenInput(),
             'service': ServiceSelect(attrs={'class': 'form-control'}),
             'unit': forms.Select(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),

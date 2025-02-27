@@ -159,6 +159,7 @@
                             <table id="receipt-services" class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
+                                    <th style="display: none"></th>
                                     <th style="min-width: 300px; width: 100%;">Послуга</th>
                                     <th style="min-width: 150px; width: 100px;">Витрата</th>
                                     <th style="min-width: 150px; min-width: 150px;">Од. вим.</th>
@@ -171,15 +172,14 @@
                                 {{ formset.management_form }}
                                 {% for receipt_service in formset %}
                                     <tr>
+                                        <td style="display: none">{{ receipt_service.meter_indicator }}</td>
                                         <td>{{ receipt_service.service }}</td>
                                         <td>{{ receipt_service.value }}</td>
                                         <td>{{ receipt_service.unit }}</td>
                                         <td>{{ receipt_service.price }}</td>
                                         <td><input type="number" class="form-control"></td>
                                         <td>
-                                            <div style="display:none">
-                                                {{ receipt_service.DELETE }}
-                                            </div>
+                                            <div style="display:none">{{ receipt_service.DELETE }}</div>
                                             <button type="button" class="btn btn-default btn-sm delete-service"
                                                     title="Видалити послугу">
                                                 <i class="fa fa-trash"></i>
@@ -457,7 +457,7 @@
         // syncing services and units selects
         $(document).on('change', '#receipt-services > tbody > tr > td:nth-child(1) select', function () {
             const unit_id = $(this).find('option:selected').data('unit-id');
-            $(this).closest('tr').find('td:nth-child(3) > select').val(unit_id);
+            $(this).closest('tr').find('td:nth-child(4) > select').val(unit_id);
         });
 
         // calculate cost based on price and value
@@ -465,23 +465,23 @@
             $('#receipt-services tbody tr:visible').each(function () {
                 const $tr = $(this);
 
-                const value = parseFloat($tr.find('td:nth-child(2) input').val()) || 0;
-                const price = parseFloat($tr.find('td:nth-child(4) input').val()) || 0;
+                const value = parseFloat($tr.find('td:nth-child(3) input').val()) || 0;
+                const price = parseFloat($tr.find('td:nth-child(5) input').val()) || 0;
 
                 const cost = value * price;
-                $tr.find('td:nth-child(5) input').val(cost.toFixed(2));
+                $tr.find('td:nth-child(6) input').val(cost.toFixed(2));
             });
 
             let total = 0;
 
-            $('#receipt-services tr:visible td:nth-child(5) input').each(function () {
+            $('#receipt-services tr:visible td:nth-child(6) input').each(function () {
                 total += parseFloat($(this).val()) || 0;
             });
 
             $('#total-cost').text(total.toFixed(2));
         }
 
-        $(document).on('change', "#receipt-services tbody tr td:nth-child(2) input, #receipt-services tbody tr td:nth-child(4) input", function () {
+        $(document).on('change', "#receipt-services tbody tr td:nth-child(3) input, #receipt-services tbody tr td:nth-child(5) input", function () {
             update_costs();
         });
 
@@ -507,9 +507,9 @@
                     append_form();
 
                     const new_form = $('#receipt-services tbody tr:last-child');
-                    new_form.find('td:nth-child(1) select').val(service.service_id);
-                    new_form.find('td:nth-child(3) select').val(service.unit_id);
-                    new_form.find('td:nth-child(4) input').val(service.price);
+                    new_form.find('td:nth-child(2) select').val(service.service_id);
+                    new_form.find('td:nth-child(4) select').val(service.unit_id);
+                    new_form.find('td:nth-child(5) input').val(service.price);
                 })
             }
         });
@@ -530,11 +530,14 @@
                 $('#receipt-services tbody tr:visible').each(function () {
                     const $tr = $(this);
 
-                    const service_id = parseFloat($tr.find('td:nth-child(1) select').val());
+                    const service_id = parseFloat($tr.find('td:nth-child(2) select').val());
 
                     const indicator = indicators.find((item) => item.service_id === service_id);
 
-                    if (indicator) $tr.find('td:nth-child(2) input').val(indicator.value);
+                    if (indicator) {
+                        $tr.find('td:nth-child(1) input').val(indicator.id);
+                        $tr.find('td:nth-child(3) input').val(indicator.value);
+                    };
                 });
 
                 update_costs();

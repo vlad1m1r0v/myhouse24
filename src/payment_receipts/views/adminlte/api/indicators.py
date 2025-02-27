@@ -28,7 +28,7 @@ class AdminReceiptsIndicatorsView(View):
         indicators = (
             MeterIndicator.objects
             .filter(filters)
-            .values('service_id')
+            .values('id', 'service_id')
             .annotate(value=Sum('value'))
         )
 
