@@ -289,7 +289,7 @@
         const $form = $('#receipt-form');
         const $button = $('button[type=submit]');
 
-        $form.on('focus change keyup', 'input,select', function () {
+        $form.on('focus change keyup blur', 'input,select', function () {
             validate_form();
         });
 
@@ -376,15 +376,44 @@
                 errorElement: 'small',
                 errorPlacement: function (error, element) {
                     error.css({'color': 'red'});
-                    element.closest('.form-group').append(error);
+                    const parent = element.closest('.form-group') || element.parent();
+                    parent.length ? parent.append(error) : element.after(error);
                 },
                 highlight: function (element) {
-                    $(element).closest('.form-group').addClass('has-error');
+                    const $el = $(element);
+                    const parent = $el.closest('td, .form-group');
+                    parent.addClass('has-error');
+                    $el.addClass('is-invalid');
                 },
                 unhighlight: function (element) {
-                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                    const $el = $(element);
+                    const parent = $el.closest('td, .form-group');
+                    parent.removeClass('has-error').addClass('has-success');
+                    $el.removeClass('is-invalid').addClass('is-valid');
                 }
             }).checkForm();
+
+            $('#receipt-services > tbody > tr > td:nth-child(2) select, ' +
+                '#receipt-services > tbody > tr > td:nth-child(4) select').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: 'Не вибрано',
+                    }
+                });
+            });
+
+            $('#receipt-services > tbody > tr > td:nth-child(3) input, ' +
+                '#receipt-services > tbody > tr > td:nth-child(5) input, ' +
+                '#receipt-services > tbody > tr > td:nth-child(6) input').each(function () {
+                $(this).rules('add', {
+                    required: true,
+                    messages: {
+                        required: 'Не вказано',
+                    }
+                });
+            });
+
 
             if (is_valid) {
                 $button.prop('disabled', false);
