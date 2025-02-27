@@ -262,6 +262,10 @@
     <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
     <!--Datepicker Localization-->
     <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Extend JQuery Validation methods-->
+    <script src="{% static 'js/validation.js' %}"></script>
     <script>
         $.fn.select2.defaults.set('language', 'uk');
         $.fn.select2.defaults.set('width', '100%');
@@ -281,6 +285,114 @@
         const $user_name = $('#user-name');
         const $user_phone = $('#user-phone');
 
+        // validation
+        const $form = $('#receipt-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus change keyup', 'input,select', function () {
+            validate_form();
+        });
+
+        const validate_form = function () {
+            const is_valid = $form.validate({
+                ignore: ':hidden',
+                rules: {
+                    no: {
+                        required: true,
+                        number: true,
+                    },
+                    date: {
+                        required: true,
+                        date: false,
+                        ddmmyyyy: true,
+                    },
+                    house: {
+                        required: true,
+                    },
+                    section: {
+                        required: true,
+                    },
+                    flat: {
+                        required: true,
+                    },
+                    is_complete: {
+                        required: false,
+                    },
+                    status: {
+                        required: false,
+                    },
+                    tariff: {
+                        required: true,
+                    },
+                    period_from: {
+                        required: true,
+                        date: false,
+                        ddmmyyyy: true,
+                    },
+                    period_to: {
+                        required: true,
+                        date: false,
+                        ddmmyyyy: true,
+                    },
+                    personal_account: {
+                        required: true,
+                        number: true,
+                    },
+                },
+                messages: {
+                    no: {
+                        required: 'Введіть номер квитанції',
+                        number: 'Номер квитанції має бути числом'
+                    },
+                    date: {
+                        required: 'Вкажіть дату',
+                        ddmmyyyy: 'Вкажіть валідну дату'
+                    },
+                    house: {
+                        required: 'Вкажіть будинок'
+                    },
+                    section: {
+                        required: 'Вкажіть секцію'
+                    },
+                    flat: {
+                        required: 'Вкажіть квартиру'
+                    },
+                    tariff: {
+                        required: 'Вкажіть тариф'
+                    },
+                    period_from: {
+                        required: 'Вкажіть початковий період',
+                        ddmmyyyy: 'Вкажіть валідну дату'
+                    },
+                    period_to: {
+                        required: 'Вкажіть кінцевий період',
+                        ddmmyyyy: 'Вкажіть валідну дату'
+                    },
+                    personal_account: {
+                        required: 'Введіть особовий рахунок',
+                        number: 'Особовий рахунок має складатись з цифр'
+                    },
+                },
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
         // no
         $no.val(Date.now());
 
@@ -290,18 +402,24 @@
         $date.datepicker({
             autoclose: true,
             language: 'uk',
-        }).on('changeDate', function () {
-            $date.trigger('change');
         });
 
         $date.datepicker("setDate", new Date());
 
         $('.kv-date-calendar').click(function () {
             $(this).closest('.date').focus();
-        })
+        });
+
+        $date.on('changeDate', function () {
+            $(this).trigger('change').valid();
+        });
 
 
         // select2
+        $('.select').on('select2:opening select2:closing', function () {
+            $(this).trigger('blur');
+        });
+
         $house.select2({
             ajax: {
                 url: '../api/houses/',
@@ -335,6 +453,14 @@
             },
         });
 
+        $house.on('change', function () {
+            $section.val('').trigger('change').valid();
+        });
+
+        $section.on('change', function () {
+            $flat.val('').trigger('change').valid();
+        });
+
         $flat.on('select2:select', on_flat_select);
 
         async function on_flat_select() {
@@ -349,7 +475,7 @@
 
             if (response.ok) {
                 const info = await response.json();
-                $account.val(info.account_no);
+                $account.val(info.account_no).valid();
                 $user_name.attr('href', `../../flat-owners/${info.owner_id}/`);
                 $user_name.text(info.owner_name);
                 $user_phone.attr('href', `tel:${info.owner_phone}`);
@@ -358,10 +484,10 @@
                 const tariff_data = {'id': info.tariff_id, 'text': info.tariff_name};
 
                 if ($tariff.find("option[value='" + tariff_data.id + "']").length) {
-                    $tariff.val(tariff_data.id).trigger('change');
+                    $tariff.val(tariff_data.id).trigger('change').valid();
                 } else {
                     const option = new Option(tariff_data.text, tariff_data.id, true, true);
-                    $tariff.append(option).trigger('change');
+                    $tariff.append(option).trigger('change').valid();
                 }
             }
         };
@@ -396,40 +522,40 @@
                 const house_data = {'id': info.house_id, 'text': info.house_name};
 
                 if ($house.find("option[value='" + house_data.id + "']").length) {
-                    $house.val(house_data.id).trigger('change');
+                    $house.val(house_data.id).trigger('change').valid();
                 } else {
                     const option = new Option(house_data.text, house_data.id, true, true);
-                    $house.append(option).trigger('change');
+                    $house.append(option).trigger('change').valid();
                 }
 
                 // preselect section
                 const section_data = {'id': info.section_id, 'text': info.section_name};
 
                 if ($section.find("option[value='" + section_data.id + "']").length) {
-                    $section.val(section_data.id).trigger('change');
+                    $section.val(section_data.id).trigger('change').valid();
                 } else {
                     const option = new Option(section_data.text, section_data.id, true, true);
-                    $section.append(option).trigger('change');
+                    $section.append(option).trigger('change').valid();
                 }
 
                 // preselect flat
                 const flat_data = {'id': info.flat_id, 'text': info.flat_name};
 
                 if ($flat.find("option[value='" + flat_data.id + "']").length) {
-                    $flat.val(flat_data.id).trigger('change');
+                    $flat.val(flat_data.id).trigger('change').valid();
                 } else {
                     const option = new Option(flat_data.text, flat_data.id, true, true);
-                    $flat.append(option).trigger('change');
+                    $flat.append(option).trigger('change').valid();
                 }
 
                 // preselect tariff
                 const tariff_data = {'id': info.tariff_id, 'text': info.tariff_name};
 
                 if ($tariff.find("option[value='" + tariff_data.id + "']").length) {
-                    $tariff.val(tariff_data.id).trigger('change');
+                    $tariff.val(tariff_data.id).trigger('change').valid();
                 } else {
                     const option = new Option(tariff_data.text, tariff_data.id, true, true);
-                    $tariff.append(option).trigger('change');
+                    $tariff.append(option).trigger('change').valid();
                 }
             }
         };
