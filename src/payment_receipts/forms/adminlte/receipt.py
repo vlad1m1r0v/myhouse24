@@ -79,13 +79,13 @@ class AdminReceiptForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control select'}),
     )
 
-    date_from = forms.DateField(
+    period_from = forms.DateField(
         input_formats=['%d.%m.%Y'],
         widget=forms.DateInput(attrs={'class': 'form-control date'}, format='%d.%m.%Y'),
         label='Період з'
     )
 
-    date_to = forms.DateField(
+    period_to = forms.DateField(
         input_formats=['%d.%m.%Y'],
         widget=forms.DateInput(attrs={'class': 'form-control date'}, format='%d.%m.%Y'),
         label='Період по'
@@ -122,6 +122,6 @@ class AdminReceiptForm(forms.ModelForm):
 
     def clean_personal_account(self):
         try:
-            return PersonalAccount.objects.get(id=self.cleaned_data['personal_account'])
+            return PersonalAccount.objects.get(no=self.cleaned_data['personal_account'])
         except PersonalAccount.DoesNotExist:
             raise ValidationError('Вибраного особового рахунку не знайдено')

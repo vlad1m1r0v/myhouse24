@@ -17,6 +17,8 @@ class AdminReceiptsIndicatorsView(View):
 
         filters = Q(flat_id=flat_id)
 
+        filters &= Q(status='new')
+
         if date_from:
             date_from_parsed = datetime.strptime(date_from, '%d.%m.%Y').date()
             filters &= Q(date__gte=date_from_parsed)

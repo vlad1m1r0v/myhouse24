@@ -120,23 +120,23 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label>{{ form.date_from.label }}</label>
+                                    <label>{{ form.period_from.label }}</label>
                                     <div class="input-group date">
                                         <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
                                             <i class="glyphicon glyphicon-calendar"></i>
                                         </span>
-                                        {{ form.date_from }}
+                                        {{ form.period_from }}
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xs-6">
                                 <div class="form-group">
-                                    <label>{{ form.date_to.label }}</label>
+                                    <label>{{ form.period_to.label }}</label>
                                     <div class="input-group date">
                                         <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
                                             <i class="glyphicon glyphicon-calendar"></i>
                                         </span>
-                                        {{ form.date_to }}
+                                        {{ form.period_to }}
                                     </div>
                                 </div>
                             </div>
@@ -211,6 +211,14 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xs-12 text-right">
+                        <div class="form-group">
+                            <a class="btn btn-default">Відмінити</a>
+                            <button type="submit" class="btn btn-success">Зберегти</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -268,8 +276,8 @@
         const $flat = $("#id_flat");
         const $account = $("#id_personal_account");
         const $tariff = $("#id_tariff");
-        const $date_from = $('#id_date_from');
-        const $date_to = $('#id_date_to');
+        const $date_from = $('#id_period_from');
+        const $date_to = $('#id_period_to');
         const $user_name = $('#user-name');
         const $user_phone = $('#user-phone');
 
@@ -455,7 +463,7 @@
         });
 
         // syncing services and units selects
-        $(document).on('change', '#receipt-services > tbody > tr > td:nth-child(1) select', function () {
+        $(document).on('change', '#receipt-services > tbody > tr > td:nth-child(2) select', function () {
             const unit_id = $(this).find('option:selected').data('unit-id');
             $(this).closest('tr').find('td:nth-child(4) > select').val(unit_id);
         });
@@ -537,7 +545,8 @@
                     if (indicator) {
                         $tr.find('td:nth-child(1) input').val(indicator.id);
                         $tr.find('td:nth-child(3) input').val(indicator.value);
-                    };
+                    }
+                    ;
                 });
 
                 update_costs();

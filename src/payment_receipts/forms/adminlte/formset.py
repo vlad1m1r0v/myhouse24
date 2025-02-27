@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import (
-    BaseInlineFormSet, inlineformset_factory
+    BaseInlineFormSet,
+    inlineformset_factory
 )
 
 from src.payment_receipts.models import (
