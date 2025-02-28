@@ -4,7 +4,11 @@ from src.flats.models import Flat
 from src.houses.models import House, HouseSection
 from src.meter_indicators.models import MeterIndicator
 from src.personal_accounts.models import PersonalAccount
-from src.system_settings.models import Tariff, Service, MeasurementUnit
+from src.system_settings.models import (
+    Tariff,
+    Service,
+    MeasurementUnit
+)
 
 STATUS_CHOICES = [
     ("unpaid", "неоплачена"),

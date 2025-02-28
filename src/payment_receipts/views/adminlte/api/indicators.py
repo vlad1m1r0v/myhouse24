@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db.models import Q, Sum
+from django.db.models import Q
 from django.http import JsonResponse
 from django.views import View
 
@@ -30,8 +30,7 @@ class AdminReceiptsIndicatorsView(View):
         indicators = (
             MeterIndicator.objects
             .filter(filters)
-            .values('id', 'service_id')
-            .annotate(value=Sum('value'))
+            .values('id', 'service_id', 'value')
         )
 
         return JsonResponse(list(indicators), safe=False)

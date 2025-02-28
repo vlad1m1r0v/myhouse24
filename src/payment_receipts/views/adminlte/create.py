@@ -46,7 +46,7 @@ class AdminReceiptsCreateView(
 
                         if not service.meter_indicator:
                             meter_indicator = MeterIndicator.objects.create(
-                                no=datetime.now().timestamp() * 1000,
+                                no=int(datetime.now().timestamp() * 1000),
                                 date=receipt.date,
                                 status=StatusChoices.ACCOUNTED,
                                 house=receipt.house,
