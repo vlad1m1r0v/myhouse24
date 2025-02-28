@@ -295,7 +295,7 @@
 
         const validate_form = function () {
             const is_valid = $form.validate({
-                ignore: ':hidden',
+                ignore: ':hidden, button',
                 rules: {
                     no: {
                         required: true,
@@ -376,12 +376,12 @@
                 errorElement: 'small',
                 errorPlacement: function (error, element) {
                     error.css({'color': 'red'});
-                    const parent = element.closest('.form-group') || element.parent();
-                    parent.length ? parent.append(error) : element.after(error);
+                    const parent = element.parent();
+                    parent.hasClass('form-group') ? parent.append(error) : element.after(error);
                 },
                 highlight: function (element) {
                     const $el = $(element);
-                    const parent = $el.closest('td, .form-group');
+                    const parent = $el.closest('.form-group, td');
                     parent.addClass('has-error');
                     $el.addClass('is-invalid');
                 },
@@ -620,7 +620,7 @@
         // syncing services and units selects
         $(document).on('change', '#receipt-services > tbody > tr > td:nth-child(2) select', function () {
             const unit_id = $(this).find('option:selected').data('unit-id');
-            $(this).closest('tr').find('td:nth-child(4) > select').val(unit_id);
+            $(this).closest('tr').find('td:nth-child(4) > select').val(unit_id).valid();
         });
 
         // calculate cost based on price and value
@@ -632,7 +632,7 @@
                 const price = parseFloat($tr.find('td:nth-child(5) input').val()) || 0;
 
                 const cost = value * price;
-                $tr.find('td:nth-child(6) input').val(cost.toFixed(2));
+                $tr.find('td:nth-child(6) input').val(cost.toFixed(2)).valid();
             });
 
             let total = 0;
