@@ -1,5 +1,13 @@
+function get_services_params() {
+    const params = {};
+
+    if ($tariff.val()) params.tariff_id = $tariff.val();
+
+    return new URLSearchParams(params);
+};
+
 async function set_services() {
-    const response = await fetch('../api/services/?' + new URLSearchParams({tariff_id: $tariff.val()}),
+    const response = await fetch('../api/services/?' + get_services_params(),
         {
             method: 'GET',
             headers: {
@@ -12,7 +20,7 @@ async function set_services() {
         const services = await response.json();
 
         // firstly delete all created forms inside formset
-        $('#receipt-services tbody tr .delete-service').each(function () {
+        $('#receipt-services tbody tr:visible .delete-service').each(function () {
             $(this).trigger('click');
         })
 

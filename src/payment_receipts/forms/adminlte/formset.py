@@ -4,6 +4,7 @@ from django.forms import (
     inlineformset_factory
 )
 
+from src.meter_indicators.models import MeterIndicator
 from src.payment_receipts.models import (
     Receipt,
     ReceiptService
@@ -28,7 +29,7 @@ class AdminReceiptServiceForm(forms.ModelForm):
         fields = ['meter_indicator', 'service', 'unit', 'price', 'value']
 
         widgets = {
-            'meter_indicator': forms.HiddenInput(),
+            'meter_indicator': forms.Select(),
             'service': ServiceSelect(attrs={'class': 'form-control'}),
             'unit': forms.Select(attrs={'class': 'form-control'}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -38,11 +39,13 @@ class AdminReceiptServiceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         service_choices = kwargs.pop('service_choices', [])
         unit_choices = kwargs.pop('unit_choices', [])
+        indicator_choices = kwargs.pop('indicator_choices', [])
 
         super(AdminReceiptServiceForm, self).__init__(*args, **kwargs)
 
         self.fields['service'].choices = service_choices
         self.fields['unit'].choices = unit_choices
+        self.fields['meter_indicator'].choices = indicator_choices
 
 
 class BaseAdminReceiptServiceFormset(BaseInlineFormSet):
@@ -61,10 +64,17 @@ class BaseAdminReceiptServiceFormset(BaseInlineFormSet):
             empty_label='Виберіть...',
         ).choices]
 
+        indicator_qs = MeterIndicator.objects.all()
+        self.indicator_choices = [*forms.ModelChoiceField(
+            queryset=indicator_qs,
+            empty_label='Виберіть...',
+        ).choices]
+
     def get_form_kwargs(self, index):
         kwargs = super().get_form_kwargs(index)
         kwargs['service_choices'] = self.service_choices
         kwargs['unit_choices'] = self.unit_choices
+        kwargs['indicator_choices'] = self.indicator_choices
         return kwargs
 
 

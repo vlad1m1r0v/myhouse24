@@ -1,9 +1,9 @@
 function get_indicators_search_params() {
-    const params = {
-        flat_id: $flat.val(),
-        date_from: $date_from.val(),
-        date_to: $date_to.val()
-    };
+    const params = {};
+
+    if ($flat.val()) params.flat_id = $flat.val();
+    if ($date_from.val()) params.date_from = $date_from.val();
+    if ($date_to.val()) params.date_to = $date_to.val();
 
     return new URLSearchParams(params);
 };
@@ -21,19 +21,27 @@ async function add_indicators() {
     if (response.ok) {
         const indicators = await response.json();
 
-        $('#receipt-services tbody tr:visible').each(function () {
-            const $tr = $(this);
+        // firstly delete all created forms inside formset
+        $('#receipt-services tbody tr:visible .delete-service').each(function () {
+            $(this).trigger('click');
+        })
 
-            const service_id = parseFloat($tr.find('td:nth-child(2) select').val());
+        indicators.forEach((indicator) => {
+            append_form();
 
-            const indicator = indicators.find((item) => item.service_id === service_id);
-
-            if (indicator) {
-                $tr.find('td:nth-child(1) input').val(indicator.id);
-                $tr.find('td:nth-child(3) input').val(indicator.value).trigger('change');
-            };
+            const new_form = $('#receipt-services tbody tr:last-child');
+            // meter indicator id hidden field
+            new_form.find('td:nth-child(1) select').val(indicator.id);
+            // service id. Unit updated automatically
+            new_form.find('td:nth-child(2) select').val(indicator.service_id).trigger('change');
+            // value
+            new_form.find('td:nth-child(3) input').val(indicator.value).trigger('change');
+            // price per unit
+            new_form.find('td:nth-child(5) input').val(indicator.price).trigger('change');
         });
-    }
+
+        validate_form();
+    };
 };
 
 $('.add-indicators').on('click', add_indicators);

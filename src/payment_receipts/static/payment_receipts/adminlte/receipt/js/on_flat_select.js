@@ -1,19 +1,18 @@
 function get_flat_search_params() {
     const params = {};
 
-    if ($flat.val()) params.set('flat_id', $flat.val());
+    if ($flat.val()) params.flat_id = $flat.val();
 
     return new URLSearchParams(params);
 }
 
 async function on_flat_select() {
-    const response = await fetch('../api/flat-info/',
+    const response = await fetch('../api/flat-info/?' + get_flat_search_params(),
         {
             method: 'GET',
             headers: {
                 "X-CSRFToken": csrf_token,
             },
-            body: get_flat_search_params()
         }
     );
 
