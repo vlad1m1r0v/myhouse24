@@ -8,6 +8,8 @@ function get_account_search_params() {
 
 
 async function on_account_unfocus() {
+    if (!$account.val()) return;
+
     const response = await fetch('../api/flat-info-by-account/?' + get_account_search_params(),
         {
             method: 'GET',

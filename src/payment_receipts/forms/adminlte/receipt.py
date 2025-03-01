@@ -30,14 +30,22 @@ class AdminReceiptForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
+        initial = kwargs.get('initial', {})
 
         super().__init__(*args, **kwargs)
 
-        if instance:
-            self.fields['house'].widget.choices = [(instance.house.id, str(instance.house))]
-            self.fields['section'].widget.choices = [(instance.section.id, str(instance.section))]
-            self.fields['flat'].widget.choices = [(instance.flat.id, str(instance.flat))]
-            self.fields['service'].widget.choices = [(instance.tariff.id, str(instance.tariff))]
+        house = instance.house if instance else initial.get('house')
+        section = instance.section if instance else initial.get('section')
+        flat = instance.flat if instance else initial.get('flat')
+
+        if house:
+            self.fields['house'].widget.choices = [(house.id, str(house))]
+
+        if section:
+            self.fields['section'].widget.choices = [(section.id, str(section))]
+
+        if flat:
+            self.fields['flat'].widget.choices = [(flat.id, str(flat))]
 
     no = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': 'form-control', 'min': 0}),
@@ -122,6 +130,12 @@ class AdminReceiptForm(forms.ModelForm):
 
     def clean_personal_account(self):
         try:
-            return PersonalAccount.objects.get(no=self.cleaned_data['personal_account'])
+            account = PersonalAccount.objects.get(no=self.cleaned_data['personal_account'])
+
+            if account.status == 'disabled':
+                raise ValidationError('Не можна оформити квитанцію на відключений особовий рахунок')
+
+            return account
+
         except PersonalAccount.DoesNotExist:
             raise ValidationError('Вибраного особового рахунку не знайдено')

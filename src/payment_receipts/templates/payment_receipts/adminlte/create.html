@@ -172,13 +172,13 @@
                                 {{ formset.management_form }}
                                 {% for receipt_service in formset %}
                                     <tr>
-                                        <td style="display: none">{{ receipt_service.meter_indicator }}</td>
-                                        <td>{{ receipt_service.service }}</td>
-                                        <td>{{ receipt_service.value }}</td>
-                                        <td>{{ receipt_service.unit }}</td>
-                                        <td>{{ receipt_service.price }}</td>
-                                        <td><input type="number" class="form-control"></td>
-                                        <td>
+                                        <td class="indicator" style="display: none">{{ receipt_service.meter_indicator }}</td>
+                                        <td class="service">{{ receipt_service.service }}</td>
+                                        <td class="value">{{ receipt_service.value }}</td>
+                                        <td class="unit">{{ receipt_service.unit }}</td>
+                                        <td class="price">{{ receipt_service.price }}</td>
+                                        <td class="total"><input type="number" class="form-control"></td>
+                                        <td class="delete">
                                             <div style="display:none">{{ receipt_service.DELETE }}</div>
                                             <button type="button" class="btn btn-default btn-sm delete-service"
                                                     title="Видалити послугу">
@@ -267,7 +267,7 @@
     <!--Extend JQuery Validation methods-->
     <script src="{% static 'js/validation.js' %}"></script>
     <script>
-    const csrf_token = '{{ csrf_token }}';
+        const csrf_token = '{{ csrf_token }}';
     </script>
     <script defer src="{% static 'payment_receipts/adminlte/receipt/js/inputs.js' %}"></script>
     <script defer src="{% static 'payment_receipts/adminlte/receipt/js/validation.js' %}"></script>
@@ -278,6 +278,4 @@
     <script defer src="{% static 'payment_receipts/adminlte/receipt/js/set_services.js' %}"></script>
     <script defer src="{% static 'payment_receipts/adminlte/receipt/js/add_indicators.js' %}"></script>
     <script defer src="{% static 'payment_receipts/adminlte/receipt/js/datatable.js' %}"></script>
-    <script>
-    </script>
 {% endblock js %}

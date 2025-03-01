@@ -101,8 +101,8 @@ const validate_form = function () {
         }
     }).checkForm();
 
-    $('#receipt-services > tbody > tr > td:nth-child(2) select, ' +
-        '#receipt-services > tbody > tr > td:nth-child(4) select').each(function () {
+    $('#receipt-services > tbody > tr > td.service select, ' +
+        '#receipt-services > tbody > tr > td.unit select').each(function () {
         $(this).rules('add', {
             required: true,
             messages: {
@@ -111,9 +111,9 @@ const validate_form = function () {
         });
     });
 
-    $('#receipt-services > tbody > tr > td:nth-child(3) input, ' +
-        '#receipt-services > tbody > tr > td:nth-child(5) input, ' +
-        '#receipt-services > tbody > tr > td:nth-child(6) input').each(function () {
+    $('#receipt-services > tbody > tr > td.value input, ' +
+        '#receipt-services > tbody > tr > td.price input, ' +
+        '#receipt-services > tbody > tr > td.total input').each(function () {
         $(this).rules('add', {
             required: true,
             messages: {

@@ -31,7 +31,13 @@ $(document).on('click', '.delete-service', function () {
 });
 
 // syncing services and units selects
-$(document).on('change', '#receipt-services > tbody > tr > td:nth-child(2) select', function () {
+$(document).on('change', '#receipt-services > tbody > tr > td.service select', function () {
     const unit_id = $(this).find('option:selected').data('unit-id');
-    $(this).closest('tr').find('td:nth-child(4) > select').val(unit_id).valid();
+    $(this).closest('tr').find('td.unit > select').val(unit_id).valid();
+});
+
+$(document).ready(function () {
+    $('#id_receiptservice_set-INITIAL_FORMS').attr('value', 0);
+    $('#receipt-services > tbody > tr > td.indicator select').val(null);
+    update_costs();
 });

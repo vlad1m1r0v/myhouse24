@@ -20,7 +20,7 @@ async function set_services() {
         const services = await response.json();
 
         // firstly delete all created forms inside formset
-        $('#receipt-services tbody tr:visible .delete-service').each(function () {
+        $('#receipt-services tbody tr.delete .delete-service').each(function () {
             $(this).trigger('click');
         })
 
@@ -28,9 +28,9 @@ async function set_services() {
             append_form();
 
             const new_form = $('#receipt-services tbody tr:last-child');
-            new_form.find('td:nth-child(2) select').val(service.service_id);
-            new_form.find('td:nth-child(4) select').val(service.unit_id);
-            new_form.find('td:nth-child(5) input').val(service.price);
+            new_form.find('td.service select').val(service.service_id);
+            new_form.find('td.unit select').val(service.unit_id);
+            new_form.find('td.price input').val(service.price);
         });
 
         validate_form();

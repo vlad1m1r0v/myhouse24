@@ -31,13 +31,13 @@ async function add_indicators() {
 
             const new_form = $('#receipt-services tbody tr:last-child');
             // meter indicator id hidden field
-            new_form.find('td:nth-child(1) select').val(indicator.id);
+            new_form.find('td.indicator select').val(indicator.id);
             // service id. Unit updated automatically
-            new_form.find('td:nth-child(2) select').val(indicator.service_id).trigger('change');
+            new_form.find('td.service select').val(indicator.service_id).trigger('change');
             // value
-            new_form.find('td:nth-child(3) input').val(indicator.value).trigger('change');
+            new_form.find('td.value input').val(indicator.value).trigger('change');
             // price per unit
-            new_form.find('td:nth-child(5) input').val(indicator.price).trigger('change');
+            new_form.find('td.price input').val(indicator.price).trigger('change');
         });
 
         validate_form();

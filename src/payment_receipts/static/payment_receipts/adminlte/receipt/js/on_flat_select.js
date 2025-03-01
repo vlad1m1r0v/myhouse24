@@ -35,4 +35,15 @@ async function on_flat_select() {
     }
 };
 
+$(document).ready(function () {
+    if ($flat.val()) {
+        // If we create receipt for flat or duplicate existing receipt we have flat preselected
+        // So we can prefetch other data like tariff, personal_account, owner information, etc...
+        on_flat_select();
+
+        // Form validation is not initialized yet, so we call it manually
+        validate_form();
+    }
+});
+
 $flat.on('select2:select', on_flat_select);
