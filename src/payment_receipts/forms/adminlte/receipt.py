@@ -53,7 +53,7 @@ class AdminReceiptForm(forms.ModelForm):
 
     date = forms.DateField(
         input_formats=['%d.%m.%Y'],
-        widget=forms.DateInput(attrs={'class': 'form-control date'}, format='%d.%m.%Y'),
+        widget=forms.DateInput(attrs={'class': 'form-control'}, format='%d.%m.%Y'),
     )
 
     house = forms.CharField(
@@ -89,13 +89,13 @@ class AdminReceiptForm(forms.ModelForm):
 
     period_from = forms.DateField(
         input_formats=['%d.%m.%Y'],
-        widget=forms.DateInput(attrs={'class': 'form-control date'}, format='%d.%m.%Y'),
+        widget=forms.DateInput(attrs={'class': 'form-control'}, format='%d.%m.%Y'),
         label='Період з'
     )
 
     period_to = forms.DateField(
         input_formats=['%d.%m.%Y'],
-        widget=forms.DateInput(attrs={'class': 'form-control date'}, format='%d.%m.%Y'),
+        widget=forms.DateInput(attrs={'class': 'form-control'}, format='%d.%m.%Y'),
         label='Період по'
     )
 

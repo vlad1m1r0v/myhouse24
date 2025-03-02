@@ -136,9 +136,19 @@ $form.on('focus change keyup blur', 'input,select', function () {
 
 // proper validation for date widgets
 // validate when we pick date
-$dates.on('changeDate', function () {
+$date.on('changeDate', function () {
     $(this).trigger('change').valid();
 });
+
+$date_from.on('changeDate', function () {
+    $(this).trigger('change').valid();
+});
+
+
+$date_to.on('changeDate', function () {
+    $(this).trigger('change').valid();
+});
+
 
 // proper validation for select2
 // validate if we open or close select2 widgets
@@ -147,8 +157,8 @@ $('.select').on('select2:opening select2:closing', function () {
 });
 
 // for preload from entering account number or selecting flat
-$('.select').on('change', function() {
-   $(this).valid();
+$('.select').on('change', function () {
+    $(this).valid();
 });
 
 

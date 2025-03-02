@@ -22,7 +22,7 @@ async function add_indicators() {
         const indicators = await response.json();
 
         // firstly delete all created forms inside formset
-        $('#receipt-services tbody tr:visible .delete-service').each(function () {
+        $('#receipt-services tbody tr:visible td.delete .delete-service').each(function () {
             $(this).trigger('click');
         })
 

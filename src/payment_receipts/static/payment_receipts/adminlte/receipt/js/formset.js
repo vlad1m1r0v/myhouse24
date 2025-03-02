@@ -35,9 +35,3 @@ $(document).on('change', '#receipt-services > tbody > tr > td.service select', f
     const unit_id = $(this).find('option:selected').data('unit-id');
     $(this).closest('tr').find('td.unit > select').val(unit_id).valid();
 });
-
-$(document).ready(function () {
-    $('#id_receiptservice_set-INITIAL_FORMS').attr('value', 0);
-    $('#receipt-services > tbody > tr > td.indicator select').val(null);
-    update_costs();
-});

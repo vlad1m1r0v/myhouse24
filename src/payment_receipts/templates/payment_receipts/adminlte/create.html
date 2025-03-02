@@ -172,12 +172,13 @@
                                 {{ formset.management_form }}
                                 {% for receipt_service in formset %}
                                     <tr>
-                                        <td class="indicator" style="display: none">{{ receipt_service.meter_indicator }}</td>
+                                        <td class="indicator"
+                                            style="display: none">{{ receipt_service.meter_indicator }}</td>
                                         <td class="service">{{ receipt_service.service }}</td>
                                         <td class="value">{{ receipt_service.value }}</td>
                                         <td class="unit">{{ receipt_service.unit }}</td>
                                         <td class="price">{{ receipt_service.price }}</td>
-                                        <td class="total"><input type="number" class="form-control"></td>
+                                        <td class="total"><input disabled type="number" class="form-control"></td>
                                         <td class="delete">
                                             <div style="display:none">{{ receipt_service.DELETE }}</div>
                                             <button type="button" class="btn btn-default btn-sm delete-service"
@@ -269,13 +270,33 @@
     <script>
         const csrf_token = '{{ csrf_token }}';
     </script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/inputs.js' %}"></script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/validation.js' %}"></script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/on_flat_select.js' %}"></script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/on_account_unfocus.js' %}"></script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/update_costs.js' %}"></script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/formset.js' %}"></script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/set_services.js' %}"></script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/add_indicators.js' %}"></script>
-    <script defer src="{% static 'payment_receipts/adminlte/receipt/js/datatable.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/inputs.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/validation.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/on_flat_select.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/on_account_unfocus.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/update_costs.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/formset.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/set_services.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/add_indicators.js' %}"></script>
+    <script src="{% static 'payment_receipts/adminlte/receipt/js/datatable.js' %}"></script>
+    <script>
+        // Treat copied meter indicators as different from those that are accounted in copied receipt
+        $(document).ready(function () {
+            if ($flat.val()) {
+                $('#id_receiptservice_set-INITIAL_FORMS').attr('value', 0);
+                $('#receipt-services > tbody > tr > td.indicator select').val(null);
+                update_costs();
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // no
+            $no.val(Date.now());
+            // set current date by default for all date fields
+            $date.datepicker("setDate", new Date());
+            $date_from.datepicker("setDate", new Date());
+            $date_to.datepicker("setDate", new Date());
+        });
+    </script>
 {% endblock js %}

@@ -20,7 +20,7 @@ async function set_services() {
         const services = await response.json();
 
         // firstly delete all created forms inside formset
-        $('#receipt-services tbody tr.delete .delete-service').each(function () {
+        $('#receipt-services tbody tr:visible td.delete .delete-service').each(function () {
             $(this).trigger('click');
         })
 
