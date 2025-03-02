@@ -22,8 +22,6 @@ def receipt_service_post_save(sender, instance, created, **kwargs):
     """
     Automatically create or update MeterIndicator when creating/updating ReceiptService
     """
-    print(f"sent from instance {instance.id}. instance meter indicator {instance.meter_indicator}")
-
     if not instance.meter_indicator:
         meter_indicator = MeterIndicator.objects.create(
             no=int(datetime.now().timestamp() * 1000),
