@@ -1,7 +1,7 @@
 {% extends 'base_adminlte.html' %}
 {% load static %}
 {% block title %}
-    Нова квитанція
+    Квитанція № {{ form.instance.no }}
 {% endblock title %}
 {% block css %}
     <!--Datatable-->
@@ -44,16 +44,18 @@
     </style>
 {% endblock css %}
 {% block header %}
-    Нова квитанція
+    Квитанція № {{ form.instance.no }}
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
     <li><a>Квитанції</a></li>
-    <li class="active">Нова квитанція</li>
+    <li><a>Квитанція № {{ form.instance.no }}</a></li>
+    <li class="active">Редагування}</li>
 {% endblock breadcrumb %}
 {% block content %}
     <form id="receipt-form" method="post">
         {% csrf_token %}
+        {{ form.id }}
         <div class="row">
             <div class="col-xs-12 col-md-7 col-lg-6">
                 <div class="page-header-spec">
@@ -160,6 +162,7 @@
                                 <thead>
                                 <tr>
                                     <th style="display: none"></th>
+                                    <th style="display: none"></th>
                                     <th style="min-width: 300px; width: 100%;">Послуга</th>
                                     <th style="min-width: 150px; width: 100px;">Витрата</th>
                                     <th style="min-width: 150px; min-width: 150px;">Од. вим.</th>
@@ -172,6 +175,7 @@
                                 {{ formset.management_form }}
                                 {% for receipt_service in formset %}
                                     <tr>
+                                        <td style="display: none" class="id">{{ receipt_service.id }}</td>
                                         <td class="indicator"
                                             style="display: none">{{ receipt_service.meter_indicator }}</td>
                                         <td class="service">{{ receipt_service.service }}</td>
@@ -289,23 +293,6 @@
     <script src="{% static 'payment_receipts/adminlte/receipt/js/add_indicators.js' %}"></script>
     <script src="{% static 'payment_receipts/adminlte/receipt/js/datatable.js' %}"></script>
     <script>
-        // Treat copied meter indicators as different from those that are accounted in copied receipt
-        $(document).ready(function () {
-            if ($flat.val()) {
-                $('#id_receiptservice_set-INITIAL_FORMS').attr('value', 0);
-                $('#receipt-services > tbody > tr > td.indicator select').val(null);
-                update_costs();
-            }
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            // no
-            $no.val(Date.now());
-            // set current date by default for all date fields
-            $date.datepicker("setDate", new Date());
-            $date_from.datepicker("setDate", new Date());
-            $date_to.datepicker("setDate", new Date());
-        });
+        $(document).ready(update_costs);
     </script>
 {% endblock js %}

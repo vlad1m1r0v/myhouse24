@@ -1,15 +1,8 @@
-from datetime import datetime
-
 from django.contrib import messages
-from django.db import transaction
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 
 from src.flats.models import Flat
-from src.meter_indicators.models import (
-    MeterIndicator,
-    StatusChoices
-)
 from .mixin import ReceiptsPermissionRequiredMixin
 from ...forms import (
     AdminReceiptForm,
@@ -71,34 +64,13 @@ class AdminReceiptsCreateView(
             try:
                 receipt = form.save()
                 formset.instance = receipt
-                services = formset.save(commit=False)
+                formset.save()
 
-                for service in services:
-                    service.receipt = receipt
-                    service.save()
-
-                    if not service.meter_indicator:
-                        meter_indicator = MeterIndicator.objects.create(
-                            no=int(datetime.now().timestamp() * 1000),
-                            date=receipt.date,
-                            status=StatusChoices.ACCOUNTED,
-                            house=receipt.house,
-                            section=receipt.section,
-                            flat=receipt.flat,
-                            service=service.service,
-                            value=service.value
-                        )
-                        service.meter_indicator = meter_indicator
-                        service.save()
-
-                    else:
-                        service.meter_indicator.value = service.value
-                        service.meter_indicator.status = StatusChoices.ACCOUNTED
-                        service.meter_indicator.save()
-
-                    messages.success(self.request, "Квитанцію успішно створено")
+                messages.success(self.request, "Квитанцію успішно створено")
 
             except Exception as e:
                 messages.error(self.request, f"Виникла помилка при збереженні квитанції: {e}")
+
+        print(form.errors, form.non_field_errors(), formset.errors)
 
         return redirect('adminlte:receipts:create')

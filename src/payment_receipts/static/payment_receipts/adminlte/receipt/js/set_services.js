@@ -7,7 +7,7 @@ function get_services_params() {
 };
 
 async function set_services() {
-    const response = await fetch('../api/services/?' + get_services_params(),
+    const response = await fetch(`${services_url}?${get_services_params()}`,
         {
             method: 'GET',
             headers: {

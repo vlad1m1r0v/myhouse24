@@ -10,7 +10,7 @@ function get_account_search_params() {
 async function on_account_unfocus() {
     if (!$account.val()) return;
 
-    const response = await fetch('../api/flat-info-by-account/?' + get_account_search_params(),
+    const response = await fetch(`${flat_info_by_account_url}?${get_account_search_params()}`,
         {
             method: 'GET',
             headers: {
@@ -21,7 +21,8 @@ async function on_account_unfocus() {
 
     if (response.ok) {
         const info = await response.json();
-        $user_name.attr('href', `../../flat-owners/${info.owner_id}/`);
+        // TODO: change to valid owner profile page
+        $user_name.attr('href', '');
         $user_name.text(info.owner_name);
         $user_phone.attr('href', `tel:${info.owner_phone}`);
         $user_phone.text(info.owner_phone);

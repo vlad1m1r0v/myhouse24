@@ -1,1 +1,2 @@
 from .permission_required import ReceiptsPermissionRequiredMixin
+from .house_user_required import HouseUserRequiredMixin

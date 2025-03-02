@@ -37,7 +37,7 @@ class Receipt(models.Model):
 
 class ReceiptService(models.Model):
     meter_indicator = models.ForeignKey(MeterIndicator, null=True, blank=True, on_delete=models.SET_NULL)
-    receipt = models.ForeignKey(Receipt, on_delete=models.CASCADE)
+    receipt = models.ForeignKey(Receipt, on_delete=models.CASCADE, related_name="services")
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     unit = models.ForeignKey(MeasurementUnit, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=6, decimal_places=1)

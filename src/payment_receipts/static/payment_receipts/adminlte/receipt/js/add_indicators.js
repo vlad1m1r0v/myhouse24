@@ -9,7 +9,7 @@ function get_indicators_search_params() {
 };
 
 async function add_indicators() {
-    const response = await fetch('../api/indicators/?' + get_indicators_search_params(),
+    const response = await fetch(`${indicators_url}?${get_indicators_search_params()}`,
         {
             method: 'GET',
             headers: {
@@ -41,7 +41,8 @@ async function add_indicators() {
         });
 
         validate_form();
-    };
+    }
+    ;
 };
 
 $('.add-indicators').on('click', add_indicators);

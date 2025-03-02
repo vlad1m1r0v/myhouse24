@@ -35,7 +35,7 @@ const datatable = new DataTable('#datatable', {
         url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
     },
     ajax: {
-        url: "../api/datatable/",
+        url: datatable_for_form_url,
         data: function (params) {
             params.house_id = $house.val();
             params.section_id = $section.val();

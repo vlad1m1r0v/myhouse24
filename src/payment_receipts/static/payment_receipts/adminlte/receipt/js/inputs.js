@@ -43,14 +43,14 @@ $(document).ready(function () {
 // select2
     $house.select2({
         ajax: {
-            url: '../api/houses/',
+            url: houses_url,
             processResults: data => ({results: data})
         },
     });
 
     $section.select2({
         ajax: {
-            url: '../api/sections/',
+            url: sections_url,
             data: function (params) {
                 return {
                     term: params.term,
@@ -63,7 +63,7 @@ $(document).ready(function () {
 
     $flat.select2({
         ajax: {
-            url: '../api/flats/',
+            url: flats_url,
             data: function (params) {
                 return {
                     term: params.term,
@@ -76,7 +76,7 @@ $(document).ready(function () {
 
     $tariff.select2({
         ajax: {
-            url: '../api/tariffs/',
+            url: tariffs_url,
             processResults: data => ({results: data})
         },
     });

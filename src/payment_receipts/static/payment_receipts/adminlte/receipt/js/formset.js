@@ -4,12 +4,12 @@ const $service_form_clone = $service_extra_form.clone(true);
 $service_extra_form.hide();
 
 function append_form() {
-    const $total_forms = $('#id_receiptservice_set-TOTAL_FORMS');
+    const $total_forms = $('#id_services-TOTAL_FORMS');
     const count = parseInt($total_forms.val());
 
     const form_markup = $service_form_clone.prop('outerHTML');
-    const regex = /receiptservice_set-(\d+)-/g;
-    const form = form_markup.replace(regex, `receiptservice_set-${count}-`);
+    const regex = /services-(\d+)-/g;
+    const form = form_markup.replace(regex, `services-${count}-`);
 
     $('#receipt-services tbody').append(form);
 
