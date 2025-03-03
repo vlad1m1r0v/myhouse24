@@ -63,11 +63,13 @@ class AdminTransactionForm(forms.ModelForm):
     owner = forms.CharField(
         label='Власник квартири',
         widget=forms.Select(attrs={'class': 'form-control select'}),
+        required=False,
     )
 
     personal_account = forms.CharField(
         label='Особовий рахунок',
         widget=forms.Select(attrs={'class': 'form-control select'}),
+        required=False,
     )
 
     payment_item = forms.CharField(
@@ -96,14 +98,24 @@ class AdminTransactionForm(forms.ModelForm):
     )
 
     def clean_owner(self):
+        owner = self.cleaned_data['owner']
+
+        if not owner:
+            return
+
         try:
-            return CustomUser.objects.get(id=self.cleaned_data['owner'])
+            return CustomUser.objects.get(id=owner)
         except CustomUser.DoesNotExist:
             raise ValidationError('Вибраного власника квартири не знайдено')
 
     def clean_personal_account(self):
+        account = self.cleaned_data['personal_account']
+
+        if not account:
+            return
+
         try:
-            account = PersonalAccount.objects.get(id=self.cleaned_data['personal_account'])
+            account = PersonalAccount.objects.get(id=account)
 
             if account.status == 'disabled':
                 raise ValidationError('Не можна оформити квитанцію на відключений особовий рахунок')
