@@ -1,0 +1,320 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Нова транзакція
+{% endblock title %}
+{% block css %}
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Datepicker-->
+    <link rel="stylesheet"
+          href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+    <style>
+        .page-header-spec {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            margin-left: 15px;
+        }
+
+        .page-header-spec .form-group {
+            margin-bottom: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-header-spec .form-group {
+                margin-bottom: 15px;
+            }
+
+            .page-header-spec .label-mid {
+                margin: 0 15px 15px 15px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-header-spec .label-mid {
+                margin: 0 15px;
+            }
+        }
+
+        .action-buttons .btn {
+            margin-bottom: 15px;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Нова транзакція
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Транзакції</a></li>
+    <li class="active">Нова транзакція</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <form id="transaction-form" method="post">
+        {% csrf_token %}
+        {{ form.type }}
+        <div class="row">
+            <div class="col">
+                <div class="page-header-spec">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"> № </span>
+                            {{ form.no }}
+                        </div>
+                    </div>
+                    <span class="label-mid">від</span>
+                    <div class="form-group">
+                        <div class="input-group date">
+                            <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                            {{ form.date }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-6">
+                        {{ form.is_complete }}
+                        <label>{{ form.is_complete.label }}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6">
+                        {% if form.initial.type == 'income' %}
+                            <div class="form-group">
+                                <label>{{ form.owner.label }}</label>
+                                {{ form.owner }}
+                            </div>
+                            <div class="form-group">
+                                <label>{{ form.personal_account.label }}</label>
+                                {{ form.personal_account }}
+                            </div>
+                        {% endif %}
+                        <div class="form-group">
+                            <label>{{ form.payment_item.label }}</label>
+                            {{ form.payment_item }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.amount.label }}</label>
+                            {{ form.amount }}
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="form-group">
+                            <label>{{ form.manager.label }}</label>
+                            {{ form.manager }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 text-right">
+                        <div class="form-group action-buttons">
+                            <a class="btn btn-default margin-bottom-15">Відмінити</a>
+                            <button type="submit" class="btn btn-success margin-bottom-15">Зберегти</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label>{{ form.comment.label }}</label>
+                            {{ form.comment }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock content %}
+{% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Extend JQuery Validation methods-->
+    <script src="{% static 'js/validation.js' %}"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <!--Datepicker-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <!--Datepicker Localization-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        const $no = $('#id_no');
+        const $date = $('#id_date');
+        const $type = $('#id_type');
+        const $owner = $('#id_owner');
+        const $account = $('#id_personal_account');
+        const $payment_item = $('#id_payment_item');
+        const $manager = $('#id_manager');
+
+        const $form = $('#transaction-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus blur keyup change', 'input,textarea,select', function () {
+            validate_form();
+        });
+
+        $('.select').on('select2:opening select2:closing', function () {
+            $(this).trigger('blur');
+        })
+
+        function validate_form() {
+            const is_valid = $form.validate({
+                ignore: [':hidden'],
+                rules: {
+                    no: {
+                        required: true,
+                        number: true,
+                    },
+                    date: {
+                        required: true,
+                        ddmmyyyy: true,
+                    },
+                    owner: {
+                        required: true,
+                    },
+                    personal_account: {
+                        required: true,
+                    },
+                    payment_item: {
+                        required: true,
+                    },
+                    manager: {
+                        required: true,
+                    },
+                    amount: {
+                        required: true,
+                        number: true,
+                    },
+                    comment: {
+                        required: true,
+                        minlength: 10,
+                    }
+                },
+                messages: {
+                    no: {
+                        required: 'Введіть номер показника',
+                        number: 'Номер показника має бути числом'
+                    },
+                    date: {
+                        required: 'Вкажіть дату',
+                    },
+                    owner: {
+                        required: 'Вкажіть власника',
+                    },
+                    personal_account: {
+                        required: 'Вкажіть особовий рахунок',
+                    },
+                    payment_item: {
+                        required: 'Вкажіть статтю платежу',
+                    },
+                    manager: {
+                        required: 'Вкажіть менеджера',
+                    },
+                    amount: {
+                        required: "Вкажіть суму",
+                        number: "Сума показника має бути числом"
+                    },
+                    comment: {
+                        required: "Вкажіть коментар",
+                        minlength: "Довжина коментаря має бути мінімум 10 символів"
+                    }
+                },
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
+        if ($no.val) {
+            $no.val(Date.now());
+        }
+
+        $date.datepicker({
+            autoclose: true,
+            language: 'uk',
+        });
+
+        $date.datepicker("setDate", new Date());
+
+        $('.kv-date-calendar').click(function () {
+            $date.focus();
+        })
+
+        $date.on('changeDate', function () {
+            $date.trigger('change').valid();
+        });
+
+        $owner.select2({
+            ajax: {
+                url: "{% url 'adminlte:cash-box:owners' %}",
+                processResults: data => ({results: data})
+            },
+        });
+
+        $account.select2({
+            ajax: {
+                url: "{% url 'adminlte:cash-box:accounts' %}",
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        owner_id: $owner.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $owner.on('change', function() {
+           $account.val('').trigger('change').valid();
+        });
+
+        $payment_item.select2({
+            ajax: {
+                url: "{% url 'adminlte:cash-box:payment-items' %}",
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        type: $type.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $manager.select2({
+            ajax: {
+                url: "{% url 'adminlte:cash-box:managers' %}",
+                processResults: data => ({results: data})
+            },
+        })
+    </script>
+{% endblock js %}
