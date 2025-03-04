@@ -1,1 +1,2 @@
 from .permission_required import CashBoxPermissionRequiredMixin
+from .house_user_required import HouseUserRequiredMixin

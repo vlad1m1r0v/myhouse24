@@ -1,6 +1,7 @@
 from django.db import models
 
 from src.authentication.models import CustomUser
+from src.payment_receipts.models import Receipt
 from src.personal_accounts.models import PersonalAccount
 from src.system_settings.models import PaymentItem
 
@@ -11,6 +12,7 @@ class TypeChoices(models.TextChoices):
 
 
 class Transaction(models.Model):
+    receipt = models.ForeignKey(Receipt, null=True, blank=True, on_delete=models.CASCADE)
     no = models.CharField(max_length=20)
     date = models.DateField()
     type = models.CharField(choices=TypeChoices.choices, default=TypeChoices.EXPENSE)
@@ -24,3 +26,6 @@ class Transaction(models.Model):
     manager = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE,
                                 related_name='manager_transactions')
     comment = models.TextField()
+
+    def __str__(self):
+        return f"транзакція № {self.no}"

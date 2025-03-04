@@ -79,7 +79,7 @@ class AdminTransactionForm(forms.ModelForm):
 
     amount = forms.CharField(
         label='Сума',
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': 0.1}),
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'step': 0.1, 'min': 0}),
     )
 
     is_complete = forms.BooleanField(

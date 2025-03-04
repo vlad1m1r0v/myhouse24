@@ -1,0 +1,6 @@
+{% load l10n %}
+{% if object.type == 'expense' %}
+    <span class="text-red">{{ object.amount|unlocalize }}</span>
+{% else %}
+    <span class="text-green">{{ object.amount|unlocalize  }}</span>
+{% endif %}

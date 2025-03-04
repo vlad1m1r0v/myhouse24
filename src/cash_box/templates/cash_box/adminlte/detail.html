@@ -1,0 +1,157 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% load transaction_amount %}
+{% block title %}
+    Транзакція № {{ transaction.no }}
+{% endblock title %}
+{% block css %}
+    <style>
+        .page-header-spec {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            margin-left: 15px;
+        }
+
+        .page-header-spec .form-group {
+            margin-bottom: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-header-spec .form-group {
+                margin-bottom: 15px;
+            }
+
+            .page-header-spec .label-mid {
+                margin: 0 15px 15px 15px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-header-spec .label-mid {
+                margin: 0 15px;
+            }
+        }
+
+        table tr td:first-child {
+            font-weight: bold;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Транзакція № {{ transaction.no }}
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Транзакції</a></li>
+    <li class="active">Транзакція № {{ transaction.no }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"> № </span>
+                        <input type="text" value="{{ transaction.no }}" class="form-control" disabled>
+                    </div>
+                </div>
+                <span class="label-mid">від</span>
+                <div class="form-group">
+                    <div class="input-group date">
+                            <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                        <input type="text" value="{{ transaction.date|date:'d.m.Y' }}" class="form-control" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Транзакція</h3>
+            <div class="box-tools">
+                <a href="{% url 'adminlte:cash-box:create' %}?transaction_id={{ transaction.id }}"
+                   class="btn btn-default btn-sm">
+                    <span class="hidden-xs">Копіювати</span>
+                    <i class="fa fa-print visible-xs" aria-hidden="true"></i>
+                </a>
+                <a class="btn btn-default btn-sm">
+                    <span class="hidden-xs">Видалити</span>
+                    <i class="fa fa-envelope-o visible-xs" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'adminlte:cash-box:update' pk=transaction.id %}" class="btn btn-primary btn-sm">
+                    <span class="hidden-xs">Редагувати транзакцію</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+                <form style="display: inline-block" method="post" action="{% url 'adminlte:cash-box:export' pk=transaction.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-default btn-sm">
+                        <span class="hidden-xs">Експорт в Excel</span>
+                        <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="box-body">
+            <table class="table table-bordered table-striped table-view">
+                <tbody>
+                <tr>
+                    <td>Власник квартири</td>
+                    <td>
+                        {% if transaction.owner %}
+                            <a>{{ transaction.owner }}</a>
+                        {% else %}
+                            Не вказано
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Особовий рахунок</td>
+                    <td>
+                        {% if transaction.personal_account %}
+                            <a>{{ transaction.personal_account }}</a>
+                        {% else %}
+                            Не вказано
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Стаття</td>
+                    <td>{{ transaction.payment_item }}</td>
+                </tr>
+                <tr>
+                    <td>Квитанція</td>
+                    <td>
+                        {% if transaction.receipt %}
+                            <a href="{% url 'adminlte:receipts:detail' pk=transaction.receipt.pk %}">
+                                {{ transaction.receipt }}
+                            </a>
+                        {% else %}
+                            Не вказано
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Менеджер</td>
+                    <td>
+                        <a href="{% url 'adminlte:system-settings:users:detail' pk=transaction.manager.pk %}">
+                            {{ transaction.manager }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Сума</td>
+                    <td>{% transaction_amount obj=object %}</td>
+                </tr>
+                <tr>
+                    <td>Коментар</td>
+                    <td>{{ transaction.comment }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}

@@ -50,7 +50,11 @@
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
     <li><a>Транзакції</a></li>
-    <li>Транзакція № {{ form.instance.no }}</li>
+    <li>
+        <a href="{% url 'adminlte:cash-box:detail' pk=form.instance.pk %}">
+            Транзакція № {{ form.instance.no }}
+        </a>
+    </li>
     <li class="active">Редагування</li>
 {% endblock breadcrumb %}
 {% block content %}
