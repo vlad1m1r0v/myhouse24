@@ -9,7 +9,7 @@ def generate_transaction_excel(transaction):
         ("Особовий рахунок", str(transaction.personal_account) if transaction.personal_account else "Не вказано"),
         ("Стаття", str(transaction.payment_item) if transaction.payment_item else "Не вказано"),
         ("Квитанція", str(transaction.receipt) if transaction.receipt else "Не вказано"),
-        ("Менеджер", str(transaction.owner) if transaction.manager else "Не вказано"),
+        ("Менеджер", str(transaction.manager) if transaction.manager else "Не вказано"),
         ("Сума", transaction.amount),
         ("Коментар", transaction.comment)
     ]
