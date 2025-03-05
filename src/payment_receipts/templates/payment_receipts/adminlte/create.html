@@ -292,7 +292,7 @@
         // Treat copied meter indicators as different from those that are accounted in copied receipt
         $(document).ready(function () {
             if ($flat.val()) {
-                $('#id_receiptservice_set-INITIAL_FORMS').attr('value', 0);
+                $('#id_services-INITIAL_FORMS').attr('value', 0);
                 $('#receipt-services > tbody > tr > td.indicator select').val(null);
                 update_costs();
             }
