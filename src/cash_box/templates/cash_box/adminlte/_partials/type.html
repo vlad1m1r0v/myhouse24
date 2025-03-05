@@ -1,0 +1,5 @@
+{% if object.type == 'expense' %}
+    <span class="text-red">{{ object.get_type_display}}</span>
+{% else %}
+    <span class="text-green">{{ object.get_type_display  }}</span>
+{% endif %}

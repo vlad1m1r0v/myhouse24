@@ -6,6 +6,8 @@ app_name = "cash-box"
 
 urlpatterns = [
     path('cash-box/', include([
+        path('', views.AdminCashBoxListView.as_view(), name='list'),
+        path('datatable/', views.AdminCashBoxDatatableView.as_view(), name='datatable'),
         path('create/', views.AdminTransactionCreateView.as_view(), name='create'),
         path('<int:pk>/', views.AdminTransactionDetailView.as_view(), name='detail'),
         path('<int:pk>/update/', views.AdminTransactionUpdateView.as_view(), name='update'),

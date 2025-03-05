@@ -1,1 +1,2 @@
 from .transaction import AdminTransactionForm
+from .filters import AdminCashBoxFiltersForm

@@ -1,0 +1,331 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Каса
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Daterange picker-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+
+        th.dt-orderable-asc, th.dt-orderable-desc {
+            color: #337ab7;
+        }
+
+        tbody tr td:not(:last-child) {
+            cursor: pointer;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Каса
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Каса</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-lg-9">
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                    <div class="small-box bg-green overflow-hidden">
+                        <div class="inner">
+                            <h3>0.0 грн</h3>
+                            <p>Стан каси</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <div class="small-box bg-blue overflow-hidden">
+                        <div class="inner">
+                            <h3>0.0 грн</h3>
+                            <p>Баланс по рахункам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <div class="small-box bg-red overflow-hidden">
+                        <div class="inner">
+                            <h3>0.0 грн</h3>
+                            <p>Заборгованість по рахункам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-lg-3">
+            <div class="btn-group pull-right margin-bottom">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    Виберіть дію <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'adminlte:cash-box:create' %}?type=income">Створити прихід</a></li>
+                    <li><a href="{% url 'adminlte:cash-box:create' %}?type=expense">Створити витрату</a></li>
+                    <li><a>Експорт в Excel</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <table id="datatable"
+                       class="table table-bordered table-hover table-striped"
+                       style="width:100%; overflow-x: scroll">
+                    <thead>
+                    <tr>
+                        <th style="width: 100px; min-width: 100px">№</th>
+                        <th style="width: 180px; min-width: 180px">Дата</th>
+                        <th style="width: 100px; min-width: 100px">Статус</th>
+                        <th style="width: 200px; min-width: 200px">Тип платежу</th>
+                        <th style="width: 180px; min-width: 180px">Власник</th>
+                        <th style="width: 120px; min-width: 120px">Особовий рахунок</th>
+                        <th style="width: 120px; min-width: 120px">Прихід / Витрата</th>
+                        <th style="width: 120px; min-width: 120px">Сума</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>{{ filters.no }}</th>
+                        <th>{{ filters.date }}</th>
+                        <th>{{ filters.status }}</th>
+                        <th>{{ filters.payment_item }}</th>
+                        <th>{{ filters.owner }}</th>
+                        <th>{{ filters.personal_account }}</th>
+                        <th>{{ filters.type }}</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+                <div class="box-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <!--Daterange Picker-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        const $no = $('#id_no');
+        const $daterangefilter = $('#id_date');
+        const $status = $('#id_status');
+        const $payment_item = $('#id_payment_item');
+        const $owner = $('#id_owner');
+        const $account = $('#id_personal_account');
+        const $type = $('#id_type');
+
+        $status.select2({
+            minimumResultsForSearch: -1,
+        });
+
+        $type.select2({
+            minimumResultsForSearch: -1,
+        });
+
+        $daterangefilter.daterangepicker({
+            autoUpdateInput: false,
+            opens: 'right',
+            locale: {
+                format: 'DD.MM.YYYY',
+                "applyLabel": "Ок",
+                "cancelLabel": "Скасувати",
+                "fromLabel": "Від",
+                "toLabel": "До",
+                "customRangeLabel": "Власний",
+                "daysOfWeek": [
+                    "Нд",
+                    "Пн",
+                    "Вт",
+                    "Ср",
+                    "Чт",
+                    "Пт",
+                    "Сб"
+                ],
+                "monthNames": [
+                    "Січень",
+                    "Лютий",
+                    "Березень",
+                    "Квітень",
+                    "Травень",
+                    "Червень",
+                    "Липень",
+                    "Серпень",
+                    "Вересень",
+                    "Жовтень",
+                    "Листопад",
+                    "Грудень"
+                ],
+                firstDay: 1
+            }
+        });
+
+        $daterangefilter.on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY')).trigger('change');
+            datatable.columns(1).search($(this).val()).draw();
+        });
+
+        $daterangefilter.on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('').trigger('change');
+            datatable.columns(1).search($(this).val()).draw();
+        });
+
+        $owner.select2({
+            ajax: {
+                url: "{% url 'adminlte:cash-box:owners' %}",
+                processResults: data => ({results: data})
+            },
+        });
+
+        $type.on('change', function () {
+            $payment_item.val('').trigger('change');
+        });
+
+        $payment_item.select2({
+            ajax: {
+                url: "{% url 'adminlte:cash-box:payment-items' %}",
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        type: $type.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $no.on('keyup', function () {
+            datatable.columns(0).search($(this).val()).draw();
+        });
+
+        $status.on('change', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        $payment_item.on('change', function () {
+            datatable.columns(3).search($(this).val()).draw();
+        });
+
+        $owner.on('change', function () {
+            datatable.columns(4).search($(this).val()).draw();
+        });
+
+        $account.on('keyup', function () {
+            datatable.columns(5).search($(this).val()).draw();
+        });
+
+
+        $type.on('change', function () {
+            datatable.columns(6).search($(this).val()).draw();
+        });
+
+        // DataTable initialization
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            orderCellsTop: true,
+            bFilter: false,
+            iDisplayLength: 10,
+            lengthChange: true,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+            },
+            ajax: {
+                url: "{% url 'adminlte:cash-box:datatable' %}",
+                data: function (params) {
+                    params.no = $no.val();
+                    params.date = $daterangefilter.val();
+                    params.is_complete = $status.val();
+                    params.payment_item = $payment_item.val();
+                    params.owner = $owner.val();
+                    params.personal_account = $account.val();
+                    params.type = $type.val();
+                },
+            },
+            columnDefs: [
+                {
+                    targets: '_all',
+                    className: "dt-head-center",
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle').css('padding', '10px');
+                    }
+                },
+                {
+                    targets: [0, 2, 3, 4, 5, 6, 7, 8],
+                    orderable: false,
+                },
+                {
+                    targets: [0, 1, 2, 5, 6, 7],
+                    className: "dt-center",
+                }
+            ],
+            columns: [
+                {data: 'no'},
+                {data: 'date'},
+                {data: 'is_complete'},
+                {data: 'payment_item'},
+                {data: 'owner'},
+                {data: 'personal_account'},
+                {data: 'type'},
+                {data: 'amount'},
+                {data: 'actions'}
+            ],
+            drawCallback: function () {
+                const response = this.api().ajax.json();
+                $('.box-footer').html(response.footer_message);
+            },
+            createdRow: function (row, data) {
+                $(row).find('td:not(:last-child)').on('click', function () {
+                    document.location.href = `${data.id}/`;
+                });
+            }
+        })
+    </script>
+{% endblock js %}

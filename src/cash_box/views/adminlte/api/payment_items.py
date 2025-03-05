@@ -17,7 +17,8 @@ class AdminCashBoxPaymentItemsView(CashBoxPermissionRequiredMixin,
         if term:
             filters &= Q(name__icontains=term)
 
-        filters &= Q(type=payment_item_type)
+        if payment_item_type:
+            filters &= Q(type=payment_item_type)
 
         qs = PaymentItem.objects.filter(filters)
 
