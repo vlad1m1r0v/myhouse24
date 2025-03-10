@@ -1,1 +1,2 @@
 from .meter_indicator import AdminMeterIndicatorForm
+from .filters_for_flat import AdminMeterIndicatorsForFlatFiltersForm

@@ -49,7 +49,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"></h3>
                     <div class="box-tools">
-                        <a href="{{ request.build_absolute_uri }}"
+                        <a href="../for-flat/?flat_id={{ flat.id }}"
                            class="btn btn-default btn-sm">
                             <span class="hidden-xs">Очистити</span>
                             <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
@@ -76,20 +76,15 @@
                     <tr>
                         <!--Number-->
                         <th>
-                            <input id="no" type="text" class="form-control">
+                            {{ filters.no }}
                         </th>
                         <!--Status-->
                         <th>
-                            <select class="form-control select" id="status">
-                                <option value="new">Нове</option>
-                                <option value="accounted">Враховано</option>
-                                <option value="accounted_paid">Враховано та оплачено</option>
-                                <option value="zero">Нульове</option>
-                            </select>
+                            {{ filters.status }}
                         </th>
                         <!--Date-->
                         <th>
-                            <input id="date" type="text" class="form-control">
+                            {{ filters.date }}
                         </th>
                         <!--Month-->
                         <th></th>
@@ -101,7 +96,7 @@
                         <th></th>
                         <!--Service-->
                         <th>
-                            <select name="" id="service" class="form-control select"></select>
+                            {{ filters.service }}
                         </th>
                         <!--Value-->
                         <th></th>
@@ -135,12 +130,15 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
         // Filters initialization
-        $no_input = $('#no');
+        $no_input = $('#id_no');
 
-        const $status_select = $('#status');
-        $status_select.select2({minimumResultsForSearch: -1});
+        const $status_select = $('#id_status');
+        $status_select.select2({
+            minimumResultsForSearch: -1,
+            placeholder: 'Виберіть...'
+        });
 
-        const $daterangefilter = $('#date');
+        const $daterangefilter = $('#id_date');
 
         $daterangefilter.daterangepicker({
             autoUpdateInput: false,
@@ -188,7 +186,7 @@
             $(this).val('').trigger('change');
         });
 
-        const $service_select = $("#service");
+        const $service_select = $("#id_service");
         $service_select.select2({
             ajax: {
                 url: "{% url 'adminlte:meter-indicators:services' %}",
@@ -210,9 +208,6 @@
 
         const query_params = new URLSearchParams(document.location.search);
         const flat_id = query_params.get('flat_id');
-        const service_id = query_params.get('service_id');
-        // if we have service_id in query params we can't change it in filter
-        if (service_id) $service_select.parent().hide();
 
         $service_select.on('change', function () {
             datatable.columns(7).search($(this).val()).draw();
@@ -264,7 +259,7 @@
                 url: "{% url 'adminlte:meter-indicators:datatable-for-flat' %}",
                 data: function (params) {
                     params.flat_id = flat_id;
-                    params.service_id = service_id || $service_select.val();
+                    params.service_id = $service_select.val();
                     params.date = $daterangefilter.val();
                     params.no = $no_input.val();
                     params.status = $status_select.val();
