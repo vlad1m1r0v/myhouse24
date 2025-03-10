@@ -6,7 +6,7 @@ from django.views import View
 from src.flats.views.adminlte.mixin import HouseUserRequiredMixin
 from .mixin import CashBoxPermissionRequiredMixin
 from ...models import Transaction
-from ...services import generate_cash_box_excel
+from ...services import CashBoxExcelService
 
 
 class AdminCashBoxExportView(
@@ -15,13 +15,13 @@ class AdminCashBoxExportView(
     View):
     def post(self, *args, **kwargs):
         qs = (Transaction.objects
-              .select_related('payment_item', 'owner', 'personal_account')
+              .select_related('payment_item', 'owner', 'receipt', 'personal_account')
               .prefetch_related('personal_account__house__users'))
 
         if not self.request.user.is_superuser:
-            qs = qs.filter(personal_account__house__users__in=[request.user.pk])
+            qs = qs.filter(personal_account__house__users__in=[self.request.user.pk])
 
-        file = generate_cash_box_excel(transactions=qs)
+        file = CashBoxExcelService.create_worksheet(transactions=qs)
 
         response = HttpResponse(
             file.read(),

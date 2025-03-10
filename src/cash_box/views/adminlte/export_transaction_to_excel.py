@@ -4,7 +4,7 @@ from django.views import View
 from src.flats.views.adminlte.mixin import HouseUserRequiredMixin
 from .mixin import CashBoxPermissionRequiredMixin
 from ...models import Transaction
-from ...services import generate_transaction_excel
+from ...services import TransactionExcelService
 
 
 class AdminTransactionExportView(
@@ -14,7 +14,7 @@ class AdminTransactionExportView(
     def post(self,  request, *args, **kwargs):
         pk = kwargs.get('pk')
         obj = Transaction.objects.get(pk=pk)
-        file = generate_transaction_excel(transaction=obj)
+        file = TransactionExcelService.create_worksheet(transaction=obj)
 
         response = HttpResponse(
             file.read(),
