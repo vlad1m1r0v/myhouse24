@@ -13,8 +13,7 @@ class AdminTransactionCreateView(
     CashBoxPermissionRequiredMixin,
     CreateView):
     success_message = 'Транзакцію успішно створено'
-    # TODO: change to cash box list page
-    success_url = reverse_lazy('adminlte:cash-box:create')
+    success_url = reverse_lazy('adminlte:cash-box:list')
     model = Transaction
     form_class = AdminTransactionForm
     template_name = 'cash_box/adminlte/create.html'

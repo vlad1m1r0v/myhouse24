@@ -193,6 +193,9 @@
                     payment_item: {
                         required: true,
                     },
+                    is_complete: {
+                      required: false,
+                    },
                     manager: {
                         required: true,
                     },
@@ -254,7 +257,7 @@
             }
         }
 
-        if ($no.val()) {
+        if (!$no.val()) {
             $no.val(Date.now());
         }
 

@@ -85,6 +85,7 @@ class AdminTransactionForm(forms.ModelForm):
     is_complete = forms.BooleanField(
         label='Проведена',
         widget=forms.CheckboxInput(attrs={'checked': True}),
+        required=False,
     )
 
     manager = forms.CharField(

@@ -38,6 +38,13 @@ class AdminCashBoxDatatableView(AjaxDatatableView):
 
         return qs
 
+    def sort_queryset(self, params, qs):
+        if len(params['orders']):
+            qs = qs.order_by(*[order.get_order_mode() for order in params['orders']])
+        else:
+            qs = qs.order_by('-id')
+        return qs
+
     def footer_message(self, qs, params):
         totals = qs.filter(is_complete=True).aggregate(
             total_income=Sum('amount', filter=Q(type=TypeChoices.INCOME)),
