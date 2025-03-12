@@ -2,7 +2,6 @@ from django.db import models
 
 from src.authentication.models import CustomUser
 from src.payment_receipts.models import Receipt
-from src.personal_accounts.models import PersonalAccount
 from src.system_settings.models import PaymentItem
 
 
@@ -18,7 +17,7 @@ class Transaction(models.Model):
     type = models.CharField(choices=TypeChoices.choices, default=TypeChoices.EXPENSE)
     owner = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE,
                               related_name='owner_transactions')
-    personal_account = models.ForeignKey(PersonalAccount, null=True, blank=True, on_delete=models.CASCADE,
+    personal_account = models.ForeignKey("personal_accounts.PersonalAccount", null=True, blank=True, on_delete=models.CASCADE,
                                          related_name='account_transactions')
     payment_item = models.ForeignKey(PaymentItem, null=True, blank=True, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=8, decimal_places=1)

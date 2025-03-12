@@ -333,6 +333,29 @@
                 $(row).find('td:not(:last-child)').on('click', function () {
                     document.location.href = `${data.id}/`;
                 });
+
+                $(row).find('.delete-button').on('click', async function () {
+                    const result = await Swal.fire({
+                        title: "Ви дійсно хочете видалити цей об'єкт?",
+                        icon: "question",
+                        showDenyButton: true,
+                        confirmButtonText: "Видалити",
+                        denyButtonText: "Відмінити"
+                    });
+
+                    if (result.isConfirmed) {
+                        const $form = $("<form>", {
+                            action: `${data.id}/delete/`,
+                            method: "POST",
+                            style: "display: none"
+                        }).append('{% csrf_token %}');
+
+                        $form.insertAfter($(this).parent());
+
+                        $form.submit();
+                    }
+
+                });
             }
         })
     </script>

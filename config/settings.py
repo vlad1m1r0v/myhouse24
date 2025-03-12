@@ -61,7 +61,8 @@ INSTALLED_APPS = [
     'src.meter_indicators.apps.MeterIndicatorsConfig',
     'src.master_call_requests.apps.MasterCallRequestsConfig',
     'src.payment_receipts.apps.PaymentReceiptsConfig',
-    'src.cash_box.apps.CashBoxConfig'
+    'src.cash_box.apps.CashBoxConfig',
+    'src.user_messages.apps.UserMessagesConfig',
 ]
 
 MIDDLEWARE = [

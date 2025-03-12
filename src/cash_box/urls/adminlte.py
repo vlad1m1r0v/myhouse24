@@ -12,6 +12,7 @@ urlpatterns = [
         path('create/', views.AdminTransactionCreateView.as_view(), name='create'),
         path('<int:pk>/', views.AdminTransactionDetailView.as_view(), name='detail'),
         path('<int:pk>/update/', views.AdminTransactionUpdateView.as_view(), name='update'),
+        path('<int:pk>/delete/', views.AdminTransactionDeleteView.as_view(), name='delete'),
         path('<int:pk>/export/', views.AdminTransactionExportView.as_view(), name='export-transaction'),
         path('api/owners/', views.AdminCashBoxOwnersView.as_view(), name='owners'),
         path('api/accounts/', views.AdminCashBoxAccountsView.as_view(), name='accounts'),
