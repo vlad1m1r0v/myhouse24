@@ -1,0 +1,56 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Повідомлення
+{% endblock title %}
+{% block css %}
+    <style>
+    </style>
+{% endblock css %}
+{% block header %}
+    Повідомлення
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Повідомлення</a></li>
+    <li class="active">Повідомлення</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-body no-padding">
+            <div class="mailbox-read-info">
+                <h3>{{ message.topic }}</h3>
+                <h5>Від: {{ message.creator }} <span
+                        class="mailbox-read-time pull-right">{{ message.created_at|date:"d.m.Y - H:i" }}</span>
+                </h5>
+            </div>
+            <div class="mailbox-read-message">
+                {{ message.description|safe }}
+            </div>
+        </div>
+        <div class="box-footer">
+            <form id="delete-message-form" class="inline" method="post"
+                  action="{% url 'adminlte:messages:delete' pk=message.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-default"><i class="fa fa-trash-o"></i> Видалити</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+        $('#delete-message-form').on('submit', async function (event) {
+            event.preventDefault();
+
+            const result = await Swal.fire({
+                title: "Ви дійсно хочете видалити цей об'єкт?",
+                icon: "question",
+                showDenyButton: true,
+                confirmButtonText: "Видалити",
+                denyButtonText: "Відмінити"
+            });
+
+            if (result.isConfirmed) event.target.submit();
+        });
+    </script>
+{% endblock js %}

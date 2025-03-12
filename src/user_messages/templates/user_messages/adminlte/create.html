@@ -1,0 +1,251 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Нове повідомлення
+{% endblock title %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+{% endblock css %}
+{% block header %}
+    Нове повідомлення
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a>Повідомлення</a></li>
+    <li class="active">Нове повідомлення</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <form id="message-form" method="post">
+            {% csrf_token %}
+            {{ form.creator }}
+            <div class="box-header with-border">
+                <h3 class="box-title"></h3>
+            </div>
+            <div class="box-body">
+                <div class="form-group">
+                    {{ form.topic }}
+                </div>
+                <div class="form-group">
+                    {{ form.description }}
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6">
+                        <h4>Кому відправить:</h4>
+                        <div class="form-group">
+                            {{ form.to_debtors }}
+                            <label>{{ form.to_debtors.label }}</label>
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.house.label }}</label>
+                            {{ form.house }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.section.label }}</label>
+                            {{ form.section }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.floor.label }}</label>
+                            {{ form.floor }}
+                        </div>
+                        <div class="form-group">
+                            <label>{{ form.flat.label }}</label>
+                            {{ form.flat }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box-footer">
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-success"><i class="fa fa-envelope-o"></i> Відправити</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        const $description = $('#id_description');
+        const $house = $('#id_house');
+        const $section = $('#id_section');
+        const $floor = $('#id_floor');
+        const $flat = $('#id_flat');
+
+        const $form = $('#message-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus blur keyup change', 'input, textarea', function () {
+            validate_form();
+        });
+
+        $house.on('change', function () {
+            $section.val('').trigger('change');
+            $floor.val('').trigger('change');
+        });
+
+        $section.on('change', function () {
+            $flat.val('').trigger('change');
+        });
+
+        $floor.on('change', function () {
+            $flat.val('').trigger('change');
+        });
+
+        function validate_form() {
+            const is_valid = $form.validate({
+                ignore: [],
+                rules: {
+                    topic: {
+                        required: true,
+                        minlength: 10,
+                    },
+                    description: {
+                        required: true,
+                        minlength: 20,
+                    },
+                    to_debtors: {
+                        required: false,
+                    },
+                    house: {
+                        required: false,
+                    },
+                    section: {
+                        required: false,
+                    },
+                    floor: {
+                        required: false,
+                    },
+                    flat: {
+                        required: false,
+                    },
+                },
+                messages: {
+                    topic: {
+                        required: 'Вкажіть тему повідомлення',
+                        minlength: 'Тема повідомлення має містити мінімум 10 символів'
+                    },
+                    description: {
+                        required: "Вкажіть опис",
+                        minlength: "Опис має містити хоча б 20 символів",
+                    },
+                },
+                errorElement: 'small',
+                errorPlacement: function (error, element) {
+                    error.css({'color': 'red'});
+                    element.closest('.form-group').append(error);
+                },
+                highlight: function (element) {
+                    $(element).closest('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element) {
+                    $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                }
+            }).checkForm();
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        }
+
+        $house.select2({
+            ajax: {
+                url: "{% url 'adminlte:messages:houses' %}",
+                processResults: data => ({results: data})
+            }
+        });
+
+        $section.select2({
+            ajax: {
+                url: "{% url 'adminlte:messages:sections' %}",
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        house_id: $house.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $floor.select2({
+            ajax: {
+                url: "{% url 'adminlte:messages:floors' %}",
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        house_id: $house.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+        $flat.select2({
+            ajax: {
+                url: "{% url 'adminlte:messages:flats' %}",
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        section_id: $section.val(),
+                        floor_id: $floor.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            },
+        });
+
+
+        $description.wysihtml5({
+            locale: "ua-UA",
+            toolbar: {
+                "font-styles": true,
+                "emphasis": true,
+                "lists": true,
+                "html": false,
+                "link": false,
+                "image": false,
+                "color": false,
+                "blockquote": false,
+                "fa": true,
+            },
+            "events": {
+                load: function () {
+                    const editor = this;
+                    const $textarea = $(editor.editableElement);
+
+                    $(editor.currentView.doc.body).on("keyup", function () {
+                        let content = event.currentTarget.innerHTML;
+                        content = clean_html(content)
+                        $textarea.val(content);
+                        $textarea.trigger('keyup');
+                    })
+                }
+            }
+        });
+
+        function clean_html(html) {
+            const clean_content = html
+                .replace(/<p><br><\/p>/g, '')
+                .replace(/<br>/g, '')
+                .replace(/<[^>]+>/g, '')
+                .trim();
+
+            return clean_content;
+        }
+    </script>
+{% endblock js %}
