@@ -226,11 +226,13 @@
                         </a>
                     </li>
                 {% endif %}
-                <li>
-                    <a>
-                        <i class="fa fa-envelope-o"></i> <span>Повідомлення</span>
-                    </a>
-                </li>
+                {% if perms.authentication.messages %}
+                    <li>
+                        <a href="{% url 'adminlte:messages:list' %}">
+                            <i class="fa fa-envelope-o"></i> <span>Повідомлення</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% if perms.authentication.service_call_requests %}
                     <li>
                         <a href="{% url 'adminlte:master-call-requests:list' %}">

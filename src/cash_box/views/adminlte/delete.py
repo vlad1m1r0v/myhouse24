@@ -1,7 +1,12 @@
+from django.contrib.messages.context_processors import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import JsonResponse
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView
+from django.views.generic import View
 
+from src.core.utils import is_ajax
 from ...models import Transaction
 from .mixin import (
     HouseUserRequiredMixin,
@@ -10,11 +15,17 @@ from .mixin import (
 
 
 class AdminTransactionDeleteView(
-    SuccessMessageMixin,
     HouseUserRequiredMixin,
     CashBoxPermissionRequiredMixin,
-    DeleteView
+    View
 ):
-    model = Transaction
-    success_message = 'Транзакцію успішно видалено'
-    success_url = reverse_lazy('adminlte:cash-box:list')
+    def post(self, *args, **kwargs):
+        transaction_id = self.kwargs.get('pk')
+        Transaction.objects.filter(id=transaction_id).delete()
+
+        if is_ajax(self.request):
+            return JsonResponse({'success': True})
+
+        else:
+            messages.success(self.request, 'Транзакцію успішно видалено')
+            return redirect(reverse_lazy('adminlte:cash-box:list'))

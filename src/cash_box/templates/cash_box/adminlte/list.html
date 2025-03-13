@@ -344,17 +344,18 @@
                     });
 
                     if (result.isConfirmed) {
-                        const $form = $("<form>", {
-                            action: `${data.id}/delete/`,
+                        $.ajax({
+                            url: `${data.id}/delete/`,
                             method: "POST",
-                            style: "display: none"
-                        }).append('{% csrf_token %}');
-
-                        $form.insertAfter($(this).parent());
-
-                        $form.submit();
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            success: function () {
+                                Swal.fire("Об'єкт успішно видалено", "", "success");
+                                datatable.ajax.reload();
+                            }
+                        });
                     }
-
                 });
             }
         })

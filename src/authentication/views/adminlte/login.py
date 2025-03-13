@@ -38,6 +38,7 @@ class AuthenticationAdminLoginView(FormView):
         permission_to_url = {
             'authentication.cash_box': reverse('adminlte:cash-box:list'),
             'authentication.houses': reverse('adminlte:houses:list'),
+            'authentication.messages': reverse('adminlte:messages:list'),
             'authentication.service_call_requests': reverse('adminlte:master-call-requests:list'),
             'authentication.meter_indicators': reverse('adminlte:meter-indicators:list'),
             'authentication.website_management': reverse('adminlte:website-management:home'),
