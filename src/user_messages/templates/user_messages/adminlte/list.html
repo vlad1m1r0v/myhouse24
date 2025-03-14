@@ -93,6 +93,12 @@
     <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.dataTables.js"></script>
     <script>
+        const $search = $('input#search');
+
+        $search.on('blur', function () {
+            datatable.draw();
+        });
+
         // DataTable initialization
         const datatable = new DataTable('#datatable', {
             buttons: [
@@ -106,14 +112,14 @@
                 }
             ],
             dom: "<'row'<'col-xs-6'B><'col-xs-6'p>>" +
-                 "<'row'<'col-xs-12't>>" +
-                 "<'row'<'col-xs-6'B><'col-xs-6'p>>",
+                "<'row'<'col-xs-12't>>" +
+                "<'row'<'col-xs-6'B><'col-xs-6'p>>",
             order: [],
             bFilter: false,
             info: false,
             pagingType: "simple_numbers",
             lengthChange: false,
-            iDisplayLength: 10,
+            iDisplayLength: 1,
             processing: true,
             serverSide: true,
             scrollX: true,
@@ -152,6 +158,9 @@
             },
             ajax: {
                 url: "{% url 'adminlte:messages:datatable' %}",
+                data: function (params) {
+                    params.search = $search.val();
+                },
             },
             columns: [
                 {
