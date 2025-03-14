@@ -109,7 +109,35 @@
             } else {
                 $('input[type="checkbox"]').iCheck('check');
             }
-        })
+        });
+
+        $(document).on('click', '.delete-many', async function () {
+            const result = await Swal.fire({
+                title: "Ви дійсно хочете видалити цей об'єкт?",
+                icon: "question",
+                showDenyButton: true,
+                confirmButtonText: "Видалити",
+                denyButtonText: "Відмінити"
+            });
+
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{% url 'adminlte:messages:delete-many' %}",
+                    method: "POST",
+                    data: {
+                        selected_ids: Array.from(selected_ids)
+                    },
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    success: function () {
+                        Swal.fire("Об'єкти успішно видалено", "", "success");
+                        datatable.ajax.reload();
+                    }
+                });
+            }
+        });
+
 
         // DataTable initialization
         const datatable = new DataTable('#datatable', {
@@ -131,7 +159,7 @@
             info: false,
             pagingType: "simple_numbers",
             lengthChange: false,
-            iDisplayLength: 1,
+            iDisplayLength: 10,
             processing: true,
             serverSide: true,
             scrollX: true,

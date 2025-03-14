@@ -12,6 +12,7 @@ urlpatterns = [
         path('create/', views.AdminMessageCreateView.as_view(), name='create'),
         path('<int:pk>/', views.AdminMessageDetailView.as_view(), name='detail'),
         path('<int:pk>/delete/', views.AdminMessageDeleteView.as_view(), name='delete'),
+        path('delete-many/', views.AdminMessagesDeleteManyView.as_view(), name='delete-many'),
         path('api/houses/', views.AdminMessagesHousesView.as_view(), name='houses'),
         path('api/sections/', views.AdminMessagesSectionsView.as_view(), name='sections'),
         path('api/floors/', views.AdminMessagesFloorsView.as_view(), name='floors'),

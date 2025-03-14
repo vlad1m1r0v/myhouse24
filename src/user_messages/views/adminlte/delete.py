@@ -17,5 +17,4 @@ class AdminMessageDeleteView(
 ):
     model = Message
     success_message = 'Повідомлення успішно видалено'
-    # TODO: change to messages list page
-    success_url = reverse_lazy('adminlte:messages:create')
+    success_url = reverse_lazy('adminlte:messages:list')

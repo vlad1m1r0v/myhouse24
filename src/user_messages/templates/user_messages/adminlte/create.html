@@ -12,7 +12,7 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Повідомлення</a></li>
+    <li><a href="{% url 'adminlte:messages:list' %}">Повідомлення</a></li>
     <li class="active">Нове повідомлення</li>
 {% endblock breadcrumb %}
 {% block content %}

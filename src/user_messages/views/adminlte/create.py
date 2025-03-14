@@ -12,8 +12,7 @@ class AdminMessageCreateView(
     MessagePermissionRequiredMixin,
     CreateView):
     success_message = 'Повідомлення успішно створено'
-    # TODO: change to message list page
-    success_url = reverse_lazy('adminlte:messages:create')
+    success_url = reverse_lazy('adminlte:messages:list')
     model = Message
     form_class = AdminMessageForm
     template_name = 'user_messages/adminlte/create.html'
