@@ -99,6 +99,18 @@
             datatable.draw();
         });
 
+        const selected_ids = new Set();
+
+        $(document).on('click', '.checkbox-toggle', function () {
+            $('.dt-buttons .checkbox-toggle').find(".fa").toggleClass("fa-square-o fa-check-square-o");
+
+            if ($(this).find('.fa').hasClass('fa-square-o')) {
+                $('input[type="checkbox"]').iCheck('uncheck');
+            } else {
+                $('input[type="checkbox"]').iCheck('check');
+            }
+        })
+
         // DataTable initialization
         const datatable = new DataTable('#datatable', {
             buttons: [
@@ -173,13 +185,31 @@
                 {data: "text"},
                 {data: "date"},
             ],
+            drawCallback: function () {
+                $('.checkbox-toggle').find(".fa").addClass("fa-square-o").removeClass("fa-check-square-o");
+            },
             createdRow: function (row, data) {
                 $(function () {
-                    $('input[type="checkbox"]').iCheck({
+                    const checkbox = 'input[type="checkbox"]'
+
+                    $(checkbox).iCheck({
                         checkboxClass: 'icheckbox_flat-blue',
                         radioClass: 'iradio_flat-blue'
                     });
-                })
+
+                    if (selected_ids.has(data.id)) {
+                        $(row).find(checkbox).iCheck('check')
+                    }
+
+
+                    $(row).find(checkbox).on('ifChecked', function () {
+                        selected_ids.add(data.id);
+                    });
+
+                    $(row).find(checkbox).on('ifUnchecked', function () {
+                        selected_ids.delete(data.id);
+                    });
+                });
 
                 $(row).find('td:not(:first-child)').on('click', function () {
                     document.location.href = `${data.id}/`;
