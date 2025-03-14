@@ -6,13 +6,34 @@
 {% block css %}
     <!--Datatable-->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--iCheck-->
+    <link rel="stylesheet" href="{% static 'plugins/iCheck/flat/blue.css' %}">
     <style>
-        th.dt-orderable-asc, th.dt-orderable-desc {
-            color: #337ab7;
-        }
-
         tbody tr td:not(:last-child) {
             cursor: pointer;
+        }
+
+        #datatable_wrapper .dt-paging {
+            float: right !important;
+        }
+
+        #datatable_wrapper ul.pagination li {
+            vertical-align: middle;
+        }
+
+        #datatable_wrapper ul.pagination li a {
+            padding: 5px 10px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        #datatable_wrapper .col-xs-6 {
+            margin-bottom: 0 !important;
+        }
+
+        #datatable_wrapper .row:nth-child(1),
+        #datatable_wrapper .row:nth-child(3) {
+            padding: 5px;
         }
     </style>
 {% endblock css %}
@@ -50,9 +71,9 @@
                         <thead>
                         <tr>
                             <th></th>
-                            <th>Отримувачі</th>
+                            <th style="width: 300px; min-width: 300px">Отримувачі</th>
                             <th>Опис</th>
-                            <th>Дата</th>
+                            <th style="width: 120px; min-width: 120px">Дата</th>
                         </tr>
                         </thead>
                     </table>
@@ -60,11 +81,101 @@
             </div>
         </div>
     </div>
+    </div>
 {% endblock content %}
 {% block js %}
+    <!--iCheck-->
+    <script src="{% static 'plugins/iCheck/icheck.min.js' %}"></script>
     <!--Datatables-->
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Datatables buttons-->
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.dataTables.js"></script>
     <script>
+        // DataTable initialization
+        const datatable = new DataTable('#datatable', {
+            buttons: [
+                {
+                    text: '<i class="fa fa-square-o"></i>',
+                    className: 'btn btn-default btn-sm checkbox-toggle'
+                },
+                {
+                    text: '<i class="fa fa-trash-o"></i>',
+                    className: 'btn btn-default btn-sm delete-many'
+                }
+            ],
+            dom: "<'row'<'col-xs-6'B><'col-xs-6'p>>" +
+                 "<'row'<'col-xs-12't>>" +
+                 "<'row'<'col-xs-6'B><'col-xs-6'p>>",
+            order: [],
+            bFilter: false,
+            info: false,
+            pagingType: "simple_numbers",
+            lengthChange: false,
+            iDisplayLength: 10,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                {
+                    className: "dt-center dt-head-center",
+                    targets: [3]
+                },
+                {
+                    targets: [2],
+                    orderable: false,
+                    createdCell: function (cell) {
+                        $(cell).css({
+                            'white-space': 'nowrap',
+                            'overflow': 'hidden',
+                            'text-overflow': 'ellipsis',
+                            'vertical-align': 'middle',
+                            'max-width': '500px'
+                        });
+                    }
+                },
+                {
+                    targets: [0, 1, 3],
+                    orderable: false,
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle');
+                    }
+                },
+            ],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json',
+                "paginate": {
+                    "previous": "«",
+                    "next": "»"
+                }
+            },
+            ajax: {
+                url: "{% url 'adminlte:messages:datatable' %}",
+            },
+            columns: [
+                {
+                    data: null,
+                    render: function () {
+                        return "<input type='checkbox'>"
+                    }
+                },
+                {data: "receivers"},
+                {data: "text"},
+                {data: "date"},
+            ],
+            createdRow: function (row, data) {
+                $(function () {
+                    $('input[type="checkbox"]').iCheck({
+                        checkboxClass: 'icheckbox_flat-blue',
+                        radioClass: 'iradio_flat-blue'
+                    });
+                })
+
+                $(row).find('td:not(:first-child)').on('click', function () {
+                    document.location.href = `${data.id}/`;
+                });
+            },
+        });
     </script>
 {% endblock js %}
