@@ -1,15 +1,10 @@
 <a href="{% url 'adminlte:messages:detail' pk=object.id %}">
     {% if object.house %}
-        {{ object.house.name }}
-        {% if object.section %}
-            , {{ object.section.name }}
-        {% endif %}
-        {% if object.floor %}
-            , {{ object.floor.name }}
-        {% endif %}
-        {% if object.flat %}
-            , кв. № {{ object.flat.no }}
-        {% endif %}
+        {{ object.house.name }}<!--
+  -->{% if object.section %}, {{ object.section.name }}{% endif %}<!--
+  -->{% if object.floor %}, {{ object.floor.name }}{% endif %}<!--
+  -->{% if object.flat %}, кв. № {{ object.flat.no }}
+    {% endif %}
     {% else %}
         Всім
     {% endif %}
