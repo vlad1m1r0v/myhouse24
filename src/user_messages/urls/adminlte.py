@@ -17,5 +17,6 @@ urlpatterns = [
         path('api/sections/', views.AdminMessagesSectionsView.as_view(), name='sections'),
         path('api/floors/', views.AdminMessagesFloorsView.as_view(), name='floors'),
         path('api/flats/', views.AdminMessagesFlatsView.as_view(), name='flats'),
+        path('api/owners/', views.AdminMessagesOwnersView.as_view(), name='owners'),
     ]))
 ]

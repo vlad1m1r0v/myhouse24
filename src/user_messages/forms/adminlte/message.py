@@ -19,6 +19,7 @@ class AdminMessageForm(forms.ModelForm):
             'section',
             'floor',
             'flat',
+            'flat_owner'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -32,6 +33,7 @@ class AdminMessageForm(forms.ModelForm):
         section = instance.section if instance else initial.get('section')
         floor = instance.floor if instance else initial.get('floor')
         flat = instance.flat if instance else initial.get('flat')
+        owner = instance.flat_owner if instance else initial.get('flat_owner')
 
         if creator:
             self.fields['creator'].widget.choices = [(creator.id, str(creator))]
@@ -47,6 +49,9 @@ class AdminMessageForm(forms.ModelForm):
 
         if flat:
             self.fields['flat'].widget.choices = [(flat.id, str(flat))]
+
+        if owner:
+            self.fields['flat_owner'].widget.choices = [(owner.id, str(owner))]
 
     creator = forms.CharField(
         widget=forms.Select(attrs={'style': 'display:none'}),
@@ -93,6 +98,12 @@ class AdminMessageForm(forms.ModelForm):
     flat = forms.CharField(
         widget=forms.Select(attrs={'class': 'form-control select'}),
         label='Квартира',
+        required=False
+    )
+
+    flat_owner = forms.CharField(
+        widget=forms.Select(attrs={'class': 'form-control select'}),
+        label='Власник квартири',
         required=False
     )
 
@@ -145,3 +156,14 @@ class AdminMessageForm(forms.ModelForm):
             return Flat.objects.get(id=flat)
         except Flat.DoesNotExist:
             raise ValidationError('Вибраної квартири не знайдено')
+
+    def clean_flat_owner(self):
+        owner = self.cleaned_data['flat_owner']
+
+        if not owner:
+            return
+
+        try:
+            return CustomUser.objects.get(id=owner)
+        except CustomUser.DoesNotExist:
+            raise ValidationError('Власника квартири не знайдено')

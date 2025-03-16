@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from openpyxl.pivot.fields import Boolean
 
+from src.authentication.models import CustomUser
 from .mixin import MessagePermissionRequiredMixin
 from ...forms import AdminMessageForm
 from ...models import Message
@@ -25,9 +26,16 @@ class AdminMessageCreateView(
 
         user = self.request.user
         to_debtors = self.request.GET.get('to_debtors')
+        owner_id = self.request.GET.get('owner_id')
 
         initial['creator'] = user
+
         initial['to_debtors'] = bool(to_debtors)
+
+        if owner_id:
+            owner = CustomUser.objects.get(id=owner_id)
+            initial['flat_owner'] = owner
+
 
         kwargs['initial'] = initial
 

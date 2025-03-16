@@ -6,7 +6,7 @@ from src.houses.models import House, HouseSection, HouseFloor
 
 
 class Message(models.Model):
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='creator_messages')
     topic = models.CharField()
     description = models.TextField()
     to_debtors = models.BooleanField(default=False)
@@ -14,6 +14,7 @@ class Message(models.Model):
     section = models.ForeignKey(HouseSection, null=True, blank=True, on_delete=models.CASCADE)
     floor = models.ForeignKey(HouseFloor, null=True, blank=True, on_delete=models.CASCADE)
     flat = models.OneToOneField(Flat, null=True, blank=True, on_delete=models.CASCADE)
+    flat_owner = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE, related_name='owner_messages')
     created_at = models.DateTimeField(auto_now_add=True)
 
 class ReadMessage(models.Model):

@@ -33,26 +33,33 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-6">
                         <h4>Кому відправить:</h4>
-                        <div class="form-group">
-                            {{ form.to_debtors }}
-                            <label>{{ form.to_debtors.label }}</label>
-                        </div>
-                        <div class="form-group">
-                            <label>{{ form.house.label }}</label>
-                            {{ form.house }}
-                        </div>
-                        <div class="form-group">
-                            <label>{{ form.section.label }}</label>
-                            {{ form.section }}
-                        </div>
-                        <div class="form-group">
-                            <label>{{ form.floor.label }}</label>
-                            {{ form.floor }}
-                        </div>
-                        <div class="form-group">
-                            <label>{{ form.flat.label }}</label>
-                            {{ form.flat }}
-                        </div>
+                        {% if not form.initial.flat_owner %}
+                            <div class="form-group">
+                                {{ form.to_debtors }}
+                                <label>{{ form.to_debtors.label }}</label>
+                            </div>
+                            <div class="form-group">
+                                <label>{{ form.house.label }}</label>
+                                {{ form.house }}
+                            </div>
+                            <div class="form-group">
+                                <label>{{ form.section.label }}</label>
+                                {{ form.section }}
+                            </div>
+                            <div class="form-group">
+                                <label>{{ form.floor.label }}</label>
+                                {{ form.floor }}
+                            </div>
+                            <div class="form-group">
+                                <label>{{ form.flat.label }}</label>
+                                {{ form.flat }}
+                            </div>
+                        {% else %}
+                            <div class="form-group">
+                                <label>{{ form.flat_owner.label }}</label>
+                                {{ form.flat_owner }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -83,13 +90,18 @@
         const $section = $('#id_section');
         const $floor = $('#id_floor');
         const $flat = $('#id_flat');
+        const $flat_owner = $('#id_flat_owner');
 
         const $form = $('#message-form');
         const $button = $('button[type=submit]');
 
-        $form.on('focus blur keyup change', 'input, textarea', function () {
+        $form.on('focus blur keyup change', 'input, textarea, select', function () {
             validate_form();
         });
+
+        $('.select').on('select2:opening select2:closing', function () {
+            $(this).trigger('blur');
+        })
 
         $house.on('change', function () {
             $section.val('').trigger('change');
@@ -131,6 +143,9 @@
                     flat: {
                         required: false,
                     },
+                    flat_owner: {
+                        required: true,
+                    },
                 },
                 messages: {
                     topic: {
@@ -141,6 +156,9 @@
                         required: "Вкажіть опис",
                         minlength: "Опис має містити хоча б 20 символів",
                     },
+                    flat_owner: {
+                        required: "Вкажіть власника квартири"
+                    }
                 },
                 errorElement: 'small',
                 errorPlacement: function (error, element) {
@@ -207,6 +225,13 @@
                 },
                 processResults: data => ({results: data})
             },
+        });
+
+        $flat_owner.select2({
+            ajax: {
+                url: "{% url 'adminlte:messages:owners' %}",
+                processResults: data => ({results: data})
+            }
         });
 
 

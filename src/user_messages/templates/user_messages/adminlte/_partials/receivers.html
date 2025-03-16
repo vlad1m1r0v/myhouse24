@@ -3,8 +3,9 @@
         {{ object.house.name }}<!--
   -->{% if object.section %}, {{ object.section.name }}{% endif %}<!--
   -->{% if object.floor %}, {{ object.floor.name }}{% endif %}<!--
-  -->{% if object.flat %}, кв. № {{ object.flat.no }}
-    {% endif %}
+  -->{% if object.flat %}, кв. № {{ object.flat.no }}{% endif %}
+        {% elif object.flat_owner %}
+        {{ object.flat_owner }}
     {% else %}
         Всім
     {% endif %}
