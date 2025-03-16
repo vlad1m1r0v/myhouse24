@@ -1,0 +1,1 @@
+from .houses import AdminFlatOwnersHousesView

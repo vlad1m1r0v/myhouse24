@@ -1,1 +1,2 @@
 from .flat_owner import AdminFlatOwnerForm
+from .filters import AdminFlatOwnersFiltersForm

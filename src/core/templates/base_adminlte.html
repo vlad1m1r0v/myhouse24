@@ -214,11 +214,13 @@
                         <i class="fa fa-key"></i> <span>Квартири</span>
                     </a>
                 </li>
-                <li>
-                    <a>
-                        <i class="fa fa-users"></i><span>Власники квартир</span>
-                    </a>
-                </li>
+                {% if perms.authentication.flat_owners %}
+                    <li>
+                        <a href="{% url 'adminlte:flat-owners:list' %}">
+                            <i class="fa fa-users"></i><span>Власники квартир</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% if perms.authentication.houses %}
                     <li>
                         <a href="{% url 'adminlte:houses:list' %}">

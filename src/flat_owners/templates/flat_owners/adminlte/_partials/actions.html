@@ -1,0 +1,13 @@
+<div class="btn-group" style="display:flex; flex-wrap:nowrap;">
+    <!--TODO: add valid url to send message page-->
+    <a class="btn btn-default btn-sm" title="Надіслати повідомлення">
+        <i class="fa fa-envelope"></i>
+    </a>
+    <a href="{% url 'adminlte:flat-owners:update' pk=object.pk %}" class="btn btn-default btn-sm" title="Редагувати">
+        <i class="fa fa-pencil"></i>
+    </a>
+    <!--TODO: implement working delete button-->
+    <a class="btn btn-default btn-sm" title="Видалити">
+        <i class="fa fa-trash"></i>
+    </a>
+</div>

@@ -13,6 +13,8 @@ class AdminMessagesDatatableView(AjaxDatatableView):
     disable_queryset_optimization_select_related = True
     disable_queryset_optimization_prefetch_related = True
 
+    initial_order = [["id", "desc"], ]
+
     column_defs = [
         {'name': 'id'},
         {'name': 'receivers'},
@@ -22,6 +24,10 @@ class AdminMessagesDatatableView(AjaxDatatableView):
 
     def get_initial_queryset(self, request=None):
         qs = self.model.objects.select_related('house', 'section', 'floor', 'flat')
+        return qs
+
+    def sort_queryset(self, params, qs):
+        qs = qs.order_by('-id')
         return qs
 
     def filter_queryset(self, params, qs):

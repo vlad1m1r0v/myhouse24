@@ -1,6 +1,7 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
+from openpyxl.pivot.fields import Boolean
 
 from .mixin import MessagePermissionRequiredMixin
 from ...forms import AdminMessageForm
@@ -20,10 +21,14 @@ class AdminMessageCreateView(
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
 
-        user = self.request.user
+        initial = {}
 
-        kwargs['initial'] = {
-            'creator': user,
-        }
+        user = self.request.user
+        to_debtors = self.request.GET.get('to_debtors')
+
+        initial['creator'] = user
+        initial['to_debtors'] = bool(to_debtors)
+
+        kwargs['initial'] = initial
 
         return kwargs

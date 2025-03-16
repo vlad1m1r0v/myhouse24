@@ -358,7 +358,7 @@
         function on_flat_select() {
             const $selected = $flat.find(":selected")
 
-            $house_link.attr('href', `../../../houses/${$selected.data('house-id')}/`);
+            $house_link.attr('href', `../../houses/${$selected.data('house-id')}/`);
             $house_link.text($selected.data('house-name'));
             $floor_number.text($selected.data('floor-name'));
             $section_number.text($selected.data('section-name'));
