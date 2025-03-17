@@ -132,7 +132,8 @@ class AdminFlatOwnerForm(forms.ModelForm):
 
         password = self.cleaned_data.get('new_password')
 
-        if password:
+        # if we changed password in existing user
+        if password and self.instance.pk:
             user.password = make_password(password)
 
             send_password_update_notification.delay(

@@ -246,6 +246,29 @@
                     $(row).find('td:not(:last-child)').on('click', function () {
                         document.location.href = `${data.pk}/`;
                     });
+
+                    $(row).find('.delete-button').on('click', async function () {
+                        const result = await Swal.fire({
+                            title: "Ви дійсно хочете видалити цей об'єкт?",
+                            icon: "question",
+                            showDenyButton: true,
+                            confirmButtonText: "Видалити",
+                            denyButtonText: "Відмінити"
+                        });
+
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: `${data.pk}/delete/`,
+                                method: "DELETE", headers: {
+                                    "X-CSRFToken": "{{ csrf_token }}"
+                                },
+                                success: function () {
+                                    Swal.fire("Об'єкт успішно видалено", "", "success");
+                                    datatable.ajax.reload();
+                                }
+                            });
+                        }
+                    });
                 },
             })
         ;
