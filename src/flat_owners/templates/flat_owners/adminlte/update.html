@@ -181,10 +181,17 @@
                 $('#avatar').attr('src', src);
             });
 
-            $('#id_birth_date').datepicker({
+            const $date = $('#id_birth_date');
+
+            $date.datepicker({
                 autoclose: true,
-                language: 'uk'
+                language: 'uk',
+                clearBtn: true,
             })
+
+            $date.on('changeDate', function () {
+                $(this).trigger('change').valid();
+            });
 
             $('.kv-date-calendar').click(function () {
                 $('#id_birth_date').focus();

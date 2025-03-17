@@ -10,10 +10,11 @@ from src.flats.models import Flat
 from src.payment_receipts.models import Receipt
 
 
-class AdminUsersDatatableView(AjaxDatatableView):
+class AdminFlatOwnersDatatableView(AjaxDatatableView):
     model = CustomUser
 
     column_defs = [
+        {'name': 'pk'},
         {'name': 'ID'},
         {'name': 'full_name'},
         {'name': 'phone'},
@@ -101,6 +102,8 @@ class AdminUsersDatatableView(AjaxDatatableView):
         return qs.filter(filters)
 
     def customize_row(self, row, obj):
+        row['pk'] = int(obj.pk)
+
         row['ID'] = obj.ID
 
         row['full_name'] = obj.full_name

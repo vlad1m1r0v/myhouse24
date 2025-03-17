@@ -15,7 +15,7 @@ class PersonalAccount(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, default="active")
     house = models.ForeignKey(House, null=True, blank=True, on_delete=models.SET_NULL)
     section = models.ForeignKey(HouseSection, null=True, blank=True, on_delete=models.SET_NULL)
-    flat = models.OneToOneField(Flat, null=True, blank=True, on_delete=models.SET_NULL)
+    flat = models.OneToOneField(Flat, null=True, blank=True, on_delete=models.SET_NULL, related_name='personal_account')
 
     def __str__(self):
         return f"Особовий рахунок № {self.no}"

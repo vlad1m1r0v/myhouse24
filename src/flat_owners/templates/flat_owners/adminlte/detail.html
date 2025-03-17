@@ -1,0 +1,179 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Профіль власника
+{% endblock title %}
+{% block css %}
+    <style>
+        #avatar-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #avatar-preview-container {
+            border-radius: 100%;
+            width: 150px;
+            aspect-ratio: 1;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            #avatar-preview-container {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        #avatar {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        td {
+            vertical-align: middle !important;
+        }
+
+        #profile-table {
+            margin-bottom: 15px;
+        }
+
+        #profile-table tr td:first-child {
+            font-weight: bold;
+        }
+
+        #flats-table {
+            margin: 15px 0;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Профіль власника
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:flat-owners:list' %}">Власник квартир</a></li>
+    <li class="active">Профіль власника</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title"></h3>
+            <div class="box-tools">
+                <a target="_blank" class="btn btn-default btn-sm">
+                    <span class="hidden-xs">Перейти в кабінет</span>
+                    <i class="fa fa-external-link visible-xs" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'adminlte:flat-owners:update' pk=profile.pk %}" class="btn btn-primary btn-sm">
+                    <span class="hidden-xs">Редагувати профіль</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div id="avatar-container">
+                        <div id="avatar-preview-container">
+                            <img id="avatar" src="{{ profile.avatar.url }}"
+                                 alt="Avatar Preview">
+                        </div>
+                    </div>
+                    <div class="table-responsive no-padding">
+                        <table id="profile-table" class="table table-bordered table-striped table-view">
+                            <tbody>
+                            <tr>
+                                <td>Статус</td>
+                                <td>
+                                    <small class="label {% if profile.status == 'new' %}label-warning{% elif profile.status == 'disabled' %}label-danger{% else %}label-success{% endif %}">
+                                        {{ profile.get_status_display }}
+                                    </small>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>ID</td>
+                                <td>{{ profile.ID }}</td>
+                            </tr>
+                            <tr>
+                                <td>Прізвище</td>
+                                <td>{{ profile.last_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Ім'я</td>
+                                <td>{{ profile.first_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>По батькові</td>
+                                <td>{{ profile.middle_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Дата народження</td>
+                                <td>{{ profile.birth_date|date:"d.m.Y" }}</td>
+                            </tr>
+                            <tr>
+                                <td>Про власника</td>
+                                <td>{{ profile.about_me }}</td>
+                            </tr>
+                            <tr>
+                                <td>Телефон</td>
+                                <td>{{ profile.phone_number }}</td>
+                            </tr>
+                            <tr>
+                                <td>Viber</td>
+                                <td>{{ profile.viber }}</td>
+                            </tr>
+                            <tr>
+                                <td>Telegram</td>
+                                <td>{{ profile.telegram }}</td>
+                            </tr>
+                            <tr>
+                                <td>E-Mail</td>
+                                <td>{{ profile.email }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h4>Квартири</h4>
+                    <div id="flats-table" class="table-responsive no-padding">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Будинок</th>
+                                <th>Секція</th>
+                                <th>Квартира</th>
+                                <th>Особовий рахунок</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for flat in profile.flats.all %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        <a href="{% url 'adminlte:houses:detail' pk=flat.house.pk %}">{{ flat.house.name }}</a>
+                                    </td>
+                                    <td>
+                                        {{ flat.section.name }}
+                                    </td>
+                                    <td>
+                                        <!--TODO: add valid url ot flat detail page-->
+                                        <a>{{ flat.no }}</a>
+                                    </td>
+                                    <!--TODO: add valid url ot personal account detail page-->
+                                    <td>
+                                        <a>{{ flat.personal_account.no }}</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock content %}

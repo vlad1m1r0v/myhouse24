@@ -17,6 +17,5 @@ class AdminFlatOwnerUpdateView(SuccessMessageMixin,
     model = CustomUser
     template_name = 'flat_owners/adminlte/update.html'
     form_class = AdminFlatOwnerForm
-    # TODO: change to flat owners list page URL
-    success_url = reverse_lazy('adminlte:flat-owners:create')
+    success_url = reverse_lazy('adminlte:flat-owners:list')
     success_message = 'Дані власника квартири успішно оновлено'
