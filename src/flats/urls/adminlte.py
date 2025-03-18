@@ -9,6 +9,7 @@ urlpatterns = [
         path('', views.AdminFlatsListView.as_view(), name='list'),
         path('datatable/', views.AdminFlatsDatatableView.as_view(), name='datatable'),
         path('create/', views.AdminFlatCreateView.as_view(), name='create'),
+        path('<int:pk>/', views.AdminFlatDetailView.as_view(), name='detail'),
         path('<int:pk>/update/', views.AdminFlatUpdateView.as_view(), name='update'),
         path('api/houses/', views.AdminFlatHousesView.as_view(), name='houses'),
         path('api/sections/', views.AdminFlatSectionsView.as_view(), name='sections'),

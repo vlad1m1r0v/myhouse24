@@ -1,0 +1,114 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Квартира № {{ flat.no }}, {{ flat.house.name }}
+{% endblock title %}
+{% block css %}
+    <style>
+        td {
+            vertical-align: middle !important;
+        }
+
+        tr td:first-child {
+            font-weight: bold;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Квартира № {{ flat.no }}, {{ flat.house.name }}
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:flats:list' %}">Квартири</a></li>
+    <li class="active">Квартира № {{ flat.no }}, {{ flat.house.name }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Перегляд квартири</h3>
+            <div class="box-tools">
+                <a href="{% url 'adminlte:cash-box:create' %}?account_id={{ flat.personal_account.id }}"
+                   class="btn btn-default btn-sm">
+                    <span class="hidden-xs"><i class="fa fa-dollar"></i> Прийняти транзацію</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'adminlte:receipts:create' %}?flat_id={{ flat.id }}"
+                   class="btn btn-default btn-sm">
+                    <span class="hidden-xs"> <i class="fa fa-files-o"></i> Оформити квитанцію</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'adminlte:flats:update' pk=flat.pk %}" class="btn btn-primary btn-sm">
+                    <span class="hidden-xs">Редагувати квартиру</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-bordered table-striped table-view">
+                        <tr>
+                            <td>Особовий рахунок</td>
+                            <!--TODO: add valid url to personal account detail page-->
+                            <td><a href="">{{ flat.personal_account.no }}</a></td>
+                        </tr>
+                        <tr>
+                            <td>Номер квартири</td>
+                            <td>{{ flat.no }}</td>
+                        </tr>
+                        <tr>
+                            <td>Площа</td>
+                            <td>{{ flat.area }}м<sup>2</sup></td>
+                        </tr>
+                        <tr>
+                            <td>Будинок</td>
+                            <td>
+                                <a href="{% url 'adminlte:houses:detail' pk=flat.house.pk %}">
+                                    {{ flat.house.name }}
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Секція</td>
+                            <td>{{ flat.section.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Поверх</td>
+                            <td>{{ flat.floor.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Власник</td>
+                            <td>{{ flat.owner.last_name }} {{ flat.owner.first_name }} {{ flat.owner.middle_name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Тариф</td>
+                            <td>
+                                <a href="{% url 'adminlte:system-settings:tariffs:detail' pk=flat.tariff.pk %}">
+                                    {{ flat.tariff }}
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                    <div>
+                        <p>
+                            <a href="{% url 'adminlte:meter-indicators:list-for-flat' %}?flat_id={{ flat.id }}">
+                                Переглянути показники лічильників
+                            </a>
+                        </p>
+                        <p>
+                            <a href="{% url 'adminlte:cash-box:list' %}?type=income&account_id={{ flat.personal_account.id }}">
+                                Переглянути транзакції
+                            </a>
+                        </p>
+                        <p>
+                            <!--TODO: add valid URL to flat receipts list page-->
+                            <a href="">
+                                Переглянути квитанції
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

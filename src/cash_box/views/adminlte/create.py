@@ -3,9 +3,10 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
+from src.personal_accounts.models import PersonalAccount
 from .mixin import CashBoxPermissionRequiredMixin
 from ...forms import AdminTransactionForm
-from ...models import Transaction
+from ...models import Transaction, TypeChoices
 
 
 class AdminTransactionCreateView(
@@ -22,6 +23,7 @@ class AdminTransactionCreateView(
         kwargs = super().get_form_kwargs()
 
         transaction_id = self.request.GET.get('transaction_id')
+        account_id = self.request.GET.get('account_id')
         transaction_type = self.request.GET.get('type')
 
         if transaction_type:
@@ -40,6 +42,17 @@ class AdminTransactionCreateView(
                 'is_complete': transaction.is_complete,
                 'manager': transaction.manager,
                 'comment': transaction.comment,
+            }
+
+        if account_id:
+            account = (PersonalAccount.objects
+                       .select_related('flat', 'flat__owner')
+                       .get(id=account_id))
+
+            kwargs['initial'] = {
+                'type': TypeChoices.INCOME,
+                'owner': account.flat.owner,
+                'personal_account': account,
             }
 
         return kwargs
