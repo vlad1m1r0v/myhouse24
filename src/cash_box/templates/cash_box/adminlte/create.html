@@ -185,16 +185,18 @@
                         ddmmyyyy: true,
                     },
                     owner: {
-                        required: true,
+                        required: false,
                     },
                     personal_account: {
-                        required: true,
+                        required: function () {
+                            return Boolean($owner.val())
+                        },
                     },
                     payment_item: {
                         required: true,
                     },
                     is_complete: {
-                      required: false,
+                        required: false,
                     },
                     manager: {
                         required: true,
@@ -296,8 +298,8 @@
             },
         });
 
-        $owner.on('change', function() {
-           $account.val('').trigger('change').valid();
+        $owner.on('change', function () {
+            $account.val('').trigger('change').valid();
         });
 
         $payment_item.select2({

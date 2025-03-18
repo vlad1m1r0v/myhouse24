@@ -13,6 +13,11 @@ from src.payment_receipts.models import Receipt
 class AdminFlatOwnersDatatableView(AjaxDatatableView):
     model = CustomUser
 
+    disable_queryset_optimization = True
+    disable_queryset_optimization_only = True
+    disable_queryset_optimization_select_related = True
+    disable_queryset_optimization_prefetch_related = True
+
     column_defs = [
         {'name': 'pk'},
         {'name': 'ID'},
@@ -37,7 +42,7 @@ class AdminFlatOwnersDatatableView(AjaxDatatableView):
                   .annotate(full_name=Concat('last_name', Value(' '), 'first_name', Value(' '), 'middle_name'))
                   .filter(is_staff=False, is_superuser=False)
                   .prefetch_related(Prefetch('flats', queryset=Flat.objects.select_related('house')))
-            .distinct())
+                  .distinct())
 
         return owners
 

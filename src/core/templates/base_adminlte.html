@@ -147,7 +147,8 @@
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="{% url 'adminlte:system-settings:users:update' pk=request.user.pk %}" class="btn btn-default btn-flat">Профіль</a>
+                                    <a href="{% url 'adminlte:system-settings:users:update' pk=request.user.pk %}"
+                                       class="btn btn-default btn-flat">Профіль</a>
                                 </div>
                                 <div class="pull-right">
                                     <form method="post" action="{% url 'authentication:adminlte:logout' %}">
@@ -191,11 +192,13 @@
                         <i class="fa fa-credit-card"></i> <span>Особові рахунки</span>
                     </a>
                 </li>
-                <li>
-                    <a>
-                        <i class="fa fa-key"></i> <span>Квартири</span>
-                    </a>
-                </li>
+                {% if perms.authentication.flats %}
+                    <li>
+                        <a href="{% url 'adminlte:flats:list' %}">
+                            <i class="fa fa-key"></i> <span>Квартири</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% if perms.authentication.flat_owners %}
                     <li>
                         <a href="{% url 'adminlte:flat-owners:list' %}">

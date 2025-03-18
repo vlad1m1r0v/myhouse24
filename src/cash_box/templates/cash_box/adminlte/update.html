@@ -190,10 +190,12 @@
                         ddmmyyyy: true,
                     },
                     owner: {
-                        required: true,
+                        required: false,
                     },
                     personal_account: {
-                        required: true,
+                        required: function () {
+                            return Boolean($owner.val())
+                        },
                     },
                     payment_item: {
                         required: true,

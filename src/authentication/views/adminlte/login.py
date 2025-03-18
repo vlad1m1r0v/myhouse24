@@ -37,6 +37,7 @@ class AuthenticationAdminLoginView(FormView):
     def get_success_url(self):
         permission_to_url = {
             'authentication.cash_box': reverse('adminlte:cash-box:list'),
+            'authentication.flat_owners': reverse('adminlte:flat-owners:list'),
             'authentication.houses': reverse('adminlte:houses:list'),
             'authentication.messages': reverse('adminlte:messages:list'),
             'authentication.service_call_requests': reverse('adminlte:master-call-requests:list'),
@@ -48,7 +49,6 @@ class AuthenticationAdminLoginView(FormView):
             'authentication.payment_information': reverse('adminlte:system-settings:payment-credential:index'),
             'authentication.payment_items': reverse('adminlte:system-settings:payment-items:list'),
         }
-
 
         if self.request.user.is_superuser:
             messages.success(self.request, 'Користувач успішно увійшов в систему')

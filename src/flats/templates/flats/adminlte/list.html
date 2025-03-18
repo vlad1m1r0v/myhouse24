@@ -1,0 +1,282 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Квартири
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        th:nth-child(1) {
+            width: 150px;
+        }
+
+        th:nth-child(2) {
+            width: 250px;
+        }
+
+        th:nth-child(3) {
+            width: 150px;
+        }
+
+        th:nth-child(4) {
+            width: 150px;
+        }
+
+        th:nth-child(5) {
+            min-width: 300px;
+            width: auto;
+        }
+
+        th:nth-child(6) {
+            width: 150px;
+        }
+
+        th:nth-child(7) {
+            width: 78px;
+        }
+
+        th.dt-orderable-asc, th.dt-orderable-desc {
+            color: #337ab7;
+        }
+
+        tbody tr td:not(:last-child) {
+            cursor: pointer;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Квартири
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Квартири</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right margin-bottom">
+                <a class="btn btn-success" href="{% url 'adminlte:flats:create' %}">
+                    Додати квартиру
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <table id="datatable"
+                       class="table table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>№ квартири</th>
+                        <th>Будинок</th>
+                        <th>Секція</th>
+                        <th>Поверх</th>
+                        <th>Власник</th>
+                        <th>Баланс (грн)</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>{{ filters.flat }}</th>
+                        <th>{{ filters.house }}</th>
+                        <th>{{ filters.section }}</th>
+                        <th>{{ filters.floor }}</th>
+                        <th>{{ filters.flat_owner }}</th>
+                        <th>{{ filters.has_debt }}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        const $flat = $("#id_flat");
+        const $house = $("#id_house");
+        const $section = $("#id_section");
+        const $floor = $("#id_floor");
+        const $owner = $("#id_flat_owner");
+        const $has_debt = $("#id_has_debt");
+
+        $house.select2({
+            ajax: {
+                url: "{% url 'adminlte:flats:houses' %}",
+                processResults: data => ({results: data})
+            },
+        });
+
+        $house.on('change', function () {
+            $section.val('').trigger('change');
+            $floor.val('').trigger('change');
+        })
+
+        $section.select2({
+            ajax: {
+                url: "{% url 'adminlte:flats:sections' %}",
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1,
+                        house_id: $house.val()
+                    }
+                },
+                processResults: data => ({
+                    results: data.results,
+                    pagination: {
+                        more: data.pagination.more
+                    }
+                })
+            }
+        });
+
+        $floor.select2({
+            ajax: {
+                url: "{% url 'adminlte:flats:floors' %}",
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        page: params.page || 1,
+                        house_id: $house.val()
+                    }
+                },
+                processResults: data => ({
+                    results: data.results,
+                    pagination: {
+                        more: data.pagination.more
+                    }
+                })
+            },
+        });
+
+        $owner.select2({
+            ajax: {
+                url: "{% url 'adminlte:flats:owners' %}",
+                processResults: data => ({results: data})
+            },
+        });
+
+        $has_debt.select2({
+            minimumResultsForSearch: -1
+        });
+
+        $flat.on('keyup', function () {
+            datatable.columns(0).search($(this).val()).draw();
+        });
+
+        $house.on('change', function () {
+            datatable.columns(1).search($(this).val()).draw();
+        });
+
+        $section.on('change', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        $floor.on('change', function () {
+            datatable.columns(3).search($(this).val()).draw();
+        });
+
+        $owner.on('change', function () {
+            datatable.columns(4).search($(this).val()).draw();
+        });
+
+        $has_debt.on('change', function () {
+            datatable.columns(5).search($(this).val()).draw();
+        });
+
+        //Datatable setup
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            orderCellsTop: true,
+            bFilter: false,
+            iDisplayLength: 10,
+            lengthChange: true,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                {
+                    targets: '_all',
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle').css('padding', '10px');
+                    }
+                },
+                {
+                    targets: [0, 1, 2, 3, 5, 6],
+                    className: "dt-center"
+                },
+                {
+                    targets: [5, 6],
+                    orderable: false,
+                }
+            ],
+            ajax: {
+                url: "{% url 'adminlte:flats:datatable' %}",
+                data: function (params) {
+                    params.flat = $flat.val();
+                    params.house = $house.val();
+                    params.section = $section.val();
+                    params.floor = $floor.val();
+                    params.owner = $owner.val();
+                    params.has_debt = $has_debt.val();
+                }
+            },
+            columns: [
+                {'data': 'flat'},
+                {'data': 'house'},
+                {'data': 'section'},
+                {'data': 'floor'},
+                {'data': 'owner'},
+                {'data': 'balance'},
+                {'data': 'actions'}
+            ],
+            language:
+                {
+                    url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+                }
+            ,
+            createdRow: function (row, data) {
+            },
+        });
+    </script>
+{% endblock js %}

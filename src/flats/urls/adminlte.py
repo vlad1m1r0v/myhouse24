@@ -6,6 +6,8 @@ app_name = "flats"
 
 urlpatterns = [
     path('flats/', include([
+        path('', views.AdminFlatsListView.as_view(), name='list'),
+        path('datatable/', views.AdminFlatsDatatableView.as_view(), name='datatable'),
         path('create/', views.AdminFlatCreateView.as_view(), name='create'),
         path('<int:pk>/update/', views.AdminFlatUpdateView.as_view(), name='update'),
         path('api/houses/', views.AdminFlatHousesView.as_view(), name='houses'),
