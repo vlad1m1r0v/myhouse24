@@ -1,0 +1,1 @@
+from .new_flat_owners import new_flat_owners
