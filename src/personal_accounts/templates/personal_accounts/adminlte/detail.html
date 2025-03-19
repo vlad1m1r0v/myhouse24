@@ -1,0 +1,128 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% load account_status %}
+{% load account_balance %}
+{% block title %}
+    Особовий рахунок № {{ personal_account.no }}
+{% endblock title %}
+{% block css %}
+    <style>
+        td {
+            vertical-align: middle !important;
+        }
+
+        tr td:first-child {
+            font-weight: bold;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Особовий рахунок № {{ personal_account.no }}
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:personal-accounts:list' %}">Особові рахунки</a></li>
+    <li class="active">Особовий рахунок № {{ personal_account.no }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-lg-3">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            №
+                        </div>
+                        <div class="form-control pull-right">{{ personal_account.no }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Перегляд особового рахунку</h3>
+            <div class="box-tools">
+                <a href="{% url 'adminlte:cash-box:create' %}?account_id={{ personal_account.id }}"
+                   class="btn btn-default btn-sm">
+                    <span class="hidden-xs"><i class="fa fa-dollar"></i> Прийняти транзацію</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'adminlte:receipts:create' %}?flat_id={{ personal_account.flat.id }}"
+                   class="btn btn-default btn-sm">
+                    <span class="hidden-xs"> <i class="fa fa-files-o"></i> Оформити квитанцію</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'adminlte:personal-accounts:update' pk=personal_account.pk %}"
+                   class="btn btn-primary btn-sm">
+                    <span class="hidden-xs">Редагувати особовий рахунок</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <table class="table table-bordered table-striped table-view">
+                        <tr>
+                            <td>Статус</td>
+                            <td>{% account_status obj=personal_account %}</td>
+                        </tr>
+                        <tr>
+                            <td>Будинок</td>
+                            <td>
+                                <a href="{% url 'adminlte:houses:detail' pk=personal_account.house.pk %}">
+                                    {{ personal_account.house.name }}
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Секція</td>
+                            <td>{{ personal_account.section.name }}</td>
+                        </tr>
+                        <tr>
+                            <td>Квартира</td>
+                            <td>
+                                <a href="{% url 'adminlte:flats:detail' pk=personal_account.flat.pk %}">
+                                    {{ personal_account.flat.no }}
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Власник</td>
+                            <td>
+                                <a href="{% url 'adminlte:flat-owners:detail' pk=personal_account.flat.owner.pk %}">
+                                    {{ personal_account.flat.owner.last_name }}
+                                    {{ personal_account.flat.owner.first_name }}
+                                    {{ personal_account.flat.owner.middle_name }}
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Баланс, грн</td>
+                            <td>{% account_balance obj=personal_account %}</td>
+                        </tr>
+                    </table>
+                    <div>
+                        <p>
+                            <a href="{% url 'adminlte:meter-indicators:list-for-flat' %}?flat_id={{ personal_account.flat.id }}">
+                                Переглянути показники лічильників
+                            </a>
+                        </p>
+                        <p>
+                            <a href="{% url 'adminlte:cash-box:list' %}?type=income&account_id={{ personal_account.id }}">
+                                Переглянути транзакції
+                            </a>
+                        </p>
+                        <p>
+                            <!--TODO: add valid URL to personal accounts receipts list page-->
+                            <a href="">
+                                Переглянути квитанції
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

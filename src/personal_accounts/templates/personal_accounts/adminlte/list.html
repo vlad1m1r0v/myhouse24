@@ -287,6 +287,9 @@
                 url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
             },
             createdRow: function (row, data) {
+                $(row).find('td:not(:last-child)').on('click', function () {
+                    document.location.href = `${data.pk}/`;
+                });
             },
         });
     </script>

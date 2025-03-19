@@ -17,6 +17,7 @@ class AdminPersonalAccountsDatatableView(AjaxDatatableView):
     disable_queryset_optimization_prefetch_related = True
 
     column_defs = [
+        {'name': 'pk'},
         {'name': 'no'},
         {'name': 'status'},
         {'name': 'flat'},
@@ -119,6 +120,8 @@ class AdminPersonalAccountsDatatableView(AjaxDatatableView):
         return qs
 
     def customize_row(self, row, obj):
+        row['pk'] = int(obj.pk)
+
         row['no'] = obj.no
 
         row['status'] = render_to_string(

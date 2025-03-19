@@ -25,8 +25,16 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Особові рахунки</a></li>
-    <li>Особовий рахунок {{ form.instance.no }}</li>
+    <li>
+        <a href="{% url 'adminlte:personal-accounts:list' %}">
+            Особові рахунки
+        </a>
+    </li>
+    <li>
+        <a href="{% url 'adminlte:personal-accounts:detail' pk=form.instance.pk %}">
+            Особовий рахунок {{ form.instance.no }}
+        </a>
+    </li>
     <li class="active">Редагування</li>
 {% endblock breadcrumb %}
 {% block content %}
