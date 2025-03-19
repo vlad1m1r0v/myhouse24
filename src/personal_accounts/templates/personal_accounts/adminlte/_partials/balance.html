@@ -1,0 +1,8 @@
+{% load l10n %}
+{% if object.balance == 0 %}
+    <span>{{ object.balance|unlocalize }}</span>
+{% elif object.balance < 0 %}
+    <span class="text-red">{{ object.balance|unlocalize }}</span>
+{% elif object.balance > 0 %}
+    <span class="text-green">{{ object.balance|unlocalize }}</span>
+{% endif %}

@@ -1,1 +1,2 @@
 from .personal_account import AdminPersonalAccountForm
+from .filters import AdminPersonalAccountsFiltersForm

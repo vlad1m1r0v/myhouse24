@@ -1,0 +1,293 @@
+{% extends 'base_adminlte.html' %}
+{% load static %}
+{% block title %}
+    Особові рахунки
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+
+        th:nth-child(1) {
+            width: 175px;
+        }
+
+        th:nth-child(2) {
+            width: 175px;
+        }
+
+        th:nth-child(3) {
+            width: 100px;
+        }
+
+        th:nth-child(4) {
+            width: 200px;
+        }
+
+        th:nth-child(5) {
+            width: 100px;
+        }
+
+        th:nth-child(6) {
+            width: 300px;
+        }
+
+        th:nth-child(7) {
+            width: 150px;
+        }
+
+        tbody tr td:not(:last-child) {
+            cursor: pointer;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Особові рахунки
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Особові рахунки</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-lg-9">
+            <div class="row">
+                <div class="col-xs-12 col-md-4">
+                    <div class="small-box bg-green overflow-hidden">
+                        <div class="inner">
+                            <h3>0.0 грн</h3>
+                            <p>Стан каси</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <div class="small-box bg-blue overflow-hidden">
+                        <div class="inner">
+                            <h3>0.0 грн</h3>
+                            <p>Баланс по рахункам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <div class="small-box bg-red overflow-hidden">
+                        <div class="inner">
+                            <h3>0.0 грн</h3>
+                            <p>Заборгованість по рахункам</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fa fa-dollar"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-lg-3">
+            <div class="btn-group pull-right margin-bottom">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    Виберіть дію
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'adminlte:personal-accounts:create' %}">Додати особовий рахунок</a></li>
+                    <!--TODO: implement export personal accounts to excel-->
+                    <li><a>Експорт в Excel</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools">
+                        <a href="{{ request.build_absolute_uri }}"
+                           class="btn btn-default btn-sm">
+                            <span class="hidden-xs">Очистити</span>
+                            <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <table id="datatable"
+                       class="table table-bordered table-hover table-striped">
+                    <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>Статус</th>
+                        <th>Квартира</th>
+                        <th>Будинок</th>
+                        <th>Секція</th>
+                        <th>Власник</th>
+                        <th>Баланс</th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>{{ filters.no }}</th>
+                        <th>{{ filters.status }}</th>
+                        <th>{{ filters.flat }}</th>
+                        <th>{{ filters.house }}</th>
+                        <th>{{ filters.section }}</th>
+                        <th>{{ filters.owner }}</th>
+                        <th>{{ filters.has_debt }}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        const $no = $('#id_no');
+        const $status = $('#id_status');
+        const $flat = $('#id_flat');
+        const $house = $('#id_house');
+        const $section = $('#id_section');
+        const $owner = $('#id_owner');
+        const $has_debt = $('#id_has_debt');
+
+        $status.select2({
+            minimumResultsForSearch: -1
+        });
+
+        $house.select2({
+            ajax: {
+                url: "{% url 'adminlte:personal-accounts:houses' %}",
+                processResults: data => ({results: data})
+            }
+        });
+
+        $section.select2({
+            ajax: {
+                url: "{% url 'adminlte:personal-accounts:sections' %}",
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term,
+                        house_id: $house.val()
+                    }
+                },
+                processResults: data => ({results: data})
+            }
+        });
+
+        $owner.select2({
+            ajax: {
+                url: "{% url 'adminlte:personal-accounts:owners' %}",
+                processResults: data => ({results: data})
+            }
+        });
+
+        $has_debt.select2({
+            minimumResultsForSearch: -1
+        });
+
+        $no.on('keyup', function () {
+            datatable.columns(0).search($(this).val()).draw();
+        });
+
+        $status.on('change', function () {
+            datatable.columns(1).search($(this).val()).draw();
+        });
+
+        $flat.on('keyup', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        $house.on('change', function () {
+            datatable.columns(3).search($(this).val()).draw();
+        });
+
+        $section.on('change', function () {
+            datatable.columns(4).search($(this).val()).draw();
+        });
+
+        $owner.on('change', function () {
+            datatable.columns(5).search($(this).val()).draw();
+        });
+
+
+        $has_debt.on('change', function () {
+            datatable.columns(6).search($(this).val()).draw();
+        });
+
+        //Datatable setup
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            ordering: false,
+            bFilter: false,
+            iDisplayLength: 10,
+            lengthChange: true,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                {
+                    targets: '_all',
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle').css('padding', '10px');
+                    }
+                },
+                {
+                    targets: [0, 1, 2, 3, 4, 6, 7],
+                    className: "dt-center"
+                },
+            ],
+            ajax: {
+                url: "{% url 'adminlte:personal-accounts:datatable' %}",
+                data: function (params) {
+                    params.no = $no.val();
+                    params.status = $status.val();
+                    params.flat = $flat.val();
+                    params.house = $house.val();
+                    params.section = $section.val();
+                    params.owner = $owner.val();
+                    params.has_debt = $has_debt.val();
+                }
+            },
+            columns: [
+                {'data': 'no'},
+                {'data': 'status'},
+                {'data': 'flat'},
+                {'data': 'house'},
+                {'data': 'section'},
+                {'data': 'owner'},
+                {'data': 'balance'},
+                {'data': 'actions'}
+            ],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+            },
+            createdRow: function (row, data) {
+            },
+        });
+    </script>
+{% endblock js %}

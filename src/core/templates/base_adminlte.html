@@ -187,11 +187,13 @@
                         <i class="fa fa-files-o"></i> <span>Квитанції на оплату</span>
                     </a>
                 </li>
-                <li>
-                    <a>
-                        <i class="fa fa-credit-card"></i> <span>Особові рахунки</span>
-                    </a>
-                </li>
+                {% if perms.authentication.personal_accounts %}
+                    <li>
+                        <a href="{% url 'adminlte:personal-accounts:list' %}">
+                            <i class="fa fa-credit-card"></i> <span>Особові рахунки</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% if perms.authentication.flats %}
                     <li>
                         <a href="{% url 'adminlte:flats:list' %}">

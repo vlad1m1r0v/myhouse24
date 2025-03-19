@@ -1,0 +1,5 @@
+{% if object.status == 'disabled' %}
+    <small class="label label-danger">{{ object.get_status_display }}</small>
+{% elif object.status == 'active' %}
+    <small class="label label-success">{{ object.get_status_display }}</small>
+{% endif %}
