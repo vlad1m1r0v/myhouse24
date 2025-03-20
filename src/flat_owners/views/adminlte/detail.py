@@ -19,6 +19,7 @@ class AdminFlatOwnerDetailView(
     context_object_name = 'profile'
 
     def get_queryset(self, queryset=None):
-        return super().get_queryset().prefetch_related(Prefetch(
+        return (super().get_queryset()
+        .prefetch_related(Prefetch(
             'flats', queryset=Flat.objects.select_related('house', 'section', 'personal_account')
-        ))
+        )))

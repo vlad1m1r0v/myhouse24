@@ -1,17 +1,15 @@
 from datetime import datetime
 
 from ajax_datatable import AjaxDatatableView
-from django.db.models import Q, Value, OuterRef, Exists, Prefetch
-from django.db.models.functions import Concat
+from django.db.models import Q, Prefetch
 from django.template.loader import render_to_string
 
-from src.authentication.models import CustomUser
+from src.flat_owners.models.flat_owner import FlatOwner
 from src.flats.models import Flat
-from src.payment_receipts.models import Receipt
 
 
 class AdminFlatOwnersDatatableView(AjaxDatatableView):
-    model = CustomUser
+    model = FlatOwner
 
     disable_queryset_optimization = True
     disable_queryset_optimization_only = True
@@ -33,16 +31,16 @@ class AdminFlatOwnersDatatableView(AjaxDatatableView):
     ]
 
     def get_initial_queryset(self, request=None):
-        owners = (self.model.objects
-                  .annotate(has_debt=Exists(
-            Receipt.objects.filter(
-                flat__owner=OuterRef('pk'),
-                status__in=['unpaid', 'partially_paid']
-            ).select_related('flat__owner')))
-                  .annotate(full_name=Concat('last_name', Value(' '), 'first_name', Value(' '), 'middle_name'))
-                  .filter(is_staff=False, is_superuser=False)
-                  .prefetch_related(Prefetch('flats', queryset=Flat.objects.select_related('house')))
-                  .distinct())
+        owners = (
+            self.model.objects
+            .with_debt()
+            .with_full_name()
+            .filter(is_staff=False, is_superuser=False)
+            .prefetch_related(
+                Prefetch("flats", queryset=Flat.objects.select_related("house"))
+            )
+            .distinct()
+        )
 
         return owners
 

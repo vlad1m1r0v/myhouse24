@@ -15,8 +15,7 @@ class AdminPersonaAccountCreateView(SuccessMessageMixin,
     model = PersonalAccount
     form_class = AdminPersonalAccountForm
     success_message = 'Особовий рахунок успішно створено'
-    # TODO: change to personal accounts list page
-    success_url = reverse_lazy('adminlte:personal-accounts:create')
+    success_url = reverse_lazy('adminlte:personal-accounts:list')
 
     def form_invalid(self, form):
         for _, errors in form.errors.items():
