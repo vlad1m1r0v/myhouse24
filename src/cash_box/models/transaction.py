@@ -1,7 +1,6 @@
 from django.db import models
 
 from src.authentication.models import CustomUser
-from src.payment_receipts.models import Receipt
 from src.system_settings.models import PaymentItem
 
 
@@ -11,7 +10,7 @@ class TypeChoices(models.TextChoices):
 
 
 class Transaction(models.Model):
-    receipt = models.ForeignKey(Receipt, null=True, blank=True, on_delete=models.CASCADE)
+    receipt = models.ForeignKey('payment_receipts.Receipt', null=True, blank=True, on_delete=models.CASCADE)
     no = models.CharField(max_length=20)
     date = models.DateField()
     type = models.CharField(choices=TypeChoices.choices, default=TypeChoices.EXPENSE)

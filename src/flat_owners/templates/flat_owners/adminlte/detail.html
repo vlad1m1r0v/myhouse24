@@ -161,12 +161,18 @@
                                         {{ flat.section.name }}
                                     </td>
                                     <td>
-                                        <!--TODO: add valid url ot flat detail page-->
-                                        <a>{{ flat.no }}</a>
+                                        <a href="{% url 'adminlte:flats:detail' pk=flat.pk %}">
+                                            {{ flat.no }}
+                                        </a>
                                     </td>
-                                    <!--TODO: add valid url ot personal account detail page-->
                                     <td>
-                                        <a>{{ flat.personal_account.no }}</a>
+                                        {% if flat.personal_account %}
+                                            <a href="{% url 'adminlte:personal-accounts:detail' pk=flat.personal_account.pk %}">
+                                                {{ flat.personal_account.no }}
+                                            </a>
+                                        {% else %}
+                                            (Не вказано)
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

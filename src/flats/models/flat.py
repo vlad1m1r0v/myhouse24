@@ -1,6 +1,7 @@
 from django.db import models
 
 from src.authentication.models import CustomUser
+from src.flats.managers import FlatManager
 from src.houses.models import House, HouseSection, HouseFloor
 from src.system_settings.models import Tariff
 
@@ -14,6 +15,8 @@ class Flat(models.Model):
     floor = models.ForeignKey(HouseFloor, on_delete=models.CASCADE)
     owner = models.ForeignKey(CustomUser, blank=True, null=True, on_delete=models.SET_NULL, related_name='flats')
     tariff = models.ForeignKey(Tariff, blank=True, null=True, on_delete=models.SET_NULL)
+
+    objects = FlatManager()
 
     def __str__(self):
         return f"Квартира № {self.no}"

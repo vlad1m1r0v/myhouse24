@@ -1,6 +1,5 @@
 from django.db import models
 
-from src.flats.models import Flat
 from src.houses.models import House, HouseSection
 from src.system_settings.models import Service
 
@@ -23,7 +22,7 @@ class MeterIndicator(models.Model):
     )
     house = models.ForeignKey(House, on_delete=models.CASCADE)
     section = models.ForeignKey(HouseSection, on_delete=models.CASCADE)
-    flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
+    flat = models.ForeignKey('flats.Flat', on_delete=models.CASCADE)
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     value = models.FloatField()
 

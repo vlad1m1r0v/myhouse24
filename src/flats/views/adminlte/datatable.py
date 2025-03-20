@@ -1,11 +1,8 @@
 from ajax_datatable import AjaxDatatableView
-from django.db.models import Q, Value, OuterRef, Exists, Sum, Case, When, F, DecimalField
-from django.db.models.functions import Coalesce
+from django.db.models import Q
 from django.template.loader import render_to_string
 
-from src.cash_box.models import TypeChoices
 from src.flats.models import Flat
-from src.payment_receipts.models import Receipt
 
 
 class AdminFlatsDatatableView(AjaxDatatableView):
@@ -28,43 +25,11 @@ class AdminFlatsDatatableView(AjaxDatatableView):
     ]
 
     def get_initial_queryset(self, request=None):
-        qs = (self.model.objects.select_related(
-            "house", "section", "floor", "tariff", "personal_account"
+        qs = (self.model.objects
+            .with_debt()
+            .with_balance()
+            .with_related()
         )
-              .annotate(has_debt=Exists(
-            Receipt.objects.filter(
-                flat_id=OuterRef('pk'),
-                status__in=['unpaid', 'partially_paid']
-            )
-        ))
-              .annotate(
-            income=Coalesce(Sum(
-                Case(
-                    When(
-                        personal_account__account_transactions__type=TypeChoices.INCOME,
-                        personal_account__account_transactions__is_complete=True,
-                        then=F("personal_account__account_transactions__amount")
-                    ),
-                    default=Value(0.0),
-                    output_field=DecimalField()
-                )
-            ), Value(0.0), output_field=DecimalField()),
-
-            expense=Coalesce(Sum(
-                Case(
-                    When(
-                        personal_account__account_transactions__type=TypeChoices.EXPENSE,
-                        personal_account__account_transactions__is_complete=True,
-                        personal_account__account_transactions__receipt__isnull=False,
-                        then=F("personal_account__account_transactions__amount")
-                    ),
-                    default=Value(0.0),
-                    output_field=DecimalField()
-                )
-            ), Value(0.0), output_field=DecimalField())
-        )
-              .annotate(balance=F("income") - F("expense"))
-              )
 
         if self.request.user.is_superuser:
             return qs
