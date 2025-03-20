@@ -138,13 +138,13 @@ class AdminFlatsDatatableView(AjaxDatatableView):
 
         row['flat'] = obj.no
 
-        row['house'] = obj.house.name
+        row['house'] = obj.house.name if obj.house else '(Не вказано)'
 
-        row['section'] = obj.section.name
+        row['section'] = obj.section.name if obj.section else '(Не вказано)'
 
-        row['floor'] = obj.floor.name
+        row['floor'] = obj.floor.name if obj.floor else '(Не вказано)'
 
-        row['owner'] = f"{obj.owner.last_name} {obj.owner.first_name} {obj.owner.middle_name}"
+        row['owner'] = f"{obj.owner.last_name} {obj.owner.first_name} {obj.owner.middle_name}" if obj.owner else '(Не вказано)'
 
         row['balance'] = render_to_string(
             template_name='flats/adminlte/_partials/balance.html',

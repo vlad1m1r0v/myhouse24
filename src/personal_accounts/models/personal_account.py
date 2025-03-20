@@ -2,6 +2,7 @@ from django.db import models
 
 from src.flats.models import Flat
 from src.houses.models import House, HouseSection
+from src.personal_accounts.managers import PersonalAccountManager
 
 STATUS_CHOICES = [
     ("active", "активний"),
@@ -16,6 +17,8 @@ class PersonalAccount(models.Model):
     house = models.ForeignKey(House, null=True, blank=True, on_delete=models.SET_NULL)
     section = models.ForeignKey(HouseSection, null=True, blank=True, on_delete=models.SET_NULL)
     flat = models.OneToOneField(Flat, null=True, blank=True, on_delete=models.SET_NULL, related_name='personal_account')
+
+    objects = PersonalAccountManager()
 
     def __str__(self):
         return f"Особовий рахунок № {self.no}"

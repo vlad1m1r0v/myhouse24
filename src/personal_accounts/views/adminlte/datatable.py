@@ -1,10 +1,7 @@
 from ajax_datatable import AjaxDatatableView
-from django.db.models import F, DecimalField, Value, When, Case, Sum, OuterRef, Exists, Q
-from django.db.models.functions import Coalesce
+from django.db.models import Q
 from django.template.loader import render_to_string
 
-from src.cash_box.models import TypeChoices
-from src.payment_receipts.models import Receipt
 from src.personal_accounts.models import PersonalAccount
 
 
@@ -29,52 +26,10 @@ class AdminPersonalAccountsDatatableView(AjaxDatatableView):
     ]
 
     def get_initial_queryset(self, request=None):
-        qs = (
-            self.model.objects
-            .select_related("house", "section", "flat", 'flat__owner')
-            .annotate(
-                has_debt=Exists(
-                    Receipt.objects.filter(
-                        personal_account_id=OuterRef("pk"),
-                        status__in=["unpaid", "partially_paid"]
-                    )
-                )
-            )
-            .annotate(
-                income=Coalesce(
-                    Sum(
-                        Case(
-                            When(
-                                account_transactions__type=TypeChoices.INCOME,
-                                account_transactions__is_complete=True,
-                                then=F("account_transactions__amount")
-                            ),
-                            default=Value(0.0),
-                            output_field=DecimalField()
-                        )
-                    ),
-                    Value(0.0),
-                    output_field=DecimalField()
-                ),
-                expense=Coalesce(
-                    Sum(
-                        Case(
-                            When(
-                                account_transactions__type=TypeChoices.EXPENSE,
-                                account_transactions__is_complete=True,
-                                account_transactions__receipt__isnull=False,
-                                then=F("account_transactions__amount")
-                            ),
-                            default=Value(0.0),
-                            output_field=DecimalField()
-                        )
-                    ),
-                    Value(0.0),
-                    output_field=DecimalField()
-                )
-            )
-            .annotate(balance=F("income") - F("expense"))
-        )
+        qs = (self.model.objects
+            .with_balance()
+            .with_debt()
+            .select_related("house", "section", "flat", 'flat__owner'))
 
         if not self.request.user.is_superuser:
             qs = qs.filter(house__users__user=self.request.user)
@@ -131,9 +86,9 @@ class AdminPersonalAccountsDatatableView(AjaxDatatableView):
 
         row['flat'] = obj.flat.no if obj.flat else '(Не вказано)'
 
-        row['house'] = obj.house.name
+        row['house'] = obj.house.name if obj.house else '(Не вказано)'
 
-        row['section'] = obj.section.name
+        row['section'] = obj.section.name if obj.section else '(Не вказано)'
 
         row['owner'] = f"{obj.flat.owner.last_name} {obj.flat.owner.first_name} {obj.flat.owner.middle_name}" if obj.flat else '(Не вказано)'
 
