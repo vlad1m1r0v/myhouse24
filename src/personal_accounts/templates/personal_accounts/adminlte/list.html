@@ -24,7 +24,7 @@
         }
 
         th:nth-child(3) {
-            width: 100px;
+            width: 150px;
         }
 
         th:nth-child(4) {
@@ -289,6 +289,29 @@
             createdRow: function (row, data) {
                 $(row).find('td:not(:last-child)').on('click', function () {
                     document.location.href = `${data.pk}/`;
+                });
+
+                $(row).find('.delete-button').on('click', async function () {
+                    const result = await Swal.fire({
+                        title: "Ви дійсно хочете видалити цей об'єкт?",
+                        icon: "question",
+                        showDenyButton: true,
+                        confirmButtonText: "Видалити",
+                        denyButtonText: "Відмінити"
+                    });
+
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `${data.pk}/delete/`,
+                            method: "DELETE", headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            success: function () {
+                                Swal.fire("Об'єкт успішно видалено", "", "success");
+                                datatable.ajax.reload();
+                            }
+                        });
+                    }
                 });
             },
         });

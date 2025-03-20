@@ -129,13 +129,13 @@ class AdminPersonalAccountsDatatableView(AjaxDatatableView):
             context={'object': obj}
         )
 
-        row['flat'] = obj.flat.no
+        row['flat'] = obj.flat.no if obj.flat else '(Не вказано)'
 
         row['house'] = obj.house.name
 
         row['section'] = obj.section.name
 
-        row['owner'] = f"{obj.flat.owner.last_name} {obj.flat.owner.first_name} {obj.flat.owner.middle_name}"
+        row['owner'] = f"{obj.flat.owner.last_name} {obj.flat.owner.first_name} {obj.flat.owner.middle_name}" if obj.flat else '(Не вказано)'
 
         row['balance'] = render_to_string(
             template_name='personal_accounts/adminlte/_partials/balance.html',

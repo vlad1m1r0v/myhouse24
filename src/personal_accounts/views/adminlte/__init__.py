@@ -4,3 +4,4 @@ from .update import AdminPersonaAccountUpdateView
 from .list import AdminPersonalAccountsListView
 from .datatable import AdminPersonalAccountsDatatableView
 from .detail import AdminPersonalAccountDetailView
+from .delete import AdminPersonalAccountsDeleteView

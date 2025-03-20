@@ -18,8 +18,7 @@ class AdminFlatUpdateView(FlatPermissionRequiredMixin,
     template_name = 'flats/adminlte/update.html'
     model = Flat
     form_class = AdminFlatForm
-    # TODO: change to flats list page URL
-    success_url = reverse_lazy('adminlte:flats:create')
+    success_url = reverse_lazy('adminlte:flats:list')
 
     def form_valid(self, form):
         new_personal_account = form.cleaned_data.get('new_personal_account')

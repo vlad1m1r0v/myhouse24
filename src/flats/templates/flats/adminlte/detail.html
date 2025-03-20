@@ -12,6 +12,12 @@
         tr td:first-child {
             font-weight: bold;
         }
+
+        a.disabled {
+            opacity: 0.7;
+            text-decoration: none;
+            cursor: not-allowed;
+        }
     </style>
 {% endblock css %}
 {% block header %}
@@ -28,12 +34,12 @@
             <h3 class="box-title">Перегляд квартири</h3>
             <div class="box-tools">
                 <a href="{% url 'adminlte:cash-box:create' %}?account_id={{ flat.personal_account.id }}"
-                   class="btn btn-default btn-sm">
+                   class="btn btn-default btn-sm" {% if not flat.personal_account %}disabled{% endif %}>
                     <span class="hidden-xs"><i class="fa fa-dollar"></i> Прийняти транзацію</span>
                     <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                 </a>
                 <a href="{% url 'adminlte:receipts:create' %}?flat_id={{ flat.id }}"
-                   class="btn btn-default btn-sm">
+                   class="btn btn-default btn-sm" {% if not flat.personal_account %}disabled{% endif %}>
                     <span class="hidden-xs"> <i class="fa fa-files-o"></i> Оформити квитанцію</span>
                     <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                 </a>
@@ -49,8 +55,15 @@
                     <table class="table table-bordered table-striped table-view">
                         <tr>
                             <td>Особовий рахунок</td>
-                            <!--TODO: add valid url to personal account detail page-->
-                            <td><a href="">{{ flat.personal_account.no }}</a></td>
+                            <td>
+                                {% if flat.personal_account %}
+                                    <a href="{% url 'adminlte:personal-accounts:detail' pk=flat.personal_account.pk %}">
+                                        {{ flat.personal_account.no }}
+                                    </a>
+                                {% else %}
+                                    (Не вказано)
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <td>Номер квартири</td>
@@ -63,29 +76,57 @@
                         <tr>
                             <td>Будинок</td>
                             <td>
-                                <a href="{% url 'adminlte:houses:detail' pk=flat.house.pk %}">
-                                    {{ flat.house.name }}
-                                </a>
+                                {% if flat.house %}
+                                    <a href="{% url 'adminlte:houses:detail' pk=flat.house.pk %}">
+                                        {{ flat.house.name }}
+                                    </a>
+                                {% else %}
+                                    (Не вказано)
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
                             <td>Секція</td>
-                            <td>{{ flat.section.name }}</td>
+                            <td>
+                                {% if flat.section %}
+                                    {{ flat.section.name }}
+                                {% else %}
+                                    (Не вказано)
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <td>Поверх</td>
-                            <td>{{ flat.floor.name }}</td>
+                            <td>
+                                {% if flat.owner %}
+                                    {{ flat.floor.name }}
+                                {% else %}
+                                    (Не вказано)
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <td>Власник</td>
-                            <td>{{ flat.owner.last_name }} {{ flat.owner.first_name }} {{ flat.owner.middle_name }}</td>
+                            <td>
+                                {% if flat.owner %}
+                                    <a href="{% url 'adminlte:flat-owners:detail' pk=flat.owner.pk %}">
+                                        {{ flat.owner.last_name }} {{ flat.owner.first_name }} {{ flat.owner.middle_name }}
+                                    </a>
+                                {% else %}
+                                    (Не вказано)
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <td>Тариф</td>
                             <td>
-                                <a href="{% url 'adminlte:system-settings:tariffs:detail' pk=flat.tariff.pk %}">
-                                    {{ flat.tariff }}
-                                </a>
+                                {% if flat.tariff %}
+                                    <a href="{% url 'adminlte:system-settings:tariffs:detail' pk=flat.tariff.pk %}">
+                                        {{ flat.tariff }}
+                                    </a>
+                                {% else %}
+                                    (Не вказано)
+                                {% endif %}
                             </td>
                         </tr>
                     </table>
@@ -96,7 +137,13 @@
                             </a>
                         </p>
                         <p>
-                            <a href="{% url 'adminlte:cash-box:list' %}?type=income&account_id={{ flat.personal_account.id }}">
+                            <a
+                                    {% if flat.personal_account %}
+                                        href="{% url 'adminlte:cash-box:list' %}?type=income&account_id={{ flat.personal_account.id }}"
+                                    {% else %}
+                                        class="disabled" onclick="void(0)"
+                                    {% endif %}
+                            >
                                 Переглянути транзакції
                             </a>
                         </p>

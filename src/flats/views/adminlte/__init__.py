@@ -4,3 +4,4 @@ from .update import AdminFlatUpdateView
 from .list import AdminFlatsListView
 from .datatable import AdminFlatsDatatableView
 from .detail import AdminFlatDetailView
+from .delete import AdminFlatsDeleteView
