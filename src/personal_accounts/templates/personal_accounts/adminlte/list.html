@@ -103,8 +103,15 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a href="{% url 'adminlte:personal-accounts:create' %}">Додати особовий рахунок</a></li>
-                    <!--TODO: implement export personal accounts to excel-->
-                    <li><a>Експорт в Excel</a></li>
+                    <li>
+                        <a href onclick="this.parentNode.querySelector('form').submit(); return false;">
+                            Експорт в Excel
+                        </a>
+                        <form style="display: none" method="post"
+                              action="{% url 'adminlte:personal-accounts:export' %}">
+                            {% csrf_token %}
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>

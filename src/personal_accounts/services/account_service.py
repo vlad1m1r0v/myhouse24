@@ -26,12 +26,12 @@ class AccountExcelService:
     @staticmethod
     def __set_column_width(ws):
         ws.column_dimensions["A"].width = 25
-        ws.column_dimensions["B"].width = 25
-        ws.column_dimensions["C"].width = 25
-        ws.column_dimensions["D"].width = 25
-        ws.column_dimensions["E"].width = 25
-        ws.column_dimensions["F"].width = 25
-        ws.column_dimensions["G"].width = 25
+        ws.column_dimensions["B"].width = 15
+        ws.column_dimensions["C"].width = 35
+        ws.column_dimensions["D"].width = 20
+        ws.column_dimensions["E"].width = 20
+        ws.column_dimensions["F"].width = 40
+        ws.column_dimensions["G"].width = 20
 
     @staticmethod
     def __set_alignment(ws, row_idx):
@@ -102,10 +102,10 @@ class AccountExcelService:
 
         ws[f"D{row_idx}"].value = account.section.name if account.section else "Не вказано"
 
-        ws[f"E{row_idx}"].value = account.flat.name if account.flat else "Не вказано"
+        ws[f"E{row_idx}"].value = account.flat.no if account.flat else "Не вказано"
 
-        ws[f"F{row_idx}"].value = (f"{account.owner.last_name}"
-                                   f" {account.owner.first_name}"
-                                   f" {account.owner.middle_name}") if account.owner else "Не вказано"
+        ws[f"F{row_idx}"].value = (f"{account.flat.owner.last_name}"
+                                   f" {account.flat.owner.first_name}"
+                                   f" {account.flat.owner.middle_name}") if account.flat and account.flat.owner else "Не вказано"
 
-        ws[f"G{row_idx}"].value = account.balance if account.balance else "Не вказано"
+        ws[f"G{row_idx}"].value = account.balance

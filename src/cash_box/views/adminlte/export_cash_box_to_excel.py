@@ -3,14 +3,12 @@ import time
 from django.http import HttpResponse
 from django.views import View
 
-from src.flats.views.adminlte.mixin import HouseUserRequiredMixin
 from .mixin import CashBoxPermissionRequiredMixin
 from ...models import Transaction
 from ...services import CashBoxExcelService
 
 
 class AdminCashBoxExportView(
-    HouseUserRequiredMixin,
     CashBoxPermissionRequiredMixin,
     View):
     def post(self, *args, **kwargs):

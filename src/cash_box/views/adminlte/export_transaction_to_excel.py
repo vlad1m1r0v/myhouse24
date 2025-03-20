@@ -1,8 +1,10 @@
 from django.http import HttpResponse
 from django.views import View
 
-from src.flats.views.adminlte.mixin import HouseUserRequiredMixin
-from .mixin import CashBoxPermissionRequiredMixin
+from .mixin import (
+    CashBoxPermissionRequiredMixin,
+    HouseUserRequiredMixin
+)
 from ...models import Transaction
 from ...services import TransactionExcelService
 
