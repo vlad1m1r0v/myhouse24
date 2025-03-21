@@ -27,14 +27,16 @@ class Receipt(models.Model):
     period_to = models.DateField()
     is_complete = models.BooleanField(default=False)
     status = models.CharField(choices=STATUS_CHOICES, default="unpaid")
-    personal_account = models.ForeignKey("personal_accounts.PersonalAccount", on_delete=models.CASCADE, related_name="account_receipts")
+    personal_account = models.ForeignKey("personal_accounts.PersonalAccount", on_delete=models.CASCADE,
+                                         related_name="account_receipts")
 
     def __str__(self):
         return f"Квитанція № {self.no}"
 
 
 class ReceiptService(models.Model):
-    meter_indicator = models.ForeignKey(MeterIndicator, null=True, blank=True, on_delete=models.SET_NULL)
+    meter_indicator = models.OneToOneField(MeterIndicator, null=True, blank=True, on_delete=models.CASCADE,
+                                           related_name='receipt_service')
     receipt = models.ForeignKey(Receipt, on_delete=models.CASCADE, related_name="services")
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     unit = models.ForeignKey(MeasurementUnit, on_delete=models.CASCADE)
