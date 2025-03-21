@@ -1,11 +1,13 @@
 from django.views.generic import FormView
 
 from src.cash_box.forms import AdminCashBoxFiltersForm
-from src.cash_box.views.adminlte.mixin import CashBoxPermissionRequiredMixin
+from src.dashboard.views.adminlte.mixin import AdminBalanceMixin
 from src.personal_accounts.models import PersonalAccount
 
+from .mixin import CashBoxPermissionRequiredMixin
 
 class AdminCashBoxListView(
+    AdminBalanceMixin,
     CashBoxPermissionRequiredMixin,
     FormView
 ):

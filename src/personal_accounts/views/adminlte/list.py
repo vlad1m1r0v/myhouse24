@@ -1,10 +1,12 @@
 from django.views.generic import TemplateView
 
+from src.dashboard.views.adminlte.mixin import AdminBalanceMixin
 from .mixin import PersonalAccountPermissionRequiredMixin
 from ...forms import AdminPersonalAccountsFiltersForm
 
 
 class AdminPersonalAccountsListView(
+    AdminBalanceMixin,
     PersonalAccountPermissionRequiredMixin,
     TemplateView
 ):

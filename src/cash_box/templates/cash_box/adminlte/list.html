@@ -1,4 +1,5 @@
 {% extends 'base_adminlte.html' %}
+{% load l10n %}
 {% load static %}
 {% block title %}
     Каса
@@ -40,7 +41,7 @@
                 <div class="col-xs-12 col-md-4">
                     <div class="small-box bg-green overflow-hidden">
                         <div class="inner">
-                            <h3>0.0 грн</h3>
+                            <h3>{{ cash_balance|unlocalize }} грн</h3>
                             <p>Стан каси</p>
                         </div>
                         <div class="icon">
@@ -51,7 +52,7 @@
                 <div class="col-xs-12 col-md-4">
                     <div class="small-box bg-blue overflow-hidden">
                         <div class="inner">
-                            <h3>0.0 грн</h3>
+                            <h3>{{ account_balance|unlocalize }} грн</h3>
                             <p>Баланс по рахункам</p>
                         </div>
                         <div class="icon">
@@ -62,7 +63,7 @@
                 <div class="col-xs-12 col-md-4">
                     <div class="small-box bg-red overflow-hidden">
                         <div class="inner">
-                            <h3>0.0 грн</h3>
+                            <h3>{{ receipt_debt|unlocalize }} грн</h3>
                             <p>Заборгованість по рахункам</p>
                         </div>
                         <div class="icon">

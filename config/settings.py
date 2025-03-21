@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'src.payment_receipts.apps.PaymentReceiptsConfig',
     'src.cash_box.apps.CashBoxConfig',
     'src.user_messages.apps.UserMessagesConfig',
+    'src.dashboard.apps.DashboardConfig',
 ]
 
 MIDDLEWARE = [
