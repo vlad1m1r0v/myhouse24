@@ -2,6 +2,7 @@ from django.db import models
 
 from src.houses.models import House, HouseSection
 from src.meter_indicators.models import MeterIndicator
+from src.payment_receipts.managers import ReceiptManager
 from src.system_settings.models import (
     Tariff,
     Service,
@@ -29,6 +30,8 @@ class Receipt(models.Model):
     status = models.CharField(choices=STATUS_CHOICES, default="unpaid")
     personal_account = models.ForeignKey("personal_accounts.PersonalAccount", on_delete=models.CASCADE,
                                          related_name="account_receipts")
+
+    objects = ReceiptManager()
 
     def __str__(self):
         return f"Квитанція № {self.no}"
