@@ -1,0 +1,12 @@
+<div class="btn-group pull-right" style="display:flex; flex-wrap:nowrap">
+    <a class="btn btn-default btn-sm" href="{% url 'adminlte:receipts:create' %}?receipt_id={{ object.pk }}"
+       title="Копіювати">
+        <i class="fa fa-clone"></i>
+    </a>
+    <a class="btn btn-default btn-sm" href="{% url 'adminlte:receipts:update' pk=object.pk %}" title="Редагувати">
+        <i class="fa fa-pencil"></i>
+    </a>
+    <a class="delete-button btn btn-default btn-sm" title="Видалити">
+        <i class="fa fa-trash"></i>
+    </a>
+</div>

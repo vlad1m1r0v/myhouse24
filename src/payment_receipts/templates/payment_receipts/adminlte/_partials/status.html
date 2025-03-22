@@ -1,0 +1,7 @@
+{% if object.status == 'partially_paid' %}
+    <small class="label label-warning">{{ object.get_status_display }}</small>
+{% elif object.status == 'unpaid' %}
+    <small class="label label-danger">{{ object.get_status_display }}</small>
+{% elif object.status == 'paid' %}
+    <small class="label label-success">{{ object.get_status_display }}</small>
+{% endif %}

@@ -182,11 +182,13 @@
                         </a>
                     </li>
                 {% endif %}
-                <li>
-                    <a>
-                        <i class="fa fa-files-o"></i> <span>Квитанції на оплату</span>
-                    </a>
-                </li>
+                {% if perms.authentication.receipts %}
+                    <li>
+                        <a href="{% url 'adminlte:receipts:list' %}">
+                            <i class="fa fa-files-o"></i> <span>Квитанції на оплату</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% if perms.authentication.personal_accounts %}
                     <li>
                         <a href="{% url 'adminlte:personal-accounts:list' %}">

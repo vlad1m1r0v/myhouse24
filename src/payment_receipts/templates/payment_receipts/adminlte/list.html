@@ -1,8 +1,8 @@
 {% extends 'base_adminlte.html' %}
-{% load static %}
 {% load group_thousands %}
+{% load static %}
 {% block title %}
-    Особові рахунки
+    Квитанції
 {% endblock title %}
 {% block css %}
     <!--Datatable-->
@@ -10,38 +10,24 @@
     <!--Select2-->
     <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Daterange picker-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <!--Datepicker-->
+    <link rel="stylesheet"
+          href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
     <style>
         .box {
             padding: 0 6px;
             overflow-x: hidden;
         }
 
-        th:nth-child(1) {
-            width: 175px;
+        table {
+            table-layout: fixed;
+            width: 100%;
         }
 
-        th:nth-child(2) {
-            width: 175px;
-        }
-
-        th:nth-child(3) {
-            width: 150px;
-        }
-
-        th:nth-child(4) {
-            width: 200px;
-        }
-
-        th:nth-child(5) {
-            width: 100px;
-        }
-
-        th:nth-child(6) {
-            width: 300px;
-        }
-
-        th:nth-child(7) {
-            width: 150px;
+        th.dt-orderable-asc, th.dt-orderable-desc {
+            color: #337ab7;
         }
 
         tbody tr td:not(:last-child) {
@@ -50,11 +36,11 @@
     </style>
 {% endblock css %}
 {% block header %}
-    Особові рахунки
+    Квитанції
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li class="active">Особові рахунки</li>
+    <li class="active">Квитанції</li>
 {% endblock breadcrumb %}
 {% block content %}
     <div class="row">
@@ -103,16 +89,8 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'adminlte:personal-accounts:create' %}">Додати особовий рахунок</a></li>
-                    <li>
-                        <a href onclick="this.parentNode.querySelector('form').submit(); return false;">
-                            Експорт в Excel
-                        </a>
-                        <form style="display: none" method="post"
-                              action="{% url 'adminlte:personal-accounts:export' %}">
-                            {% csrf_token %}
-                        </form>
-                    </li>
+                    <li><a href="{% url 'adminlte:receipts:create' %}">Додати квитанцію</a></li>
+                    <li><a type="button" id="delete-selected">Видалити</a></li>
                 </ul>
             </div>
         </div>
@@ -123,7 +101,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title"></h3>
                     <div class="box-tools">
-                        <a href="{{ request.build_absolute_uri }}"
+                        <a href="../receipts/"
                            class="btn btn-default btn-sm">
                             <span class="hidden-xs">Очистити</span>
                             <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
@@ -134,23 +112,29 @@
                        class="table table-bordered table-hover table-striped">
                     <thead>
                     <tr>
-                        <th>№</th>
-                        <th>Статус</th>
-                        <th>Квартира</th>
-                        <th>Будинок</th>
-                        <th>Секція</th>
-                        <th>Власник</th>
-                        <th>Баланс</th>
-                        <th></th>
+                        <th>
+                            <input type="checkbox" id="select-all">
+                        </th>
+                        <th style="min-width: 125px; width: 125px">№ квитанції</th>
+                        <th style="min-width: 125px; width: 125px">Статус</th>
+                        <th style="min-width: 125px; width: 125px">Дата</th>
+                        <th style="min-width: 125px; width: 125px">Місяць</th>
+                        <th style="min-width: 250px; width: 250px">Квартира</th>
+                        <th style="min-width: 250px; width: 250px">Власник</th>
+                        <th style="min-width: 125px; width: 125px">Проведена</th>
+                        <th style="min-width: 125px; width: 125px">Сума (грн)</th>
+                        <th><!--Actions--></th>
                     </tr>
                     <tr>
+                        <th><!--Checkbox--></th>
                         <th>{{ filters.no }}</th>
                         <th>{{ filters.status }}</th>
+                        <th>{{ filters.date }}</th>
+                        <th>{{ filters.month }}</th>
                         <th>{{ filters.flat }}</th>
-                        <th>{{ filters.house }}</th>
-                        <th>{{ filters.section }}</th>
                         <th>{{ filters.owner }}</th>
-                        <th>{{ filters.has_debt }}</th>
+                        <th>{{ filters.is_complete }}</th>
+                        <th></th>
                         <th></th>
                     </tr>
                     </thead>
@@ -167,6 +151,13 @@
     <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
     <!--Set default language locale for Select2 components-->
     <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <!--Daterange Picker-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <!--Datepicker-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <!--Datepicker Localization-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
     <script>
         $.fn.select2.defaults.set('language', 'uk');
         $.fn.select2.defaults.set('width', '100%');
@@ -176,81 +167,86 @@
     <script>
         const $no = $('#id_no');
         const $status = $('#id_status');
+        const $date = $('#id_date');
+        const $month = $('#id_month');
         const $flat = $('#id_flat');
-        const $house = $('#id_house');
-        const $section = $('#id_section');
         const $owner = $('#id_owner');
-        const $has_debt = $('#id_has_debt');
+        const $is_complete = $('#id_is_complete');
 
         $status.select2({
             minimumResultsForSearch: -1
         });
 
-        $house.select2({
-            ajax: {
-                url: "{% url 'adminlte:personal-accounts:houses' %}",
-                processResults: data => ({results: data})
-            }
-        });
-
-        $section.select2({
-            ajax: {
-                url: "{% url 'adminlte:personal-accounts:sections' %}",
-                delay: 250,
-                data: function (params) {
-                    return {
-                        term: params.term,
-                        house_id: $house.val()
-                    }
-                },
-                processResults: data => ({results: data})
-            }
-        });
-
         $owner.select2({
             ajax: {
-                url: "{% url 'adminlte:personal-accounts:owners' %}",
+                url: "{% url 'adminlte:receipts:owners' %}",
                 processResults: data => ({results: data})
             }
         });
 
-        $has_debt.select2({
+        $is_complete.select2({
             minimumResultsForSearch: -1
         });
 
-        $no.on('keyup', function () {
-            datatable.columns(0).search($(this).val()).draw();
+        $date.daterangepicker({
+            autoUpdateInput: false,
+            opens: 'right',
+            locale: {
+                format: 'DD.MM.YYYY',
+                "applyLabel": "Ок",
+                "cancelLabel": "Скасувати",
+                "fromLabel": "Від",
+                "toLabel": "До",
+                "customRangeLabel": "Власний",
+                "daysOfWeek": [
+                    "Нд",
+                    "Пн",
+                    "Вт",
+                    "Ср",
+                    "Чт",
+                    "Пт",
+                    "Сб"
+                ],
+                "monthNames": [
+                    "Січень",
+                    "Лютий",
+                    "Березень",
+                    "Квітень",
+                    "Травень",
+                    "Червень",
+                    "Липень",
+                    "Серпень",
+                    "Вересень",
+                    "Жовтень",
+                    "Листопад",
+                    "Грудень"
+                ],
+                firstDay: 1
+            }
         });
 
-        $status.on('change', function () {
-            datatable.columns(1).search($(this).val()).draw();
+        $date.on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY')).trigger('change');
         });
 
-        $flat.on('keyup', function () {
-            datatable.columns(2).search($(this).val()).draw();
-        });
-
-        $house.on('change', function () {
-            datatable.columns(3).search($(this).val()).draw();
-        });
-
-        $section.on('change', function () {
-            datatable.columns(4).search($(this).val()).draw();
-        });
-
-        $owner.on('change', function () {
-            datatable.columns(5).search($(this).val()).draw();
+        $date.on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('').trigger('change');
         });
 
 
-        $has_debt.on('change', function () {
-            datatable.columns(6).search($(this).val()).draw();
+        $month.datepicker({
+            autoclose: true,
+            language: 'uk',
+            format: "mm.yyyy",
+            viewMode: "months",
+            minViewMode: "months",
+            clearBtn: true
         });
 
         //Datatable setup
         const datatable = new DataTable('#datatable', {
             order: [],
-            ordering: false,
+            orderCellsTop: true,
             bFilter: false,
             iDisplayLength: 10,
             lengthChange: true,
@@ -265,62 +261,46 @@
                     }
                 },
                 {
-                    targets: [0, 1, 2, 3, 4, 6, 7],
-                    className: "dt-center"
+                    targets: [0, 1, 2, 5, 6, 7, 8, 9],
+                    orderable: false,
+                },
+                {
+                    targets: [3, 4],
+                    orderable: true,
+                },
+                {
+                    className: "dt-center",
+                    targets: [0, 1, 2, 3, 4, 7, 8, 9]
                 },
             ],
             ajax: {
-                url: "{% url 'adminlte:personal-accounts:datatable' %}",
+                url: "{% url 'adminlte:receipts:datatable' %}",
                 data: function (params) {
-                    params.no = $no.val();
-                    params.status = $status.val();
-                    params.flat = $flat.val();
-                    params.house = $house.val();
-                    params.section = $section.val();
-                    params.owner = $owner.val();
-                    params.has_debt = $has_debt.val();
                 }
             },
             columns: [
+                {
+                    data: null,
+                    render: function () {
+                        return "<input type='checkbox'>"
+                    }
+                },
                 {'data': 'no'},
                 {'data': 'status'},
+                {'data': 'date'},
+                {'data': 'month'},
                 {'data': 'flat'},
-                {'data': 'house'},
-                {'data': 'section'},
                 {'data': 'owner'},
-                {'data': 'balance'},
+                {'data': 'is_complete'},
+                {'data': 'total_price'},
                 {'data': 'actions'}
             ],
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
-            },
+            language:
+                {
+                    url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+                }
+            ,
             createdRow: function (row, data) {
-                $(row).find('td:not(:last-child)').on('click', function () {
-                    document.location.href = `${data.pk}/`;
-                });
-
-                $(row).find('.delete-button').on('click', async function () {
-                    const result = await Swal.fire({
-                        title: "Ви дійсно хочете видалити цей об'єкт?",
-                        icon: "question",
-                        showDenyButton: true,
-                        confirmButtonText: "Видалити",
-                        denyButtonText: "Відмінити"
-                    });
-
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: `${data.pk}/delete/`,
-                            method: "DELETE", headers: {
-                                "X-CSRFToken": "{{ csrf_token }}"
-                            },
-                            success: function () {
-                                Swal.fire("Об'єкт успішно видалено", "", "success");
-                                datatable.ajax.reload();
-                            }
-                        });
-                    }
-                });
             },
         });
     </script>

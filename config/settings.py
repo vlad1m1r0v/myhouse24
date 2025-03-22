@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'debug_toolbar',
     # applications
+    'src.core.apps.CoreConfig',
     'src.authentication.apps.AuthenticationConfig',
     'src.system_settings.apps.SystemSettingsConfig',
     'src.website_management.apps.WebsiteManagementConfig',
