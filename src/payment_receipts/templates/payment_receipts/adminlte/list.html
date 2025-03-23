@@ -90,7 +90,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a href="{% url 'adminlte:receipts:create' %}">Додати квитанцію</a></li>
-                    <li><a type="button" id="delete-selected">Видалити</a></li>
+                    <li><a type="button" id="delete-many">Видалити</a></li>
                 </ul>
             </div>
         </div>
@@ -278,6 +278,33 @@
                 .trigger('change');
         });
 
+        $(document).on('click', '#delete-many', async function () {
+            const result = await Swal.fire({
+                title: "Ви дійсно хочете видалити ці об'єкти?",
+                icon: "question",
+                showDenyButton: true,
+                confirmButtonText: "Видалити",
+                denyButtonText: "Відмінити"
+            });
+
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{% url 'adminlte:receipts:delete-many' %}",
+                    method: "POST",
+                    data: {
+                        selected_ids: Array.from(selected_ids)
+                    },
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    success: function () {
+                        Swal.fire("Об'єкти успішно видалено", "", "success");
+                        datatable.ajax.reload();
+                    }
+                });
+            }
+        });
+
         //Datatable setup
         const datatable = new DataTable('#datatable', {
             order: [],
@@ -357,6 +384,30 @@
                         selected_ids.add(data.pk);
                     } else {
                         selected_ids.delete(data.pk);
+                    }
+                });
+
+
+                $(row).find('.delete-button').on('click', async function () {
+                    const result = await Swal.fire({
+                        title: "Ви дійсно хочете видалити цей об'єкт?",
+                        icon: "question",
+                        showDenyButton: true,
+                        confirmButtonText: "Видалити",
+                        denyButtonText: "Відмінити"
+                    });
+
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `${data.pk}/delete/`,
+                            method: "DELETE", headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                            success: function () {
+                                Swal.fire("Об'єкт успішно видалено", "", "success");
+                                datatable.ajax.reload();
+                            }
+                        });
                     }
                 });
             },
