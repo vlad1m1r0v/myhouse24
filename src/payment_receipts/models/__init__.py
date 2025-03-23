@@ -3,3 +3,5 @@ from .receipt import (
     Receipt,
     ReceiptService
 )
+
+from .template import ReceiptTemplate
