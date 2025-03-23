@@ -21,7 +21,7 @@
             overflow-x: hidden;
         }
 
-        table {
+        table#datatable {
             table-layout: fixed;
             width: 100%;
         }
@@ -227,12 +227,37 @@
 
         $date.on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format('DD.MM.YYYY') + ' - ' + picker.endDate.format('DD.MM.YYYY')).trigger('change');
+            datatable.columns(3).search($(this).val()).draw();
         });
 
         $date.on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('').trigger('change');
+            datatable.columns(3).search($(this).val()).draw();
         });
 
+        $no.on('keyup', function () {
+            datatable.columns(1).search($(this).val()).draw();
+        });
+
+        $status.on('change', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        $month.on('changeDate', function () {
+            datatable.columns(4).search($(this).val()).draw();
+        });
+
+        $flat.on('keyup', function () {
+            datatable.columns(5).search($(this).val()).draw();
+        });
+
+        $owner.on('change', function () {
+            datatable.columns(6).search($(this).val()).draw();
+        });
+
+        $is_complete.on('change', function() {
+            datatable.columns(7).search($(this).val()).draw();
+        });
 
         $month.datepicker({
             autoclose: true,
@@ -276,6 +301,13 @@
             ajax: {
                 url: "{% url 'adminlte:receipts:datatable' %}",
                 data: function (params) {
+                    params.no = $no.val();
+                    params.status = $status.val();
+                    params.date = $date.val();
+                    params.month = $month.val();
+                    params.flat = $flat.val();
+                    params.owner = $owner.val();
+                    params.is_complete = $is_complete.val();
                 }
             },
             columns: [

@@ -83,7 +83,7 @@ class AdminReceiptsDatatableView(AjaxDatatableView):
             filters &= Q(flat__no__icontains=flat)
 
         if owner:
-            filters &= Q(flat__owner_pk=owner)
+            filters &= Q(flat__owner=owner)
 
         if is_complete:
             filters &= Q(is_complete=True if is_complete == 'true' else False)
