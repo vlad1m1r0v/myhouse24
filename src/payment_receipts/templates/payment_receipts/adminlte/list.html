@@ -113,7 +113,7 @@
                     <thead>
                     <tr>
                         <th>
-                            <input type="checkbox" id="select-all">
+                            <input id="checkbox-toggle" type="checkbox">
                         </th>
                         <th style="min-width: 125px; width: 125px">№ квитанції</th>
                         <th style="min-width: 125px; width: 125px">Статус</th>
@@ -255,7 +255,7 @@
             datatable.columns(6).search($(this).val()).draw();
         });
 
-        $is_complete.on('change', function() {
+        $is_complete.on('change', function () {
             datatable.columns(7).search($(this).val()).draw();
         });
 
@@ -266,6 +266,16 @@
             viewMode: "months",
             minViewMode: "months",
             clearBtn: true
+        });
+
+        const selected_ids = new Set();
+
+        const $checkbox_toggle = $('input#checkbox-toggle');
+
+        $checkbox_toggle.on('change', function () {
+            $('tbody input[type=checkbox]')
+                .prop('checked', $checkbox_toggle.prop('checked'))
+                .trigger('change');
         });
 
         //Datatable setup
@@ -332,7 +342,23 @@
                     url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
                 }
             ,
+            drawCallback: function () {
+                $checkbox_toggle.prop('checked', '');
+            },
             createdRow: function (row, data) {
+                const $checkbox = $(row).find('input[type="checkbox"]');
+
+                if (selected_ids.has(data.pk)) {
+                    $checkbox.prop('checked', 'checked');
+                }
+
+                $checkbox.on('change', function () {
+                    if ($checkbox.prop('checked')) {
+                        selected_ids.add(data.pk);
+                    } else {
+                        selected_ids.delete(data.pk);
+                    }
+                });
             },
         });
     </script>
