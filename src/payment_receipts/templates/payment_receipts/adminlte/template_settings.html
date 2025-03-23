@@ -5,6 +5,18 @@
 {% endblock title %}
 {% block css %}
     <style>
+        .template {
+            margin-bottom: 15px;
+        }
+
+        .template a {
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .template form {
+            display: inline-block;
+        }
     </style>
 {% endblock css %}
 {% block header %}
@@ -21,10 +33,38 @@
             <h3 class="box-title">Список шаблонів</h3>
         </div>
         <div class="box-body">
-            <form id="upload-template-form" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6">
+            {% for template in templates %}
+                <div class="template">
+                    <p>
+                        {{ template.title }}
+                        {% if template.is_selected %}
+                            <span class="text-bold">(За замовчуванням)</span>
+                        {% endif %}
+                    </p>
+                    <a download href="{{ template.file.url }}">
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                        Завантажити шаблон
+                    </a>
+                    <form method="post"
+                          action="{% url 'adminlte:receipts:templates:select-as-default' pk=template.pk %}">
+                        {% csrf_token %}
+                        <a href="#" type="button" class="set-default text-success">
+                            • Визначити шаблоном за замовчуванням
+                        </a>
+                    </form>
+                    <form method="post" action="{% url 'adminlte:receipts:templates:delete' pk=template.pk %}">
+                        {% csrf_token %}
+                        <a href="#" class="delete-button text-danger">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            Видалити шаблон
+                        </a>
+                    </form>
+                </div>
+            {% endfor %}
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <form id="upload-template-form" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
                         <div class="form-group">
                             <label>{{ form.file.label }}</label>
                             {{ form.file }}
@@ -41,9 +81,9 @@
                                 Зберегти
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 {% endblock content %}
@@ -55,19 +95,38 @@
             const $form = $('#upload-template-form');
             const $button = $('button[type=submit]');
 
+            const $set_default = $('.set-default');
+            const $delete_button = $('.delete-button');
+
             const $title = $('#id_title');
             const $file = $('#id_file');
+
+            $set_default.on('click', function () {
+                this.closest('form').submit();
+            });
+
+            $delete_button.on('click', async function () {
+                const result = await Swal.fire({
+                    title: "Ви дійсно хочете видалити цей об'єкт?",
+                    icon: "question",
+                    showDenyButton: true,
+                    confirmButtonText: "Видалити",
+                    denyButtonText: "Відмінити"
+                });
+
+                if (result.isConfirmed) this.closest('form').submit();
+            });
 
             $form.on('focus blur keyup', 'input', function () {
                 validate_form();
             });
 
             $title.on('keyup', function () {
-               $file.valid();
+                $file.valid();
             });
 
             $file.on('change', function () {
-               $title.valid();
+                $title.valid();
             });
 
             const validate_form = function () {

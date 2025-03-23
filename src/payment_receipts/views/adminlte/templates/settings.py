@@ -2,7 +2,8 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from src.payment_receipts.forms import AdminReceiptTemplateUploadForm
-from .mixin import ReceiptsPermissionRequiredMixin
+from src.payment_receipts.models import ReceiptTemplate
+from src.payment_receipts.views.adminlte.mixin import ReceiptsPermissionRequiredMixin
 
 
 class AdminReceiptsTemplateSettingsView(
@@ -15,6 +16,8 @@ class AdminReceiptsTemplateSettingsView(
         context = super().get_context_data(**kwargs)
 
         context['form'] = AdminReceiptTemplateUploadForm()
+
+        context['templates'] = ReceiptTemplate.objects.all()
 
         return context
 
@@ -29,4 +32,4 @@ class AdminReceiptsTemplateSettingsView(
                 for error in field.errors:
                     messages.error(self.request, error)
 
-        return redirect('adminlte:receipts:template-settings')
+        return redirect('adminlte:receipts:templates:index')
