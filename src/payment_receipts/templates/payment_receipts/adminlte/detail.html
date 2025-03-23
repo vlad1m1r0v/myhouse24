@@ -1,0 +1,199 @@
+{% extends 'base_adminlte.html' %}
+{% load l10n %}
+{% load static %}
+{% load receipt_is_complete %}
+{% load receipt_status %}
+{% block title %}
+    Квитанція № {{ receipt.no }}
+{% endblock title %}
+{% block css %}
+    <style>
+        .page-header-spec {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            margin-left: 15px;
+        }
+
+        .page-header-spec .form-group {
+            margin-bottom: 0;
+        }
+
+        @media screen and (max-width: 768px) {
+            .page-header-spec .form-group {
+                margin-bottom: 15px;
+            }
+
+            .page-header-spec .label-mid {
+                margin: 0 15px 15px 15px;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            .page-header-spec .label-mid {
+                margin: 0 15px;
+            }
+        }
+
+        td {
+            vertical-align: middle !important;
+        }
+
+        #receipt-table tr td:first-child {
+            font-weight: bold;
+        }
+
+        #services-container {
+            margin-top: 15px;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Квитанція № {{ receipt.no }}
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:receipts:list' %}">Квитанції</a></li>
+    <li class="active">Квитанція № {{ receipt.no }}</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <div class="page-header-spec">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"> № </span>
+                        <input type="text" value="{{ receipt.no }}" class="form-control" disabled="">
+                    </div>
+                </div>
+                <span class="label-mid">від</span>
+                <div class="form-group">
+                    <div class="input-group date">
+                            <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                        <input type="text" value="{{ receipt.date|date:'d.m.Y' }}" class="form-control" disabled="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Перегляд квитанції</h3>
+            <div class="box-tools">
+                <a href="" class="btn btn-default btn-sm">
+                    <span class="hidden-xs">Друкувати</span>
+                    <i class="fa fa-print visible-xs" aria-hidden="true"></i>
+                </a>
+                <a href="" class="btn btn-default btn-sm">
+                    <span class="hidden-xs">Відправити на пошту</span>
+                    <i class="fa fa-envelope-o visible-xs" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'adminlte:receipts:update' pk=receipt.pk %}" class="btn btn-primary btn-sm">
+                    <span class="hidden-xs">Редагувати квитанцію</span>
+                    <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-body">
+            <table id="receipt-table" class="table table-bordered table-striped table-view">
+                <tbody>
+                <tr>
+                    <td>Проведена</td>
+                    <td>{% receipt_is_complete obj=receipt %}</td>
+                </tr>
+                <tr>
+                    <td>Статус</td>
+                    <td>{% receipt_status obj=receipt %}</td>
+                </tr>
+                <tr>
+                    <td>Період</td>
+                    <td>{{ receipt.period_from|date:'d.m.Y' }} - {{ receipt.period_to|date:'d.m.Y' }}</td>
+                </tr>
+                <tr>
+                    <td>Власник</td>
+                    <td>
+                        <a href="{% url 'adminlte:flat-owners:detail' pk=receipt.flat.owner.pk %}">
+                            {{ receipt.flat.owner.last_name }}
+                            {{ receipt.flat.owner.first_name }}
+                            {{ receipt.flat.owner.middle_name }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Особовий рахунок</td>
+                    <td>
+                        <a href="{% url 'adminlte:personal-accounts:detail' pk=receipt.personal_account.pk %}">
+                            {{ receipt.personal_account.no }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Телефон</td>
+                    <td>{{ receipt.flat.owner.phone_number }}</td>
+                </tr>
+                <tr>
+                    <td>Будинок</td>
+                    <td>
+                        <a href="{% url 'adminlte:houses:detail' pk=receipt.house.pk %}">
+                            {{ receipt.house.name }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Квартира</td>
+                    <td>
+                        <a href="{% url 'adminlte:flats:detail' pk=receipt.flat.pk %}">
+                            {{ receipt.flat.no }}
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Секція</td>
+                    <td>{{ receipt.section.name }}</td>
+                </tr>
+                <tr>
+                    <td>Тариф</td>
+                    <td>
+                        <a href="{% url 'adminlte:system-settings:tariffs:detail' pk=receipt.tariff.pk %}">
+                            {{ receipt.tariff.name }}
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="services-container" class="table-responsive no-padding">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Послуга</th>
+                        <th>Витрата</th>
+                        <th>Од. вим.</th>
+                        <th>Ціна за од. вим., грн</th>
+                        <th>Вартість, грн</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for service in receipt.services.all %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ service.service.name }}</td>
+                            <td>{{ service.value|unlocalize }}</td>
+                            <td>{{ service.unit }}</td>
+                            <td>{{ service.price|unlocalize }}</td>
+                            <td>{{ service.total_price|unlocalize }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="5"></td>
+                        <td colspan="2"><b>Разом: {{ receipt.total_price|unlocalize }}</b></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

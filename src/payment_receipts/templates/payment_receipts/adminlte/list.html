@@ -373,6 +373,10 @@
                 $checkbox_toggle.prop('checked', '');
             },
             createdRow: function (row, data) {
+                $(row).find('td:not(:last-child)').on('click', function () {
+                    document.location.href = `${data.pk}/`;
+                });
+
                 const $checkbox = $(row).find('input[type="checkbox"]');
 
                 if (selected_ids.has(data.pk)) {

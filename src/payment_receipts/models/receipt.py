@@ -2,7 +2,7 @@ from django.db import models
 
 from src.houses.models import House, HouseSection
 from src.meter_indicators.models import MeterIndicator
-from src.payment_receipts.managers import ReceiptManager
+from src.payment_receipts.managers import ReceiptManager, ReceiptServiceManager
 from src.system_settings.models import (
     Tariff,
     Service,
@@ -45,3 +45,5 @@ class ReceiptService(models.Model):
     unit = models.ForeignKey(MeasurementUnit, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=6, decimal_places=1)
     value = models.FloatField()
+
+    objects = ReceiptServiceManager()

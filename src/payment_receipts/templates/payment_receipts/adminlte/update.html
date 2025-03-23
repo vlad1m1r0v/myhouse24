@@ -48,8 +48,8 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Квитанції</a></li>
-    <li><a>Квитанція № {{ form.instance.no }}</a></li>
+    <li><a href="{% url 'adminlte:receipts:list' %}">Квитанції</a></li>
+    <li><a href="{% url 'adminlte:receipts:detail' pk=form.instance.pk %}">Квитанція № {{ form.instance.no }}</a></li>
     <li class="active">Редагування}</li>
 {% endblock breadcrumb %}
 {% block content %}

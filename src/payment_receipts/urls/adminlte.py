@@ -8,6 +8,7 @@ app_name = "receipts"
 urlpatterns = [
     path('receipts/', include([
         path('', views.AdminReceiptsListView.as_view(), name='list'),
+        path('<int:pk>/', views.AdminReceiptDetailView.as_view(), name='detail'),
         path('delete-many/', views.AdminReceiptsDeleteManyView.as_view(), name='delete-many'),
         path('<int:pk>/delete/', views.AdminReceiptsDeleteView.as_view(), name='delete'),
         path('datatable/', AdminReceiptsDatatableView.as_view(), name='datatable'),

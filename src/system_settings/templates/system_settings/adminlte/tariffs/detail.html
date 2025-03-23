@@ -1,4 +1,5 @@
 {% extends 'base_adminlte.html' %}
+{% load l10n %}
 {% load static %}
 {% block title %}
     Тариф: {{ tariff.name }}
@@ -31,7 +32,8 @@
         <div class="box-header with-border">
             <h3 class="box-title"></h3>
             <div class="box-tools">
-                <a href="{% url 'adminlte:system-settings:tariffs:update' pk=tariff.id %}" class="btn btn-primary btn-sm">
+                <a href="{% url 'adminlte:system-settings:tariffs:update' pk=tariff.id %}"
+                   class="btn btn-primary btn-sm">
                     <span class="hidden-xs">Редагувати тариф</span>
                     <i class="fa fa-pencil visible-xs" aria-hidden="true"></i>
                 </a>
@@ -69,13 +71,13 @@
                     </thead>
                     <tbody>
                     {% for service in tariff.services.all %}
-                    <tr role="row">
-                        <td>{{ forloop.counter}}</td>
-                        <td>{{ service.service.name }}</td>
-                        <td>{{ service.service.unit }}</td>
-                        <td>{{ service.price }}</td>
-                        <td>грн</td>
-                    </tr>
+                        <tr role="row">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ service.service.name }}</td>
+                            <td>{{ service.service.unit }}</td>
+                            <td>{{ service.price|unlocalize }}</td>
+                            <td>грн</td>
+                        </tr>
                     {% endfor %}
                     </tbody>
                 </table>

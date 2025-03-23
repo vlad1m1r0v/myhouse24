@@ -1,1 +1,1 @@
-from .receipt import ReceiptManager
+from .receipt import ReceiptManager, ReceiptServiceManager

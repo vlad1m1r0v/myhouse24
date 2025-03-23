@@ -5,3 +5,4 @@ from .list import AdminReceiptsListView
 from .datatable import AdminReceiptsDatatableView
 from .delete_many import AdminReceiptsDeleteManyView
 from .delete import AdminReceiptsDeleteView
+from .detail import AdminReceiptDetailView
