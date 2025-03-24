@@ -7,7 +7,10 @@ from src.payment_receipts.views.adminlte.mixin import (
     ReceiptsPermissionRequiredMixin
 )
 from src.payment_receipts.models import Receipt
-from src.payment_receipts.services import ReceiptExcelService
+from src.payment_receipts.services import (
+    ReceiptExcelService,
+    FileConverterService
+)
 
 
 class AdminReceiptPrintView(
@@ -32,13 +35,10 @@ class AdminReceiptPrintView(
             template_id = form.cleaned_data['template'].id
             receipt_id = kwargs.get('pk')
 
-            file, filename = ReceiptExcelService.create_worksheet(receipt_id, template_id)
+            output, filename = ReceiptExcelService.create_worksheet(receipt_id, template_id)
+            pdf_file = FileConverterService.xlsx_to_pdf(output)
 
-            response = HttpResponse(
-                file.read(),
-                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            )
-
-            response["Content-Disposition"] = f'attachment; filename="{filename}"'
+            response = HttpResponse(pdf_file, content_type="application/pdf")
+            response["Content-Disposition"] = f'inline; filename="{filename}.pdf"'
 
             return response

@@ -43,8 +43,8 @@ class ReceiptExcelService:
         data = {
             'number': receipt.no,
             'date': receipt.date.strftime("%d.%m.%Y"),
-            'period_from': receipt.period_from.strftime("%d.%m.%Y"),
-            'period_to': receipt.period_to.strftime("%d.%m.%Y"),
+            'period': f"{receipt.period_from.strftime('%d.%m.%Y')}-"
+                      f"{receipt.period_to.strftime('%d.%m.%Y')}",
             'company_name': credential.name,
             'company_information': credential.information,
             'full_name': f"{receipt.flat.owner.last_name} "
@@ -134,4 +134,4 @@ class ReceiptExcelService:
         output = BytesIO()
         workbook.save(output)
         output.seek(0)
-        return output, f"Receipt_{receipt.no}.xlsx"
+        return output, f"Receipt_{receipt.no}"

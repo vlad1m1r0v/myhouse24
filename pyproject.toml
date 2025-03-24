@@ -19,6 +19,8 @@ django-ajax-datatable = "^4.5.0"
 django-cleanup = "^8.1.0"
 django-debug-toolbar = "^4.4.6"
 openpyxl = "^3.1.5"
+xlsx2html = "^0.6.2"
+weasyprint = "^65.0"
 
 
 [build-system]
