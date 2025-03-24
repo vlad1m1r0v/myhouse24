@@ -83,11 +83,11 @@
         <div class="box-header with-border">
             <h3 class="box-title">Перегляд квитанції</h3>
             <div class="box-tools">
-                <a href="" class="btn btn-default btn-sm">
+                <a href="{% url 'adminlte:receipts:templates:print' pk=receipt.pk %}" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Друкувати</span>
                     <i class="fa fa-print visible-xs" aria-hidden="true"></i>
                 </a>
-                <a href="" class="btn btn-default btn-sm">
+                <a href="{% url 'adminlte:receipts:templates:print' pk=receipt.pk %}" class="btn btn-default btn-sm">
                     <span class="hidden-xs">Відправити на пошту</span>
                     <i class="fa fa-envelope-o visible-xs" aria-hidden="true"></i>
                 </a>
