@@ -5,6 +5,8 @@
     Статистика
 {% endblock title %}
 {% block css %}
+    <!--Morris.js-->
+    <link rel="stylesheet" href="{% static 'bower_components/morris.js/morris.css' %}">
     <style>
     </style>
 {% endblock css %}
@@ -113,7 +115,14 @@
     </div>
     <div class="row">
         <div class="col-lg-8 col-md-7 col-xs-12">
-            <!--TODO: add chart of debt  receipts / paid receipts -->
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Графік виплат квитанцій, грн</h3>
+                </div>
+                <div class="box-body">
+                    <div id="receipt-chart" style="height: 236px;"></div>
+                </div>
+            </div>
         </div>
         <div class="col-lg-4 col-md-5 col-xs-12">
             <div class="info-box">
@@ -139,9 +148,78 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        Графік надходжень і витрат по касі, грн
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <div id="cashbox-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 {% block js %}
+    <!--Morris.js-->
+    <script src="{% static 'bower_components/raphael/raphael.min.js' %}"></script>
+    <script src="{% static 'bower_components/morris.js/morris.min.js' %}"></script>
     <script>
+        (async function () {
+            const response = await fetch("{% url 'adminlte:dashboard:receipt-chart' %}",
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
 
+            if (response.ok) {
+                const data = await response.json();
+
+                new Morris.Bar({
+                    element: 'receipt-chart',
+                    resize: true,
+                    data: data,
+                    barColors: ['#f56954', '#00a65a'],
+                    xkey: 'month',
+                    ykeys: ['debt', 'paid'],
+                    labels: ['борг', 'виплата'],
+                    xLabelAngle: 90,
+                    hideHover: 'auto'
+                });
+            }
+        })();
+
+        (async function () {
+            const response = await fetch("{% url 'adminlte:dashboard:cashbox-chart' %}",
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+
+                new Morris.Bar({
+                    element: 'cashbox-chart',
+                    resize: true,
+                    data: data,
+                    barColors: ['#f56954', '#00a65a'],
+                    xkey: 'month',
+                    ykeys: ['expense', 'income'],
+                    labels: ['витрата', 'надходження'],
+                    xLabelAngle: 90,
+                    hideHover: 'auto'
+                });
+            }
+        })();
     </script>
 {% endblock js %}

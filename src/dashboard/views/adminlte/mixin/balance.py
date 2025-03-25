@@ -44,7 +44,7 @@ class AdminBalanceMixin:
         )
 
         if not self.request.user.is_superuser:
-            expense_transactions = income_transactions.filter(
+            expense_transactions = expense_transactions.filter(
                 personal_account__house__users__user=self.request.user
             )
 
