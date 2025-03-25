@@ -71,4 +71,4 @@ class AdminReceiptsCreateView(
             except Exception as e:
                 messages.error(self.request, f"Виникла помилка при збереженні квитанції: {e}")
 
-        return redirect('adminlte:receipts:create')
+        return redirect('adminlte:receipts:list')

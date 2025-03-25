@@ -43,4 +43,4 @@ class AdminReceiptsUpdateView(
             formset.save()
             messages.success(self.request, "Квитанцію успішно оновлено")
 
-        return redirect('adminlte:receipts:create')
+        return redirect('adminlte:receipts:list')

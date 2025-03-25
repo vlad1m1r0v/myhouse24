@@ -1,1 +1,2 @@
 from .balance import AdminBalanceMixin
+from .permission_required import StatisticsPermissionRequiredMixin

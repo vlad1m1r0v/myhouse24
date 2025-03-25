@@ -1,0 +1,147 @@
+{% extends 'base_adminlte.html' %}
+{% load group_thousands %}
+{% load static %}
+{% block title %}
+    Статистика
+{% endblock title %}
+{% block css %}
+    <style>
+    </style>
+{% endblock css %}
+{% block header %}
+    Статистика
+{% endblock header %}
+{% block breadcrumb %}
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <h2 class="page-header">У Вашому розпорядженні</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>{{ houses }}</h3>
+                    <p>Будинків</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-building"></i>
+                </div>
+                <a href="{% url 'adminlte:houses:list' %}" class="small-box-footer">
+                    Перейти до будинків
+                    <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{ owners }}</h3>
+                    <p>Активних власників</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-users"></i>
+                </div>
+                <a href="{% url 'adminlte:flat-owners:list' %}" class="small-box-footer">
+                    Перейти до власників
+                    <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>{{ master_call_requests }}</h3>
+                    <p>Заявки виклику майстра</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-wrench"></i>
+                </div>
+                <a href="{% url 'adminlte:master-call-requests:list' %}" class="small-box-footer">
+                    Перейти до заявок
+                    <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="small-box bg-primary">
+                <div class="inner">
+                    <h3>{{ flats }}</h3>
+                    <p>Квартир</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-key"></i>
+                </div>
+                <a href="{% url 'adminlte:flats:list' %}" class="small-box-footer">
+                    Перейти до квартир
+                    <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{ personal_accounts }}</h3>
+                    <p>Особових рахунків</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-child"></i>
+                </div>
+                <a href="{% url 'adminlte:personal-accounts:list' %}" class="small-box-footer">
+                    Перейти до рахунків
+                    <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>{{ new_master_call_requests }}</h3>
+                    <p>Нових заявок майстра</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user-plus"></i>
+                </div>
+                <a href="{% url 'adminlte:master-call-requests:list' %}" class="small-box-footer">
+                    Перейти до заявок
+                    <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-md-7 col-xs-12">
+            <!--TODO: add chart of debt  receipts / paid receipts -->
+        </div>
+        <div class="col-lg-4 col-md-5 col-xs-12">
+            <div class="info-box">
+                <span class="info-box-icon bg-red"><i class="fa fa-money"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Заборгованість по рахункам, грн</span>
+                    <span class="info-box-number">{{ receipt_debt|group_thousands }}</span>
+                </div>
+            </div>
+            <div class="info-box">
+                <span class="info-box-icon bg-blue"><i class="fa fa-money"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Баланс по рахункам, грн</span>
+                    <span class="info-box-number">{{ account_balance|group_thousands }}</span>
+                </div>
+            </div>
+            <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="fa fa-money"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Стан каси, грн</span>
+                    <span class="info-box-number">{{ cash_balance|group_thousands }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+
+    </script>
+{% endblock js %}

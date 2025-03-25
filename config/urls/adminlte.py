@@ -15,5 +15,6 @@ urlpatterns = [
         path('', include('src.personal_accounts.urls.adminlte')),
         path('', include('src.payment_receipts.urls.adminlte')),
         path('', include('src.cash_box.urls.adminlte')),
+        path('', include('src.dashboard.urls.adminlte')),
     ]))
 ]

@@ -170,11 +170,13 @@
             <!-- Sidebar user panel -->
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu tree" data-widget="tree">
-                <li>
-                    <a>
-                        <i class="fa fa-line-chart"></i> <span>Статистика</span>
-                    </a>
-                </li>
+                {% if perms.authentication.statistics %}
+                    <li>
+                        <a href="{% url 'adminlte:dashboard:index' %}">
+                            <i class="fa fa-line-chart"></i> <span>Статистика</span>
+                        </a>
+                    </li>
+                {% endif %}
                 {% if perms.authentication.cash_box %}
                     <li>
                         <a href="{% url 'adminlte:cash-box:list' %}">
