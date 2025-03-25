@@ -6,7 +6,7 @@ from src.payment_receipts.views.adminlte.mixin import (
     HouseUserRequiredMixin,
     ReceiptsPermissionRequiredMixin
 )
-from src.payment_receipts.models import Receipt
+from src.payment_receipts.models import Receipt, ReceiptTemplate
 from src.payment_receipts.services import (
     ReceiptExcelService,
     FileConverterService
@@ -24,7 +24,14 @@ class AdminReceiptPrintView(
         context = super().get_context_data(**kwargs)
 
         context['receipt'] = Receipt.objects.get(pk=self.kwargs['pk'])
-        context['form'] = AdminReceiptTemplateSelectForm()
+
+        default_template = ReceiptTemplate.objects.filter(is_selected=True).first()
+
+        context['form'] = AdminReceiptTemplateSelectForm(
+            initial={
+                'template': default_template
+            }
+        )
 
         return context
 
