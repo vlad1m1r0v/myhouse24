@@ -24,7 +24,7 @@
     Квартира № {{ flat.no }}, {{ flat.house.name }}
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
     <li><a href="{% url 'adminlte:flats:list' %}">Квартири</a></li>
     <li class="active">Квартира № {{ flat.no }}, {{ flat.house.name }}</li>
 {% endblock breadcrumb %}

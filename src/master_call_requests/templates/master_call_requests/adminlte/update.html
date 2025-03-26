@@ -46,7 +46,7 @@
     Заявка № {{ object.pk }}
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
     <li><a href="{% url 'adminlte:master-call-requests:list' %}">Заявки виклику майстра</a></li>
     <li><a href="{% url 'adminlte:master-call-requests:detail' pk=object.id %}">Заявка № {{ object.pk }}</a></li>
     <li class="active">Редагування</li>

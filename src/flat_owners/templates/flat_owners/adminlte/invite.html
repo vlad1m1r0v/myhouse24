@@ -9,7 +9,7 @@
     Запросити власника квартири
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
     <li><a href="{% url 'adminlte:flat-owners:list' %}">Власники квартир</a></li>
     <li class="active">Запросити власника квартири</li>
 {% endblock breadcrumb %}

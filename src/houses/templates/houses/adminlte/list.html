@@ -25,7 +25,7 @@
     Будинки
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
     <li class="active">Будинки</li>
 {% endblock breadcrumb %}
 {% block content %}

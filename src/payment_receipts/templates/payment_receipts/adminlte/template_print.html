@@ -11,7 +11,7 @@
     Друкування шаблонів
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
     <li><a href="{% url 'adminlte:receipts:list' %}">Квитанції</a></li>
     <li><a href="{% url 'adminlte:receipts:detail' pk=receipt.id %}">Квитанція № {{ receipt.no }}</a></li>
     <li class="active">Друкування шаблонів</li>

@@ -40,7 +40,7 @@
     Новий власник
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
     <li><a>Власники квартир</a></li>
     <li class="active">Новий власник</li>
 {% endblock breadcrumb %}

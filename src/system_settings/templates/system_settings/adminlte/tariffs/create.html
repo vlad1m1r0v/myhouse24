@@ -11,7 +11,7 @@
     Новий тариф
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i>Головна</a></li>
+    <li><li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li></li>
     <li><a href="{% url 'adminlte:system-settings:tariffs:list' %}">Тарифи</a></li>
     <li class="active">Новий тариф</li>
 {% endblock breadcrumb %}

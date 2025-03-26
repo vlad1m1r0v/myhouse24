@@ -28,7 +28,7 @@
     Показники лічильників
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
     <li class="active">Показники лічильників</li>
 {% endblock breadcrumb %}
 {% block content %}

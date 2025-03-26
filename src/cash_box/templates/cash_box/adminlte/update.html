@@ -48,7 +48,7 @@
     Транзакція № {{ form.instance.no }}
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
     <li><a>Транзакції</a></li>
     <li>
         <a href="{% url 'adminlte:cash-box:detail' pk=form.instance.pk %}">
