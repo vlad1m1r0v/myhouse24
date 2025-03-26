@@ -49,7 +49,11 @@ class AdminFlatUpdateView(FlatPermissionRequiredMixin,
                 messages.error(self.request, 'Особовий рахунок не знайдено')
 
         messages.success(self.request, 'Дані про квартиру успішно оновлено')
-        return HttpResponseRedirect(self.success_url)
+
+        if 'save' in self.request.POST:
+            return HttpResponseRedirect(self.success_url)
+        else:
+            return HttpResponseRedirect(reverse_lazy('adminlte:flats:create'))
 
     def form_invalid(self, form):
         for _, errors in form.errors.items():

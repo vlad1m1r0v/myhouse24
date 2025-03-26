@@ -1,6 +1,5 @@
 {% for flat in object.flats.all %}
-    <!--TODO: add valid url to flat detail page-->
-    <a>
+    <a href="{% url 'adminlte:flats:detail' pk=flat.pk %}">
         № {{ flat.no }}, {{ flat.house.name }}{% if not forloop.last %},{% endif %}
         {% if not forloop.last %}<br>{% endif %}
     </a>

@@ -90,7 +90,7 @@
                             <td>Секція</td>
                             <td>
                                 {% if personal_account.section %}
-                                {{ personal_account.section.name }}
+                                    {{ personal_account.section.name }}
                                 {% else %}
                                     (Не вказано)
                                 {% endif %}
@@ -144,8 +144,12 @@
                             </a>
                         </p>
                         <p>
-                            <!--TODO: add valid URL to personal accounts receipts list page-->
-                            <a href="">
+                            <a {% if personal_account.flat %}
+                                href="{% url 'adminlte:receipts:list' %}?flat_id={{ personal_account.flat.id }}"
+                            {% else %}
+                                class="disabled" onclick="void(0)"
+                            {% endif %}
+                            >
                                 Переглянути квитанції
                             </a>
                         </p>

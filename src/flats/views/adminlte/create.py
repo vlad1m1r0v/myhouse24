@@ -12,7 +12,6 @@ class AdminFlatCreateView(FlatPermissionRequiredMixin,
                           CreateView):
     template_name = 'flats/adminlte/create.html'
     form_class = AdminFlatForm
-    # TODO: change to flats list page URL
     success_url = reverse_lazy('adminlte:flats:list')
 
     def form_valid(self, form):
@@ -39,8 +38,12 @@ class AdminFlatCreateView(FlatPermissionRequiredMixin,
                 messages.error(self.request, 'Особовий рахунок не знайдено')
 
         messages.success(self.request, 'Нову квартиру успішно створено')
-        # TODO: depending on a submit button name we should redirect either to "create flat" URL or "flats list" URL
-        return HttpResponseRedirect(self.success_url)
+
+        if 'save' in self.request.POST:
+            return HttpResponseRedirect(self.success_url)
+        else:
+            return HttpResponseRedirect(reverse_lazy('adminlte:flats:create'))
+
 
     def form_invalid(self, form):
         for _, errors in form.errors.items():

@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.urls import reverse
 from django.views import View
 
 from src.flats.models import Flat
@@ -13,7 +14,7 @@ class AdminReceiptsFlatInfoView(ReceiptsPermissionRequiredMixin, View):
 
         flat_data = {
             'account_no': flat.personal_account.no if hasattr(flat, 'personal_account') else None,
-            'owner_id': flat.owner.id if flat.owner else None,
+            'owner_url': reverse('adminlte:flat-owners:detail', kwargs={'pk': flat.owner.id}) if flat.owner else None,
             'owner_name': f"{flat.owner.last_name} {flat.owner.first_name} {flat.owner.middle_name}" if hasattr(flat, 'owner') else "Немає власника",
             'owner_phone': flat.owner.phone_number,
             'tariff_id': flat.tariff.id if hasattr(flat, 'tariff') else None,

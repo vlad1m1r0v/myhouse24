@@ -148,8 +148,7 @@
                             </a>
                         </p>
                         <p>
-                            <!--TODO: add valid URL to flat receipts list page-->
-                            <a href="">
+                            <a href="{% url 'adminlte:receipts:list' %}?flat_id={{ flat.pk }}">
                                 Переглянути квитанції
                             </a>
                         </p>

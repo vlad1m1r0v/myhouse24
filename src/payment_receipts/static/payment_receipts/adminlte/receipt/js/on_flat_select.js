@@ -19,8 +19,7 @@ async function on_flat_select() {
     if (response.ok) {
         const info = await response.json();
         $account.val(info.account_no);
-        // TODO: change to valid owner profile page
-        $user_name.attr('href', '');
+        $user_name.attr('href', info.owner_url);
         $user_name.text(info.owner_name);
         $user_phone.attr('href', `tel:${info.owner_phone}`);
         $user_phone.text(info.owner_phone);

@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.urls import reverse
 from django.views import View
 
 from src.personal_accounts.models import PersonalAccount
@@ -26,7 +27,7 @@ class AdminReceiptsFlatInfoByAccountView(ReceiptsPermissionRequiredMixin, View):
             'flat_id': flat.id,
             'flat_name': f"{flat.no}, {flat.house.name}",
             'account_no': personal_account.no,
-            'owner_id': flat.owner.id if flat.owner else None,
+            'owner_url': reverse('adminlte:flat-owners:detail', kwargs={'pk': flat.owner.id}) if flat.owner else None,
             'owner_name': f"{flat.owner.last_name} {flat.owner.first_name} {flat.owner.middle_name}" if flat.owner else "Немає власника",
             'owner_phone': flat.owner.phone_number,
             'tariff_id': flat.tariff.id if flat.tariff else None,

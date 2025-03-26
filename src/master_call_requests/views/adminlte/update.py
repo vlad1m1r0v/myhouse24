@@ -16,8 +16,7 @@ class AdminMasterCallRequestUpdateView(
     MasterCallRequestPermissionRequiredMixin,
     UpdateView):
     success_message = 'Заявку виклику майстра успішно оновлено'
-    # TODO: change to master call requests list page
-    success_url = reverse_lazy('adminlte:master-call-requests:create')
+    success_url = reverse_lazy('adminlte:master-call-requests:list')
     model = MasterCallRequest
     form_class = AdminMasterCallRequestForm
     template_name = 'master_call_requests/adminlte/update.html'
