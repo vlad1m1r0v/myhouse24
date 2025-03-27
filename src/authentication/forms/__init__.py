@@ -1,4 +1,3 @@
-from .adminlte import AdminLoginForm
-from .password_reset import (
-    AuthenticationPasswordResetForm,
-    AuthenticationSetPasswordForm)
+from .adminlte import *
+from .account import *
+from .password_reset import *

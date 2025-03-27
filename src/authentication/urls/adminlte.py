@@ -1,19 +1,12 @@
 from django.urls import path, include
 
-from src.authentication.views import (
-    AuthenticationAdminLoginView,
-    AuthenticationAdminLogoutView
-)
+import src.authentication.views as views
 
 app_name = 'adminlte'
 
 urlpatterns = [
     path('adminlte/', include([
-        path('login/',
-             AuthenticationAdminLoginView.as_view(),
-             name='login'),
-        path('logout/',
-             AuthenticationAdminLogoutView.as_view(),
-             name='logout')
+        path('login/', views.AdminLoginView.as_view(),name='login'),
+        path('logout/', views.AdminLogoutView.as_view(), name='logout')
     ]))
 ]

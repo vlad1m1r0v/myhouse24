@@ -5,7 +5,7 @@ from django.views.generic import View
 from django.shortcuts import redirect
 
 
-class AuthenticationAdminLogoutView(View):
+class AdminLogoutView(View):
     def post(self, request, *args, **kwargs):
         logout(request)
         messages.success(request, f'Користувач  успішно вийшов із системи')

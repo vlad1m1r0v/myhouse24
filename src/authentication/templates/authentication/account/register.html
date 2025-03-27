@@ -1,22 +1,26 @@
 {% extends 'authentication/base.html' %}
 {% load static %}
 {% block title %}
-    Вхід в панель управління
+    Реєстрація нового мешканця
 {% endblock %}
 {% block css %}
 {% endblock %}
 {% block form %}
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-            <li><a href="{% url 'authentication:account:login' %}">Для мешканця</a></li>
-            <li class="active"><a aria-expanded="true">Для адміністрації</a></li>
+            <li class="active"><a aria-expanded="true">Для мешканця</a></li>
+            <li><a aria-expanded="true" href="{% url 'authentication:adminlte:login' %}">Для адміністрації</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane active">
                 <div class="register-box-body">
-                    <p class="login-box-msg">Вхід в панель управління</p>
-                    <form id="login-form" method="post">
+                    <p class="login-box-msg">Реєстрація нового мешканця</p>
+                    <form id="register-form" method="post">
                         {% csrf_token %}
+                        <div class="form-group has-feedback">
+                            {{ form.full_name }}
+                            <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                        </div>
                         <div class="form-group has-feedback">
                             {{ form.email }}
                             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
@@ -25,20 +29,22 @@
                             {{ form.password }}
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                         </div>
+                        <div class="form-group has-feedback">
+                            {{ form.repeat_password }}
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        </div>
                         <div class="checkbox">
-                            {{ form.remember_me }}
-                            <label>Запaм'ятати мене</label></div>
-                        <div>
-                            {{ form.captcha }}
+                            {{ form.privacy_policy_consent }}
+                            <label>{{ form.privacy_policy_consent.label }}</label>
                         </div>
                         <div>
                             <button type="submit" class="btn btn-primary btn-block" name="login-button">
-                                Ввійти
+                                Зареєструватись
                             </button>
                         </div>
                     </form>
                     <div class="text-center links">
-                        <a href="{% url 'authentication:password-reset:index' %}">Забули пароль?</a>
+                        <a href="{% url 'authentication:account:login' %}">Увійти в особистий кабінет</a>
                     </div>
                 </div>
             </div>
@@ -48,16 +54,20 @@
 {% block js %}
     <script>
         $(document).ready(function () {
-            const $form = $('#login-form');
+            const $form = $('#register-form');
             const $button = $('button[type=submit]');
 
-            $form.on('focus blur keyup', 'input', function () {
-                validateForm();
+            $form.on('focus blur keyup ifToggled', 'input', function () {
+                validate_form();
             });
 
-            const validateForm = function () {
-                const isValid = $form.validate({
+            const validate_form = function () {
+                const is_valid = $form.validate({
                     rules: {
+                        full_name: {
+                          required: true,
+                          full_name: true
+                        },
                         email: {
                             required: true,
                             email: false,
@@ -69,9 +79,16 @@
                             minlength: 8,
                             strong_password: true,
                         },
+                        repeat_password: {
+                            required: true,
+                            equalTo: '#id_password',
+                        }
 
                     },
                     messages: {
+                        full_name: {
+                          required: "Введіть ПІБ"
+                        },
                         email: {
                             required: "Вкажіть електронну пошту",
                         },
@@ -79,7 +96,10 @@
                             required: "Вкажіть пароль",
                             minlength: "Пароль має містити щонайменше 8 символів"
                         },
-
+                        repeat_password: {
+                            required: "Повторіть пароль",
+                            equalTo: "Паролі не співпадають"
+                        }
                     },
                     errorElement: 'small',
                     errorPlacement: function (error, element) {
@@ -94,12 +114,13 @@
                     }
                 }).checkForm();
 
-                if (isValid) {
+                if (is_valid) {
                     $button.prop('disabled', false);
                 } else {
                     $button.prop('disabled', 'disabled');
                 }
             }
         })
+
     </script>
 {% endblock js %}

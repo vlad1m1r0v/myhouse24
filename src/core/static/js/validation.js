@@ -70,3 +70,7 @@ $.validator.addMethod("hhmm", function (value, element) {
     const pattern =/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
     return this.optional(element) ||  pattern.test(value);
 }, "Вкажіть валідний час");
+
+$.validator.addMethod("full_name", function(value, element) {
+    return this.optional(element) || /^[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+\s[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+(?:\s[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+)?$/.test(value);
+}, "Введіть коректне ПІБ (Ім'я та Прізвище)");

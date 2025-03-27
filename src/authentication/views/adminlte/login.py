@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from src.authentication.forms import AdminLoginForm
 
 
-class AuthenticationAdminLoginView(FormView):
+class AdminLoginView(FormView):
     form_class = AdminLoginForm
     template_name = 'authentication/adminlte/login.html'
 

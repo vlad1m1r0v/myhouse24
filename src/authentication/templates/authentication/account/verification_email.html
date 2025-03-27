@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Запрошення до системи</title>
+    <style>
+      header,
+      section,
+      footer {
+        font-family: Roboto, sans-serif;
+        width: 600px;
+        padding: 10px;
+      }
+
+      section {
+        background: #ecf0f5;
+        border-left: 1px solid lightgray;
+        border-right: 1px solid lightgray;
+      }
+
+      section h3 {
+        text-align: center;
+      }
+
+      section p,
+      section a {
+        color: #444444;
+      }
+
+      section p > a {
+        display: inline-block;
+        text-decoration: none;
+        background-color: #e7e7e7;
+        margin: 5px;
+        padding: 5px;
+        border: 1px solid lightgray;
+        border-radius: 3px;
+      }
+
+      header,
+      footer {
+        text-align: center;
+        color: #00a65a;
+        border: 1px solid lightgray;
+      }
+
+      header {
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      footer {
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <header>MyHouse24</header>
+  <section>
+    <h3>Підтвердження користувача 🛂</h3>
+    <p>
+      Вам надіслано лист для підтвердження акаунту в системі MyHouse24. Щоб підтвердити акаунт, натисніть на кнопку
+      <a href="{{ protocol }}://{{ domain }}{% url 'authentication:account:activate' uidb64=uid token=token %}">
+        Підтвердити акаунт
+      </a>
+    </p>
+  </section>
+  <footer>© 2024 MyHouse24. Всі права захищені.</footer>
+</html>

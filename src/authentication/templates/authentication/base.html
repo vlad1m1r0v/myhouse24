@@ -45,8 +45,12 @@
             padding-left: 0;
         }
 
-        #forgot-password {
-            padding: 8px 0;
+        .links {
+            padding-top: 8px;
+        }
+
+        .links:last-child {
+            padding-bottom: 8px;
         }
 
         form {
@@ -65,20 +69,8 @@
     <div class="register-logo">
         <img src="{% static 'img/logo.svg' %}" class="img-responsive" alt="">
     </div>
-    <div class="nav-tabs-custom">
-        <ul class="nav nav-tabs">
-            <li><a>Для мешканця</a></li>
-            <li class="active"><a aria-expanded="true">Для адміністрації</a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active">
-                <div class="register-box-body">
-                    {% block form %}
-                    {% endblock form %}
-                </div>
-            </div>
-        </div>
-    </div>
+    {% block form %}
+    {% endblock form %}
 </div>
 <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
@@ -91,7 +83,7 @@
 <script src="{% static 'js/validation.js' %}"></script>
 <script>
     $(function () {
-        $('input').iCheck({
+        $('input[type=checkbox]').iCheck({
             checkboxClass: 'icheckbox_square-blue',
             radioClass: 'iradio_square-blue',
             increaseArea: '20%'

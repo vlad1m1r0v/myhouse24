@@ -1,0 +1,54 @@
+{% extends 'authentication/base.html' %}
+{% load static %}
+{% block title %}
+    Вхід в особистий кабінет
+{% endblock %}
+{% block css %}
+{% endblock %}
+{% block form %}
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs">
+            <li class="active"><a aria-expanded="true">Для мешканця</a></li>
+            <li><a aria-expanded="true" href="{% url 'authentication:adminlte:login' %}">Для адміністрації</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active">
+                <div class="register-box-body">
+                    <p class="login-box-msg">Вхід в особистий кабінет</p>
+                    <form id="login-form" method="post">
+                        {% csrf_token %}
+                        <div class="form-group has-feedback">
+                            {{ form.login }}
+                            <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        </div>
+                        <div class="form-group has-feedback">
+                            {{ form.password }}
+                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        </div>
+                        <div class="checkbox">
+                            {{ form.remember_me }}
+                            <label>Запaм'ятати мене</label></div>
+                        <div>
+                            {{ form.captcha }}
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-block" name="login-button">
+                                Ввійти
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center links">
+                        <a href="{% url 'authentication:password-reset:index' %}">Забули пароль?</a>
+                    </div>
+                    <div class="text-center links">
+                        <a href="{% url 'authentication:account:register' %}">Зареєструвати нового мешканця</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock form %}
+{% block js %}
+    <script>
+    </script>
+{% endblock js %}

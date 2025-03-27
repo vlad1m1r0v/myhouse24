@@ -1,2 +1,2 @@
-from .login import AuthenticationAdminLoginView
-from .logout import AuthenticationAdminLogoutView
+from .login import AdminLoginView
+from .logout import AdminLogoutView
