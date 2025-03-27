@@ -7,6 +7,17 @@ $.validator.addMethod(
 );
 
 $.validator.addMethod(
+    "email_or_id", function (value, element) {
+        if (/^\d+$/.test(value)) {
+            return true;
+        }
+        const emailRegexp = new RegExp(/^\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b$/i);
+        return emailRegexp.test(value);
+    }, "Невірна адреса електронної пошти або ID містить не тільки цифри"
+);
+
+
+$.validator.addMethod(
     "strong_password",
     function (value, element) {
         const hasUpperCase = new RegExp(/[A-Z]/).test(value);
@@ -53,24 +64,24 @@ $.validator.addMethod("birth_date", function (value, element) {
 
 $.validator.addMethod("viber", function (value, element) {
     const viberRegex = /^viber:\/\/chat\?number=\+380\d{9}$/;
-     return this.optional(element) || viberRegex.test(value);
+    return this.optional(element) || viberRegex.test(value);
 }, "Вкажіть валідну адресу в Viber");
 
 $.validator.addMethod("telegram", function (value, element) {
     const telegramRegex = /^https:\/\/t\.me\/\w{3,}$/;
-     return this.optional(element) || telegramRegex.test(value);
+    return this.optional(element) || telegramRegex.test(value);
 }, "Вкажіть валідну адресу в Telegram");
 
 $.validator.addMethod("ddmmyyyy", function (value, element) {
-    const pattern =/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/;
-    return this.optional(element) ||  pattern.test(value);
+    const pattern = /^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/;
+    return this.optional(element) || pattern.test(value);
 }, "Вкажіть валідну дату");
 
 $.validator.addMethod("hhmm", function (value, element) {
-    const pattern =/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-    return this.optional(element) ||  pattern.test(value);
+    const pattern = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+    return this.optional(element) || pattern.test(value);
 }, "Вкажіть валідний час");
 
-$.validator.addMethod("full_name", function(value, element) {
+$.validator.addMethod("full_name", function (value, element) {
     return this.optional(element) || /^[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+\s[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+(?:\s[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+)?$/.test(value);
 }, "Введіть коректне ПІБ (Ім'я та Прізвище)");
