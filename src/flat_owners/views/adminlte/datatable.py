@@ -107,11 +107,11 @@ class AdminFlatOwnersDatatableView(AjaxDatatableView):
     def customize_row(self, row, obj):
         row['pk'] = int(obj.pk)
 
-        row['ID'] = obj.ID
+        row['ID'] = obj.ID or '(Не вказано)'
 
         row['full_name'] = obj.full_name
 
-        row['phone'] = obj.phone_number
+        row['phone'] = obj.phone_number or '(Не вказано)'
 
         row['email'] = obj.email
 

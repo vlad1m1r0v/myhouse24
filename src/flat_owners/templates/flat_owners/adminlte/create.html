@@ -41,7 +41,7 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Власники квартир</a></li>
+    <li><a href="{% url 'adminlte:flat-owners:list' %}">Власники квартир</a></li>
     <li class="active">Новий власник</li>
 {% endblock breadcrumb %}
 {% block content %}
@@ -234,30 +234,25 @@
                             maxlength: 20,
                         },
                         middle_name: {
-                            required: true,
                             minlength: 5,
                             maxlength: 20
                         },
                         birth_date: {
-                            required: true,
-                            birth_date: true,
+                            birth_date: true
                         },
                         phone_number: {
-                            required: true,
-                            phone_ua: true,
+                            phone_ua: true
                         },
                         viber: {
-                            required: true,
-                            viber: true,
+                            viber: true
                         },
                         telegram: {
-                            required: true,
-                            telegram: true,
+                            telegram: true
                         },
                         email: {
                             required: true,
                             email: false,
-                            valid_email: true,
+                            valid_email: true
                         },
                         ID: {
                           required: true,
@@ -267,7 +262,6 @@
                             required: true,
                         },
                         about_me: {
-                            required: true,
                             minlength: 20,
                             maxlength: 200,
                         },
@@ -296,21 +290,8 @@
                             maxlength: "Прізвище не повинне перевищувати 20 символів",
                         },
                         middle_name: {
-                            required: "Вкажіть по батькові",
                             minlength: "По батькові повинне містити щонайменше 5 символів",
                             maxlength: "По батькові не повинне перевищувати 20 символів",
-                        },
-                        birth_date: {
-                            required: "Вкажіть дату народження"
-                        },
-                        phone_number: {
-                            required: "Вкажіть номер телефону",
-                        },
-                        viber: {
-                            required: "Вкажіть посилання в Viber",
-                        },
-                        telegram: {
-                            required: "Вкажіть посилання в Telegram",
                         },
                         email: {
                             required: "Вкажіть електронну пошту",
@@ -323,7 +304,6 @@
                             required: "Вкажіть статус"
                         },
                         about_me: {
-                            required: "Введіть замітки про власника квартири",
                             minlength: "Мінімальна довжина заміток має бути 20 символів",
                             maxlength: "Максимальна довжина заміток не має перевищувати 200 символів"
                         },

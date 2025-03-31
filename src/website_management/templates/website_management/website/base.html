@@ -55,7 +55,10 @@
                     <a class="nav-link" href="{% url 'website:contacts' %}">Контакти</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link"><i class="fa-solid fa-arrow-right-to-bracket me-2"></i>Ввійти</a>
+                    <a href="{% url 'authentication:account:login' %}" class="nav-link">
+                        <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>
+                        Ввійти
+                    </a>
                 </li>
             </ul>
         </div>

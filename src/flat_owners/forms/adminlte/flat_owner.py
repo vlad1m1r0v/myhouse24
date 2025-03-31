@@ -22,26 +22,33 @@ class AdminFlatOwnerForm(forms.ModelForm):
 
     middle_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        label='По батькові')
+        label='По батькові',
+        required=False,
+    )
 
     birth_date = forms.DateField(
         input_formats=['%d.%m.%Y'],
         widget=forms.DateInput(attrs={'class': 'form-control'}, format='%d.%m.%Y'),
-        label='Дата народження'
+        label='Дата народження',
+        required=False,
     )
 
     phone_number = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        label='Номер телефону')
+        label='Номер телефону',
+        required=False
+    )
 
     telegram = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        label='Telegram'
+        label='Telegram',
+        required=False
     )
 
     viber = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),
-        label='Viber'
+        label='Viber',
+        required=False
     )
 
     email = forms.CharField(
@@ -61,18 +68,19 @@ class AdminFlatOwnerForm(forms.ModelForm):
 
     about_me = forms.CharField(
         widget=forms.Textarea(attrs={'class': 'form-control'}),
-        label='Про власника (замітки)'
+        label='Про власника (замітки)',
+        required=False
     )
 
     new_password = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': 'Новий пароль', 'class': 'form-control'}),
-        required=False,
-        label="Новий пароль"
+        label="Новий пароль",
+        required=False
     )
     repeat_password = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': 'Повторіть пароль', 'class': 'form-control'}),
-        required=False,
-        label="Повторіть пароль"
+        label="Повторіть пароль",
+        required=False
     )
 
     class Meta:
