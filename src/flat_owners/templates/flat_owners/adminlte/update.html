@@ -56,7 +56,12 @@
                     <div class="col-xs-12 col-sm-6">
                         <div id="avatar-container">
                             <div id="avatar-preview-container">
-                                <img id="avatar" src="{{ form.instance.avatar.url }}"
+                                <img id="avatar"
+                                        {% if form.instance.avatar %}
+                                     src="{{ form.instance.avatar.url }}"
+                                        {% else %}
+                                     src="https://placehold.co/150x150"
+                                        {% endif %}
                                      alt="Avatar Preview">
                             </div>
                             <div class="form-group">
