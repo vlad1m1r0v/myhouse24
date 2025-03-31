@@ -122,9 +122,9 @@ class AdminMasterCallRequestsDatatableView(AjaxDatatableView):
 
         row['owner'] = str(obj.flat_owner)
 
-        row['phone'] = obj.flat_owner.phone_number
+        row['phone'] = obj.flat_owner.phone_number if obj.flat_owner.phone_number else '(Не вказано)'
 
-        row['master'] = str(obj.master)
+        row['master'] = str(obj.master) if obj.master else '(Не вибрано)'
 
         row['status'] = render_to_string(
             template_name='master_call_requests/adminlte/_partials/status_label.html',

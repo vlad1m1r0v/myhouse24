@@ -110,7 +110,13 @@
                             </tr>
                             <tr>
                                 <td>Номер</td>
-                                <td>{{ object.flat_owner.phone_number }}</td>
+                                <td>
+                                    {% if object.flat_owner.phone_number %}
+                                    {{ object.flat_owner.phone_number }}
+                                    {% else %}
+                                        Не вказано
+                                    {% endif %}
+                                </td>
                             </tr>
                             <tr>
                                 <td>Квартира</td>

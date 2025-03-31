@@ -76,7 +76,8 @@ class AdminMasterCallRequestForm(forms.ModelForm):
             )
             self.fields['flat'].widget.choices = [(flat.id, str(flat))]
 
-            self.fields['master'].widget.choices = [(master.id, str(master))]
+            if master:
+                self.fields['master'].widget.choices = [(master.id, str(master))]
 
     date = forms.DateField(
         input_formats=['%d.%m.%Y'],
@@ -139,7 +140,12 @@ class AdminMasterCallRequestForm(forms.ModelForm):
             raise ValidationError('Вибраної квартири не знайдено')
 
     def clean_master(self):
+        master = self.cleaned_data['master']
+
+        if not master:
+            return
+
         try:
-            return CustomUser.objects.get(id=self.cleaned_data['master'])
+            return CustomUser.objects.get(id=master)
         except CustomUser.DoesNotExist:
             raise ValidationError('Вибраного майстра не знайдено')
