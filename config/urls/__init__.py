@@ -12,6 +12,7 @@ sitemaps = {
 urlpatterns = [
     path('', include('config.urls.authentication')),
     path('', include('config.urls.adminlte')),
+    path('', include('config.urls.account')),
     path('', include('config.urls.website')),
 ]
 

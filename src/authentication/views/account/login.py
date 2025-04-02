@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 
 from src.authentication.forms import AccountLoginForm
+from src.authentication.models import CustomUser
 
 
 class AccountLoginView(TemplateView):
@@ -15,6 +17,29 @@ class AccountLoginView(TemplateView):
         context['form'] = AccountLoginForm()
 
         return context
+
+    def dispatch(self, request, *args, **kwargs):
+        account_id = request.GET.get('account_id')
+
+        if account_id:
+            referer = request.META.get('HTTP_REFERER')
+            account_url = reverse_lazy('adminlte:flat-owners:detail', kwargs={'pk': account_id})
+            from_account_url = referer == request.build_absolute_uri(account_url)
+
+            if from_account_url:
+                user = CustomUser.objects.get(pk=account_id)
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                messages.success(request, 'Адміністратор успішно увійшов в особистий кабінет користувача')
+                # TODO: change to first statistics page for account
+                return redirect('account:profile:index')
+
+
+        if all([request.user.is_authenticated,
+                not request.user.is_staff,
+                not request.user.is_superuser]):
+            # TODO: change to first statistics page for account
+            return redirect('account:profile:index')
+        return super().dispatch(request, *args, **kwargs)
 
     def post(self, *args, **kwargs):
         form = AccountLoginForm(self.request.POST)
@@ -45,7 +70,7 @@ class AccountLoginView(TemplateView):
 
                 messages.success(self.request, 'Користувач успішно увійшов в систему')
                 # TODO: change to first statistics page for account
-                return redirect('authentication:account:login')
+                return redirect('account:profile:index')
 
         else:
             for _, errors in form.errors.items():
@@ -53,5 +78,3 @@ class AccountLoginView(TemplateView):
                     messages.error(self.request, f"{error}")
 
             return redirect('authentication:account:login')
-
-

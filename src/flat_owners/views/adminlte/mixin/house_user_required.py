@@ -28,6 +28,6 @@ class HouseUserRequiredMixin(View):
                 return JsonResponse(status=403, data={'success': False, 'message': message})
 
             messages.error(request, message)
-            return redirect(reverse('adminlte:flats-owners:list'))
+            return redirect(reverse('adminlte:flat-owners:list'))
 
         return super().dispatch(request, *args, **kwargs)

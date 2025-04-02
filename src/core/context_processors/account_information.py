@@ -17,7 +17,7 @@ def account_information(request):
                     .select_related('flat', 'flat__owner')
                     .exists())
 
-        flats = Flat.objects.filter(owner=user.id).select_related('house', 'section', 'floor', 'owner')
+        flats = Flat.objects.filter(owner=user.id).select_related('house', 'section', 'floor', 'owner').order_by('no')
 
         houses_ids = [flat.house.id for flat in flats]
         sections_ids = [flat.section.id for flat in flats]
@@ -88,7 +88,9 @@ def account_information(request):
 
         return {
             'unread_messages': messages,
-            'flats': flats
+            'total_unread_messages': messages.count(),
+            'flats': flats,
+            'first_flat': flats.first()
         }
 
     return {}
