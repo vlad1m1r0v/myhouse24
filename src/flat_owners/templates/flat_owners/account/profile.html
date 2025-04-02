@@ -75,8 +75,7 @@
                                 <span class="pull-right">{{ request.user.email }}</span>
                             </li>
                         </ul>
-                        <!--TODO: add valid URL to update profile page-->
-                        <a href="" class="btn btn-primary btn-block">Редагувати</a>
+                        <a href="{% url 'account:profile:update' %}" class="btn btn-primary btn-block">Редагувати</a>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-12">
