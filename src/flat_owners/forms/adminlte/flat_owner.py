@@ -10,7 +10,9 @@ from src.system_settings.tasks import send_password_update_notification
 class AdminFlatOwnerForm(forms.ModelForm):
     avatar = forms.ImageField(
         widget=forms.FileInput(),
-        label='Зображення')
+        label='Зображення',
+        required=False
+    )
 
     first_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control'}),

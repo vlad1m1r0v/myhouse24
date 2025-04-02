@@ -119,7 +119,10 @@
                                     {% for owner in new_owners.qs.all %}
                                         <li>
                                             <a href="{% url 'adminlte:flat-owners:detail' pk=owner.pk %}">
-                                                {{ owner.last_name }} {{ owner.first_name }} {{ owner.middle_name }}
+                                                {{ owner.last_name }} {{ owner.first_name }}
+                                                {% if owner.middle_name %}
+                                                    {{ owner.middle_name }}
+                                                {% endif %}
                                             </a>
                                         </li>
                                     {% endfor %}

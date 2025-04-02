@@ -119,13 +119,21 @@
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="{{ request.user.avatar.url }}" class="user-image" alt="Avatar">
+                            {% if request.user.avatar %}
+                                <img src="{{ request.user.avatar.url }}" class="user-image" alt="Avatar">
+                            {% else %}
+                                <img src="https://placehold.co/175x175" class="user-image" alt="Avatar">
+                            {% endif %}
                             <span class="hidden-xs">{{ request.user }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="{{ request.user.avatar.url }}" class="img-circle" alt="Avatar">
+                                {% if request.user.avatar %}
+                                    <img src="{{ request.user.avatar.url }}" class="img-circle" alt="Avatar">
+                                {% else %}
+                                    <img src="https://placehold.co/175x175" class="user-image" alt="Avatar">
+                                {% endif %}
                                 <p>
 
                                     {{ request.user }}

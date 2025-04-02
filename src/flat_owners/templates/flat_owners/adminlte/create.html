@@ -220,9 +220,6 @@
             const validate_form = function () {
                 const is_valid = $form.validate({
                     rules: {
-                        avatar: {
-                            required: true,
-                        },
                         first_name: {
                             required: true,
                             minlength: 2,
@@ -276,9 +273,6 @@
                         }
                     },
                     messages: {
-                        avatar: {
-                            required: "Завантажте фотографію"
-                        },
                         first_name: {
                             required: "Вкажіть ім'я",
                             minlength: "Ім'я повинне містити щонайменше 2 символи",
