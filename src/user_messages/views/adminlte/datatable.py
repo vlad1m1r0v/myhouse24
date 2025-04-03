@@ -50,11 +50,11 @@ class AdminMessagesDatatableView(AjaxDatatableView):
         )
 
         row['text'] = render_to_string(
-            template_name='user_messages/adminlte/_partials/text.html',
+            template_name='user_messages/shared/_partials/text.html',
             context={'object': obj}
         )
 
         row['date'] = render_to_string(
-            template_name='user_messages/adminlte/_partials/date.html',
+            template_name='user_messages/shared/_partials/date.html',
             context={'object': obj}
         )

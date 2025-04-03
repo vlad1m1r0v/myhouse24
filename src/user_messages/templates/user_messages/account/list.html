@@ -1,0 +1,250 @@
+{% extends 'base_account.html' %}
+{% load static %}
+{% load master_call_request_status %}
+{% block title %}
+    Повідомлення
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--iCheck-->
+    <link rel="stylesheet" href="{% static 'plugins/iCheck/flat/blue.css' %}">
+    <style>
+        tbody tr td:not(:last-child) {
+            cursor: pointer;
+        }
+
+        #datatable_wrapper .dt-paging {
+            float: right !important;
+        }
+
+        #datatable_wrapper ul.pagination li {
+            vertical-align: middle;
+        }
+
+        #datatable_wrapper ul.pagination li a {
+            padding: 5px 10px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        #datatable_wrapper .col-xs-6 {
+            margin-bottom: 0 !important;
+        }
+
+        #datatable_wrapper .row:nth-child(1),
+        #datatable_wrapper .row:nth-child(3) {
+            padding: 5px;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Повідомлення
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Повідомлення</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right margin-bottom">
+                <a class="btn btn-success" href="{% url 'adminlte:messages:create' %}">Надіслати повідомлення</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"></h3>
+                    <div class="box-tools pull-right">
+                        <div>
+                            <input id="search" type="text" class="form-control input-sm" placeholder="Пошук">
+                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table id="datatable"
+                           class="table table-hover table-striped"
+                           style="width:100%; overflow-x: scroll">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th style="width: 200px; min-width: 300px">Від кого</th>
+                            <th>Опис</th>
+                            <th style="width: 120px; min-width: 120px">Дата</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--iCheck-->
+    <script src="{% static 'plugins/iCheck/icheck.min.js' %}"></script>
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Datatables buttons-->
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.2/js/buttons.dataTables.js"></script>
+    <script>
+        const $search = $('input#search');
+
+        $search.on('blur', function () {
+            datatable.draw();
+        });
+
+        const selected_ids = new Set();
+
+        $(document).on('click', '.checkbox-toggle', function () {
+            $('.dt-buttons .checkbox-toggle').find(".fa").toggleClass("fa-square-o fa-check-square-o");
+
+            if ($(this).find('.fa').hasClass('fa-square-o')) {
+                $('input[type="checkbox"]').iCheck('uncheck');
+            } else {
+                $('input[type="checkbox"]').iCheck('check');
+            }
+        });
+
+        $(document).on('click', '.delete-many', async function () {
+            const result = await Swal.fire({
+                title: "Ви дійсно хочете видалити ці об'єкти?",
+                icon: "question",
+                showDenyButton: true,
+                confirmButtonText: "Видалити",
+                denyButtonText: "Відмінити"
+            });
+
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{% url 'account:messages:delete-many' %}",
+                    method: "POST",
+                    data: {
+                        selected_ids: Array.from(selected_ids)
+                    },
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    success: function () {
+                        Swal.fire("Об'єкти успішно видалено", "", "success");
+                        datatable.ajax.reload();
+                    }
+                });
+            }
+        });
+
+
+        // DataTable initialization
+        const datatable = new DataTable('#datatable', {
+            buttons: [
+                {
+                    text: '<i class="fa fa-square-o"></i>',
+                    className: 'btn btn-default btn-sm checkbox-toggle'
+                },
+                {
+                    text: '<i class="fa fa-trash-o"></i>',
+                    className: 'btn btn-default btn-sm delete-many'
+                }
+            ],
+            dom: "<'row'<'col-xs-6'B><'col-xs-6'p>>" +
+                "<'row'<'col-xs-12't>>" +
+                "<'row'<'col-xs-6'B><'col-xs-6'p>>",
+            order: [],
+            bFilter: false,
+            info: false,
+            pagingType: "simple_numbers",
+            lengthChange: false,
+            iDisplayLength: 10,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                {
+                    className: "dt-center dt-head-center",
+                    targets: [3]
+                },
+                {
+                    targets: [2],
+                    orderable: false,
+                    createdCell: function (cell) {
+                        $(cell).css({
+                            'white-space': 'nowrap',
+                            'overflow': 'hidden',
+                            'text-overflow': 'ellipsis',
+                            'vertical-align': 'middle',
+                            'max-width': '500px'
+                        });
+                    }
+                },
+                {
+                    targets: [0, 1, 3],
+                    orderable: false,
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle');
+                    }
+                },
+            ],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json',
+                "paginate": {
+                    "previous": "«",
+                    "next": "»"
+                }
+            },
+            ajax: {
+                url: "{% url 'account:messages:datatable' %}",
+                data: function (params) {
+                    params.search = $search.val();
+                },
+            },
+            columns: [
+                {
+                    data: null,
+                    render: function () {
+                        return "<input type='checkbox'>"
+                    }
+                },
+                {data: "creator"},
+                {data: "text"},
+                {data: "date"},
+            ],
+            drawCallback: function () {
+                $('.checkbox-toggle').find(".fa").addClass("fa-square-o").removeClass("fa-check-square-o");
+
+                const checkbox = 'input[type="checkbox"]'
+
+                $(checkbox).iCheck({
+                    checkboxClass: 'icheckbox_flat-blue',
+                    radioClass: 'iradio_flat-blue'
+                });
+
+            },
+            createdRow: function (row, data) {
+                $(function () {
+                    const checkbox = 'input[type="checkbox"]'
+
+                    if (selected_ids.has(data.id)) {
+                        $(row).find(checkbox).iCheck('check')
+                    }
+
+                    $(row).find(checkbox).on('ifChecked', function () {
+                        selected_ids.add(data.id);
+                    });
+
+                    $(row).find(checkbox).on('ifUnchecked', function () {
+                        selected_ids.delete(data.id);
+                    });
+                });
+
+                $(row).find('td:not(:first-child)').on('click', function () {
+                    document.location.href = `${data.id}/`;
+                });
+            },
+        });
+    </script>
+{% endblock js %}
