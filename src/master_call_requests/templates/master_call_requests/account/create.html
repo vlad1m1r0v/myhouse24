@@ -1,0 +1,176 @@
+{% extends 'base_account.html' %}
+{% load static %}
+{% load master_call_request_status %}
+{% block title %}
+    Нова заявка
+{% endblock title %}
+{% block css %}
+    <!--Datepicker-->
+    <link rel="stylesheet"
+          href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+    <!--TimePicker-->
+    <link rel="stylesheet" href="{% static 'plugins/timepicker/bootstrap-timepicker.css' %}">
+{% endblock css %}
+{% block header %}
+    Нова заявка
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'account:master-call-requests:list' %}">Заявки виклику майстра</a></li>
+    <li class="active">Нова заявка</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-body">
+            <form method="post" id="master-call-request-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>{{ form.master_type.label }}</label>
+                        {{ form.master_type }}
+                    </div>
+                    <div class="form-group">
+                        <label>{{ form.flat.label }}</label>
+                        {{ form.flat }}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>{{ form.date.label }}</label>
+                                <div class="input-group">
+                                    {{ form.date }}
+                                    <span class="input-group-addon kv-date-calendar" title="Вибрати дату">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>{{ form.time.label }}</label>
+                                <div class="input-group">
+                                    {{ form.time }}
+                                    <span class="input-group-addon">
+                                <i class="fa fa-clock-o"></i>
+                            </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>{{ form.description.label }}</label>
+                        {{ form.description }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="submit">
+                        Відправити заявку
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Extend JQuery Validation methods-->
+    <script src="{% static 'js/validation.js' %}"></script>
+    <!--Datepicker-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <!--Datepicker Localization-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
+    <!--TimePicker-->
+    <script src="{% static 'plugins/timepicker/bootstrap-timepicker.js' %}"></script>
+    <script>
+        const $form = $('#master-call-request-form');
+        const $button = $('button[type=submit]');
+
+        $form.on('focus blur keyup change', 'input,textarea,select', function () {
+            validate_form();
+        });
+
+        function validate_form() {
+            const is_valid = $form.validate({
+                    ignore: [],
+                    rules: {
+                        time: {
+                            required: true,
+                            hhmm: true,
+                        },
+                        date: {
+                            required: true,
+                            ddmmyyyy: true,
+                        },
+                        description: {
+                            required: true,
+                            minlength: 20,
+                        },
+                        flat: {
+                            required: true,
+                        },
+                    },
+                    messages: {
+                        time: {
+                            required: 'Вкажіть час',
+                        },
+                        date: {
+                            required: 'Вкажіть дату',
+                        },
+                        description: {
+                            required: "Вкажіть опис",
+                            minlength: "Опис має містити хоча б 20 символів",
+                        },
+                        flat: {
+                            required: "Виберіть квартиру"
+                        },
+                    },
+                    errorElement: 'small',
+                    errorPlacement: function (error, element) {
+                        error.css({'color': 'red'});
+                        console.log('.form-group:', element.closest('.form-group'));
+                        element.closest('.form-group').append(error);
+                    },
+                    highlight: function (element) {
+                        $(element).closest('.form-group').addClass('has-error');
+                    },
+                    unhighlight: function (element) {
+                        $(element).closest('.form-group').removeClass('has-error').addClass('has-success');
+                    }
+                }
+            ).checkForm();
+
+            if (is_valid) {
+                $button.prop('disabled', false);
+            } else {
+                $button.prop('disabled', 'disabled');
+            }
+        };
+
+        const $date = $('#id_date');
+
+        $date.datepicker({
+            autoclose: true,
+            language: 'uk',
+        }).on('changeDate', function () {
+            $date.trigger('change').valid();
+        });
+
+        $('.kv-date-calendar').click(function () {
+            $date.focus();
+        });
+
+        $date.datepicker('setDate', new Date());
+
+        const $time = $('#id_time');
+
+        $time.timepicker({
+            showInputs: false,
+            showMeridian: false,
+        });
+
+        $time.on('change', function () {
+            $(this).valid();
+        })
+    </script>
+{% endblock js %}

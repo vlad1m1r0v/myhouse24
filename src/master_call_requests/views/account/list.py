@@ -12,4 +12,7 @@ class AccountMasterCallRequestsListView(
     context_object_name = 'requests'
 
     def get_queryset(self):
-        return super().get_queryset().filter(flat_owner=self.request.user).select_related('master_type')
+        return (super().get_queryset()
+                .filter(flat_owner=self.request.user)
+                .select_related('master_type')
+                .order_by('-pk'))
