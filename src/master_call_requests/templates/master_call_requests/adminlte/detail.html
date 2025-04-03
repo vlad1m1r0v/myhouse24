@@ -56,7 +56,7 @@
 {% endblock header %}
 {% block breadcrumb %}
     <li><a href="{% url 'adminlte:dashboard:index' %}"><i class="fa fa-home"></i> Головна</a></li>
-    <li><a>Заявки виклику майстра</a></li>
+    <li><a href="{% url 'adminlte:master-call-requests:list' %}">Заявки виклику майстра</a></li>
     <li class="active">Заявка № {{ object.id }}</li>
 {% endblock breadcrumb %}
 {% block content %}

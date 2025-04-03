@@ -1,0 +1,81 @@
+{% extends 'base_account.html' %}
+{% load static %}
+{% load master_call_request_status %}
+{% block title %}
+    Заявки виклику майстра
+{% endblock title %}
+{% block css %}
+    <style>
+    tr>th:nth-child(1), tr>td:nth-child(1),
+    tr>th:nth-child(2), tr>td:nth-child(2),
+    tr>th:nth-child(4), tr>td:nth-child(4),
+    tr>th:nth-child(5), tr>td:nth-child(5),
+    tr>th:nth-child(6), tr>td:nth-child(6) {
+        text-align: center;
+    }
+    </style>
+{% endblock css %}
+{% block header %}
+    Заявки виклику майстра
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Заявки виклику майстра</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="pull-right margin-bottom">
+                <a class="btn btn-success" href="">Створити заявку</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead>
+                        <tr>
+                            <th>№ заявки</th>
+                            <th>Тип майстра</th>
+                            <th>Опис</th>
+                            <th>Зручний час</th>
+                            <th>Статус</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for request in requests %}
+                            <tr>
+                                <td>{{ request.id }}</td>
+                                <td>
+                                    {% if request.master_type %}
+                                        {{ request.master_type }}
+                                    {% else %}
+                                        Будь-який спеціаліст
+                                    {% endif %}
+                                </td>
+                                <td>{{ request.description }}</td>
+                                <td>{{ request.date|date:"d.m.Y" }} - {{ request.time|time:"H:i" }}</td>
+                                <td>{% master_call_request_status obj=request %}</td>
+                                <td>
+                                    <div class="btn-group pull-right">
+                                        <button class="btn btn-default btn-sm delete-button" href="">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <script>
+    </script>
+{% endblock js %}

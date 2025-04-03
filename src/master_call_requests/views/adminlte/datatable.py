@@ -127,7 +127,7 @@ class AdminMasterCallRequestsDatatableView(AjaxDatatableView):
         row['master'] = str(obj.master) if obj.master else '(Не вибрано)'
 
         row['status'] = render_to_string(
-            template_name='master_call_requests/adminlte/_partials/status_label.html',
+            template_name='master_call_requests/shared/_partials/status_label.html',
             context={'object': obj}
         )
 
