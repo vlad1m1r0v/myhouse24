@@ -1,1 +1,1 @@
-<a href="">{{ object.creator }} - {{ object.role }}</a>
+<a href="{% url 'account:messages:detail' pk=object.pk %}">{{ object.creator }} - {{ object.role }}</a>
