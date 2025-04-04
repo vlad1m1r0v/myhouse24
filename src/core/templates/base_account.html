@@ -225,19 +225,19 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <!--TODO: display real flats of owner-->
                         {% for flat in flats %}
-                            <li>
-                                <a href="">
-                                    <i class="fa fa-file-text-o"></i>
-                                    <span>{{ flat.house }}, кв. № {{ flat.no }}</span>
-                                </a>
-                            </li>
+                            {% if flat.tariff_id %}
+                                <li>
+                                    <a href="{% url 'account:tariffs:detail' %}?flat_id={{ flat.id }}">
+                                        <i class="fa fa-file-text-o"></i>
+                                        <span>{{ flat.house }}, кв. № {{ flat.no }}</span>
+                                    </a>
+                                </li>
+                            {% endif %}
                         {% endfor %}
                     </ul>
                 </li>
                 <!--Messages-->
-                <!--TODO: not implemented messages module-->
                 <li>
                     <a href="{% url 'account:messages:list' %}">
                         <i class="fa fa-envelope-o"></i>
@@ -318,12 +318,11 @@
 {% include '_partials/messages.html' %}
 <script>
     $(document).ready(function () {
-        const current = window.location.pathname;
+        const current = window.location.href;
         $('li a').each(function () {
             const href = $(this).attr('href');
             if (href) {
-                const path = $(this).attr('href');
-                if (current.includes(path)) {
+                if (current.includes(href)) {
                     $(this).parent().addClass('active');
                     if ($(this).closest('.treeview').length) {
                         $(this).closest('.treeview-menu').css('display', 'block')
