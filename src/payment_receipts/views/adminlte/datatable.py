@@ -113,7 +113,7 @@ class AdminReceiptsDatatableView(AjaxDatatableView):
         row['no'] = obj.no
 
         row['status'] = render_to_string(
-            template_name='payment_receipts/adminlte/_partials/status.html',
+            template_name='payment_receipts/shared/_partials/status.html',
             context={'object': obj}
         )
 

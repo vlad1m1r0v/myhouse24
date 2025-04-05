@@ -1,0 +1,169 @@
+{% extends 'base_account.html' %}
+{% load static %}
+{% block title %}
+    Квитанції на оплату
+{% endblock title %}
+{% block css %}
+    <!--Datatable-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css">
+    <!--Select2-->
+    <link rel="stylesheet" href="{% static 'bower_components/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adjust_select2.css' %}">
+    <!--Datepicker-->
+    <link rel="stylesheet"
+          href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}">
+    <style>
+        .box {
+            padding: 0 6px;
+            overflow-x: hidden;
+        }
+
+        table#datatable {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        th.dt-orderable-asc, th.dt-orderable-desc {
+            color: #337ab7;
+        }
+
+        tbody tr td {
+            cursor: pointer;
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Квитанції на оплату
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
+    <li class="active">Квитанції на оплату</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title"></h3>
+                <div class="box-tools">
+                    <a href="{{ request.build_absolute_uri }}"
+                       class="btn btn-default btn-sm">
+                        <span class="hidden-xs">Очистити</span>
+                        <i class="fa fa-eraser visible-xs" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            <table id="datatable"
+                   class="table table-bordered table-hover table-striped">
+                <thead>
+                <tr>
+                    <th style="min-width: 125px; width: 125px">№ квитанції</th>
+                    <th style="min-width: 125px; width: 125px">Дата</th>
+                    <th style="min-width: 125px; width: 125px">Статус</th>
+                    <th style="min-width: 125px; width: 125px">Сума (грн)</th>
+                </tr>
+                <tr>
+                    <th>{{ filters.no }}</th>
+                    <th>{{ filters.date }}</th>
+                    <th>{{ filters.status }}</th>
+                    <th><!--Total price--></th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Datatables-->
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap.js"></script>
+    <!--Select2-->
+    <script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+    <!--Set default language locale for Select2 components-->
+    <script src="{% static 'bower_components/select2/dist/js/i18n/uk.js' %}"></script>
+    <!--Datepicker-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <!--Datepicker Localization-->
+    <script src="{% static 'bower_components/bootstrap-datepicker/js/locales/bootstrap-datepicker.uk.js' %}"></script>
+    <script>
+        $.fn.select2.defaults.set('language', 'uk');
+        $.fn.select2.defaults.set('width', '100%');
+        $.fn.select2.defaults.set('placeholder', 'Виберіть...');
+        $.fn.select2.defaults.set('allowClear', true);
+    </script>
+    <script>
+        const $status = $('#id_status');
+        const $date = $('#id_date');
+
+        $status.select2({
+            minimumResultsForSearch: -1
+        });
+
+        $date.datepicker({
+            autoclose: true,
+            language: 'uk',
+            clearBtn: true
+        });
+
+        $status.on('change', function () {
+            datatable.columns(1).search($(this).val()).draw();
+        });
+
+        $date.on('changeDate', function () {
+            datatable.columns(2).search($(this).val()).draw();
+        });
+
+        const query_params = new URLSearchParams(document.location.search);
+        const flat_id = query_params.get('flat_id');
+
+        //Datatable setup
+        const datatable = new DataTable('#datatable', {
+            order: [],
+            orderCellsTop: true,
+            bFilter: false,
+            iDisplayLength: 10,
+            lengthChange: true,
+            processing: true,
+            serverSide: true,
+            scrollX: true,
+            columnDefs: [
+                {
+                    targets: '_all',
+                    createdCell: function (cell) {
+                        $(cell).css('vertical-align', 'middle').css('padding', '10px');
+                    },
+                    className: "dt-center"
+                },
+                {
+                    targets: [0, 2, 3],
+                    orderable: false
+                }
+            ],
+            ajax: {
+                url: "{% url 'account:receipts:datatable' %}",
+                data: function (params) {
+                    params.status = $status.val();
+                    params.date = $date.val();
+
+                    if (flat_id) {
+                        params.flat = flat_id;
+                    }
+                }
+            },
+            columns: [
+                {'data': 'no'},
+                {'data': 'date'},
+                {'data': 'status'},
+                {'data': 'total_price'}
+            ],
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.2.2/i18n/uk.json'
+            },
+            createdRow: function (row, data) {
+                $(row).find('td:not(:last-child)').on('click', function () {
+                    document.location.href = `${data.pk}/`;
+                });
+            },
+        });
+    </script>
+{% endblock js %}

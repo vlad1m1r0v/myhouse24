@@ -103,17 +103,15 @@
                             <li>
                                 <!-- inner menu: contains the actual data -->
                                 <ul class="menu">
-                                    <!--TODO: add valid URLs to messages detail page-->
                                     {% for message in unread_messages %}
                                         <li>
-                                            <a href="">{{ message.topic }}</a>
+                                            <a href="{% url 'account:messages:detail' pk=message.pk %}">{{ message.topic }}</a>
                                         </li>
                                     {% endfor %}
 
                                 </ul>
                             </li>
-                            <!--TODO: change to URL for view of all unread account messages-->
-                            <li class="footer"><a href="">Переглянути всі</a></li>
+                            <li class="footer"><a href="{% url 'account:messages:list' %}">Переглянути всі</a></li>
                         </ul>
                     </li>
                     <!-- User Account: style can be found in dropdown.less -->
@@ -179,7 +177,7 @@
                         <!--TODO: not implemented statistics module-->
                         {% for flat in flats %}
                             <li>
-                                <a href="">
+                                <a href="#">
                                     <i class="fa fa-building-o"></i>
                                     <span>{{ flat.house }}, кв. № {{ flat.no }}</span>
                                 </a>
@@ -199,15 +197,14 @@
                     <ul class="treeview-menu">
                         <!--TODO: not implemented receipts module-->
                         <li>
-                            <a href="">
+                            <a href="{% url 'account:receipts:list' %}">
                                 <i class="fa fa-files-o"></i>
                                 <span>Всі квитанції</span>
                             </a>
                         </li>
-                        <!--TODO: display real flats of owner-->
                         {% for flat in flats %}
                             <li>
-                                <a href="">
+                                <a href="{% url 'account:receipts:list' %}?flat_id={{ flat.id }}">
                                     <i class="fa fa-file-text-o"></i>
                                     <span>{{ flat.house }}, кв. № {{ flat.no }}</span>
                                 </a>
@@ -320,14 +317,12 @@
     $(document).ready(function () {
         const current = window.location.href;
         $('li a').each(function () {
-            const href = $(this).attr('href');
-            if (href) {
-                if (current.includes(href)) {
-                    $(this).parent().addClass('active');
-                    if ($(this).closest('.treeview').length) {
-                        $(this).closest('.treeview-menu').css('display', 'block')
-                            .closest('.treeview').addClass('menu-open');
-                    }
+            const href = $(this).prop('href');
+            if (current === href) {
+                $(this).parent().addClass('active');
+                if ($(this).closest('.treeview').length) {
+                    $(this).closest('.treeview-menu').css('display', 'block')
+                        .closest('.treeview').addClass('menu-open');
                 }
             }
         });
