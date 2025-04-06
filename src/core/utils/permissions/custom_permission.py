@@ -24,6 +24,10 @@ class CustomPermissionRequiredMixin(PermissionRequiredMixin):
         return redirect(reverse('authentication:adminlte:login'))
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.has_permission():
+        if not all([
+            self.request.user.is_active,
+            self.request.user.status == 'active',
+            self.has_permission()
+        ]):
             return self.handle_no_permission(request)
         return super().dispatch(request, *args, **kwargs)
