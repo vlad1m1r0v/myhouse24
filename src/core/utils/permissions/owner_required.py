@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib import messages
 from django.http import JsonResponse
@@ -8,14 +9,23 @@ from src.core.utils import is_ajax
 
 
 class OwnerRequiredMixin(UserPassesTestMixin):
-    permission_denied_message = "Користувач не увійшов в систему або не є власником квартири"
+    permission_denied_message = "Не вдалось увійти в особистий кабінет користувача"
     login_url = 'authentication:account:login'
 
     def test_func(self):
         user = self.request.user
-        return user.is_authenticated and not user.is_staff and not user.is_superuser
+        return all([
+            user.is_authenticated,
+            not user.is_staff,
+            not user.is_superuser,
+            user.is_active,
+            user.status == 'active'
+        ])
 
     def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            logout(self.request)
+
         if is_ajax(self.request):
             return JsonResponse(
                 status=403,
