@@ -10,6 +10,7 @@ urlpatterns = [
         path('<int:pk>/', views.AccountReceiptDetailView.as_view(), name='detail'),
         path('<int:pk>/download/', views.AccountReceiptDownloadView.as_view(), name='download'),
         path('<int:pk>/print/', views.AccountReceiptPrintView.as_view(), name='print'),
+        path('<int:pk>/pay/', views.AccountReceiptPayView.as_view(), name='pay'),
         path('datatable/', views.AccountReceiptsDatatableView.as_view(), name='datatable'),
     ]))
 ]

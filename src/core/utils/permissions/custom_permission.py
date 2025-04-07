@@ -12,22 +12,20 @@ class CustomPermissionRequiredMixin(PermissionRequiredMixin):
     permission_required = None
     permission_denied_message = 'У Вас немає доступу до цієї сторінки'
 
-    def handle_no_permission(self, request):
-        if is_ajax(request):
+    def handle_no_permission(self):
+        if is_ajax(self.request):
             return JsonResponse(
                 status=403,
                 data={'success': False, 'message': self.permission_denied_message}
             )
 
-        messages.error(request, self.permission_denied_message)
-        logout(request)
+        messages.error(self.request, self.permission_denied_message)
+        logout(self.request)
         return redirect(reverse('authentication:adminlte:login'))
 
-    def dispatch(self, request, *args, **kwargs):
-        if not all([
-            self.request.user.is_active,
-            self.request.user.status == 'active',
-            self.has_permission()
-        ]):
-            return self.handle_no_permission(request)
-        return super().dispatch(request, *args, **kwargs)
+    def dispatch(self, *args, **kwargs):
+        if self.request.user.is_anonymous \
+                or not self.request.user.status == 'active' \
+                or not self.has_permission():
+            return self.handle_no_permission()
+        return super().dispatch(self.request, *args, **kwargs)

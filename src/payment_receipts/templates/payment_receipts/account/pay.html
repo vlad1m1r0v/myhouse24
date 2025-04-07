@@ -1,0 +1,243 @@
+{% extends 'base_account.html' %}
+{% load static %}
+{% block title %}
+    Оплата
+{% endblock title %}
+{% block css %}
+    <style>
+        .itm-card {
+            width: 100%;
+            aspect-ratio: 5/3;
+            background-image: url("{% static 'img/atm_card/background.jpg' %}");
+            background-size: cover;
+            border-radius: 15px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            display: grid;
+            grid-template-rows: 2fr 3fr 2fr 2fr 2fr;
+            grid-template-columns: repeat(8, 1fr);
+            padding: 3% 6%;
+            row-gap: 3.67%;
+            column-gap: 2%;
+            grid-template-areas:
+            "a a a . . . . ."
+            "b b . . . . c c"
+            ". d d d d d d ."
+            ". . . . e e e ."
+            ". f f f . . . .";
+        }
+
+        .itm-card input[type=text] {
+            padding: 5px;
+            border: 1px solid lightgrey;
+            border-radius: 5px;
+            outline: none;
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            text-align: center;
+        }
+
+        .itm-card input:focus {
+            border: 2px solid #4B46D4;
+            box-shadow: 0 0 4px 0 #4B46D4;
+        }
+
+        .itm-card__bank {
+            grid-area: a;
+            color: whitesmoke;
+            display: flex;
+            align-items: center;
+        }
+
+        .itm-card__chip {
+            grid-area: b;
+        }
+
+        .itm-card__chip img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .itm-card__nfc {
+            grid-area: c;
+            display: flex;
+            align-items: center;
+        }
+
+        .itm-card__nfc img {
+            max-width: 60%;
+            max-height: 60%;
+        }
+
+        .itm-card__number {
+            grid-area: d;
+        }
+
+        .itm-card__number input {
+            width: 100%;
+            letter-spacing: 0.1em;
+        }
+
+        .itm-card__exp {
+            grid-area: e;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .itm-card__exp span {
+            color: whitesmoke;
+            white-space: nowrap;
+            margin-right: 5%;
+            font-weight: 300;
+        }
+
+        .itm-card__exp input {
+            width: 100%;
+        }
+
+        .itm-card__cardholder {
+            grid-area: f;
+        }
+
+        .itm-card__cardholder span {
+            color: whitesmoke;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        @media (max-width: 767px) {
+            .itm-card__bank span {
+                font-size: 4.5vw;
+            }
+
+            .itm-card__number input {
+                font-size: 4.5vw;
+                line-height: 5.4vw;
+            }
+
+            .itm-card__exp input {
+                font-size: 3vw;
+                line-height: 3.6vw;
+            }
+
+            .itm-card__exp span {
+                font-size: 2.7vw;
+            }
+
+            .itm-card__cardholder span {
+                font-size: 3.105vw;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 992px) {
+            .itm-card__bank span {
+                font-size: 2.25vw;
+            }
+
+            .itm-card__number input {
+                font-size: 2.25vw;
+                line-height: 2.7vw;
+            }
+
+            .itm-card__exp input {
+                font-size: 1.5vw;
+                line-height: 1.8vw;
+            }
+
+            .itm-card__exp span {
+                font-size: 1.35vw;
+            }
+
+            .itm-card__cardholder span {
+                font-size: 1.5525vw;
+            }
+        }
+
+        @media (min-width: 993px) {
+            .itm-card__bank span {
+                font-size: 1.5vw;
+            }
+
+            .itm-card__number input {
+                font-size: 1.5vw;
+                line-height: 1.8vw;
+            }
+
+
+            .itm-card__exp input {
+                font-size: 1vw;
+                line-height: 1.2vw;
+            }
+
+            .itm-card__exp span {
+                font-size: 0.9vw;
+            }
+
+            .itm-card__cardholder span {
+                font-size: 1.035vw;
+            }
+        }
+    </style>
+{% endblock css %}
+{% block header %}
+    Оплата
+{% endblock header %}
+{% block breadcrumb %}
+    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
+    <li><a href="{% url 'account:receipts:list' %}">Квитанції на оплату</a></li>
+    <li>
+        <a href="{% url 'account:receipts:detail' pk=receipt.pk %}">
+            Квитанція № {{ receipt.no }}
+        </a>
+    </li>
+    <li class="active">Оплата</li>
+{% endblock breadcrumb %}
+{% block content %}
+    <div class="box">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-sm-12 col-md-4"></div>
+                <div class="col-sm-6 col-md-4"></div>
+                <div class="col-sm-6 col-md-4">
+                    <div class="itm-card">
+                        <div class="itm-card__bank">
+                            <span>
+                                Bank
+                            </span>
+                        </div>
+                        <div class="itm-card__chip">
+                            <img src="{% static 'img/atm_card/chip.png' %}" alt="">
+                        </div>
+                        <div class="itm-card__nfc">
+                            <img src="{% static 'img/atm_card/nfc.svg' %}" alt="">
+                        </div>
+                        <div class="itm-card__number">
+                            <input id="card-number" type="text">
+                        </div>
+                        <div class="itm-card__exp">
+                            <span>Exp. Date</span>
+                            <input id="exp" type="text">
+                        </div>
+                        <div class="itm-card__cardholder">
+                            <span>CARDHOLDERS NAME</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block js %}
+    <!--Input Mask-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
+    <script>
+        $('#card-number').inputmask("9999-9999-9999-9999");
+        $('#exp').inputmask({
+            alias: 'datetime',
+            inputFormat: 'dd/mm',
+            placeholder: 'DD/MM'
+        });
+    </script>
+{% endblock js %}
