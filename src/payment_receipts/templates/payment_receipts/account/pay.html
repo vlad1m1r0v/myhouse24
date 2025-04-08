@@ -5,177 +5,254 @@
 {% endblock title %}
 {% block css %}
     <style>
-        .itm-card {
+        :root { /* Colors */
+            --color-text-light: whitesmoke;
+            --color-input-border: lightgrey;
+            --color-primary: #4B46D4;
+            --color-chip-stripe: #434343;
+            --color-shadow: rgba(0, 0, 0, 0.24);
+
+            /* Border Radius */
+            --radius-card: 15px;
+            --radius-input: 5px;
+
+            /* Shadow */
+            --shadow-card: var(--color-shadow) 0px 3px 8px;
+            --shadow-focus: 0 0 4px 0 var(--color-primary);
+
+            /* Padding & Gap */
+            --padding-card: 3% 6%;
+            --gap-row: 3.67%;
+            --gap-column: 2%;
+            --input-padding: 5px;
+
+            /* Font */
+            --font-main: 'Source Sans Pro', sans-serif;
+        }
+
+        .itm-card__front, .itm-card__back {
             width: 100%;
-            aspect-ratio: 5/3;
+            aspect-ratio: 5 / 3;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+        }
+
+        /* FRONT SIDE */
+
+        .itm-card__front {
             background-image: url("{% static 'img/atm_card/background.jpg' %}");
             background-size: cover;
-            border-radius: 15px;
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
             display: grid;
             grid-template-rows: 2fr 3fr 2fr 2fr 2fr;
             grid-template-columns: repeat(8, 1fr);
-            padding: 3% 6%;
-            row-gap: 3.67%;
-            column-gap: 2%;
-            grid-template-areas:
-            "a a a . . . . ."
-            "b b . . . . c c"
-            ". d d d d d d ."
-            ". . . . e e e ."
-            ". f f f . . . .";
+            grid-template-areas: "a a a . . . . ." "b b . . . . c c" ". d d d d d d ." ". . . . e e e ." ". f f f . . . .";
+            padding: var(--padding-card);
+            row-gap: var(--gap-row);
+            column-gap: var(--gap-column);
         }
 
-        .itm-card input[type=text] {
-            padding: 5px;
-            border: 1px solid lightgrey;
-            border-radius: 5px;
-            outline: none;
-            font-family: 'Source Sans Pro', sans-serif;
-            font-weight: 400;
-            font-style: normal;
-            text-align: center;
-        }
-
-        .itm-card input:focus {
-            border: 2px solid #4B46D4;
-            box-shadow: 0 0 4px 0 #4B46D4;
-        }
-
-        .itm-card__bank {
+        .itm-card__front__bank {
             grid-area: a;
-            color: whitesmoke;
+            color: var(--color-text-light);
             display: flex;
             align-items: center;
         }
 
-        .itm-card__chip {
+        .itm-card__front__chip {
             grid-area: b;
         }
 
-        .itm-card__chip img {
+        .itm-card__front__chip img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
         }
 
-        .itm-card__nfc {
+        .itm-card__front__nfc {
             grid-area: c;
             display: flex;
             align-items: center;
         }
 
-        .itm-card__nfc img {
+        .itm-card__front__nfc img {
             max-width: 60%;
             max-height: 60%;
         }
 
-        .itm-card__number {
+        .itm-card__front__number {
             grid-area: d;
         }
 
-        .itm-card__number input {
+        .itm-card__front__number input {
             width: 100%;
             letter-spacing: 0.1em;
         }
 
-        .itm-card__exp {
-            grid-area: e;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
+        .itm-card__front__number input, .itm-card__back__cvv2 input {
+            letter-spacing: 0.1em;
         }
 
-        .itm-card__exp span {
-            color: whitesmoke;
+        .itm-card__front__exp {
+            grid-area: e;
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        .itm-card__front__exp span, .itm-card__back__cvv2 span {
+            color: var(--color-text-light);
             white-space: nowrap;
             margin-right: 5%;
             font-weight: 300;
         }
 
-        .itm-card__exp input {
+        .itm-card__front__exp input, .itm-card__back__cvv2 input {
             width: 100%;
         }
 
-        .itm-card__cardholder {
+        .itm-card__front__cardholder {
             grid-area: f;
         }
 
-        .itm-card__cardholder span {
-            color: whitesmoke;
+        .itm-card__front__cardholder span {
+            color: var(--color-text-light);
             white-space: nowrap;
             font-weight: 500;
         }
 
+        /* INPUT STYLES (both front and back) */
+        .itm-card__front input[type="text"], .itm-card__back input[type="text"] {
+            padding: var(--input-padding);
+            border: 1px solid var(--color-input-border);
+            border-radius: var(--radius-input);
+            outline: none;
+            font-family: var(--font-main);
+            font-weight: 400;
+            font-style: normal;
+            text-align: center;
+        }
+
+        .itm-card__front input:focus, .itm-card__back input:focus {
+            border: 2px solid var(--color-primary);
+            box-shadow: var(--shadow-focus);
+        }
+
+        /* BACK SIDE */
+
+        .itm-card__back {
+            position: relative;
+            display: grid;
+            grid-template-rows: 1fr 2fr 2fr 5fr;
+            grid-template-columns: 1fr 2fr;
+            grid-template-areas: ". ." "a a" "b ." ". .";
+            overflow: hidden;
+        }
+
+        .itm-card__back::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("{% static 'img/atm_card/background.jpg' %}");
+            background-size: cover;
+            transform: scaleX(-1);
+            z-index: 0;
+            border-radius: var(--radius-card);
+        }
+
+        .itm-card__back > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .itm-card__back__magstripe {
+            grid-area: a;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--color-chip-stripe), black);
+        }
+
+        .itm-card__back__cvv2 {
+            grid-area: b;
+            display: flex;
+            padding: 5px 10px;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        /* RESPONSIVE FONT SIZES */
+
         @media (max-width: 767px) {
-            .itm-card__bank span {
+            .itm-card__back {
+                margin-bottom: 15px;
+            }
+
+            .itm-card__front__bank span {
                 font-size: 4.5vw;
             }
 
-            .itm-card__number input {
+            .itm-card__front__number input {
                 font-size: 4.5vw;
                 line-height: 5.4vw;
             }
 
-            .itm-card__exp input {
+            .itm-card__front__exp input, .itm-card__back__cvv2 input {
                 font-size: 3vw;
                 line-height: 3.6vw;
             }
 
-            .itm-card__exp span {
+            .itm-card__front__exp span, .itm-card__back__cvv2 span {
                 font-size: 2.7vw;
             }
 
-            .itm-card__cardholder span {
+            .itm-card__front__cardholder span {
                 font-size: 3.105vw;
             }
         }
 
         @media (min-width: 768px) and (max-width: 992px) {
-            .itm-card__bank span {
+            .itm-card__front__bank span {
                 font-size: 2.25vw;
             }
 
-            .itm-card__number input {
+            .itm-card__front__number input {
                 font-size: 2.25vw;
                 line-height: 2.7vw;
             }
 
-            .itm-card__exp input {
+            .itm-card__front__exp input, .itm-card__back__cvv2 input {
                 font-size: 1.5vw;
                 line-height: 1.8vw;
             }
 
-            .itm-card__exp span {
+            .itm-card__front__exp span, .itm-card__back__cvv2 span {
                 font-size: 1.35vw;
             }
 
-            .itm-card__cardholder span {
+            .itm-card__front__cardholder span {
                 font-size: 1.5525vw;
             }
         }
 
         @media (min-width: 993px) {
-            .itm-card__bank span {
+            .itm-card__front__bank span {
                 font-size: 1.5vw;
             }
 
-            .itm-card__number input {
+            .itm-card__front__number input {
                 font-size: 1.5vw;
                 line-height: 1.8vw;
             }
 
-
-            .itm-card__exp input {
+            .itm-card__front__exp input, .itm-card__back__cvv2 input {
                 font-size: 1vw;
                 line-height: 1.2vw;
             }
 
-            .itm-card__exp span {
+            .itm-card__front__exp span, .itm-card__back__cvv2 span {
                 font-size: 0.9vw;
             }
 
-            .itm-card__cardholder span {
+            .itm-card__front__cardholder span {
                 font-size: 1.035vw;
             }
         }
@@ -199,28 +276,36 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-sm-12 col-md-4"></div>
-                <div class="col-sm-6 col-md-4"></div>
                 <div class="col-sm-6 col-md-4">
-                    <div class="itm-card">
-                        <div class="itm-card__bank">
+                    <div class="itm-card__back">
+                        <div class="itm-card__back__magstripe"></div>
+                        <div class="itm-card__back__cvv2">
+                            <span>CVV2</span>
+                            <input id="cvv2" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    <div class="itm-card__front">
+                        <div class="itm-card__front__bank">
                             <span>
                                 Bank
                             </span>
                         </div>
-                        <div class="itm-card__chip">
+                        <div class="itm-card__front__chip">
                             <img src="{% static 'img/atm_card/chip.png' %}" alt="">
                         </div>
-                        <div class="itm-card__nfc">
+                        <div class="itm-card__front__nfc">
                             <img src="{% static 'img/atm_card/nfc.svg' %}" alt="">
                         </div>
-                        <div class="itm-card__number">
+                        <div class="itm-card__front__number">
                             <input id="card-number" type="text">
                         </div>
-                        <div class="itm-card__exp">
+                        <div class="itm-card__front__exp">
                             <span>Exp. Date</span>
                             <input id="exp" type="text">
                         </div>
-                        <div class="itm-card__cardholder">
+                        <div class="itm-card__front__cardholder">
                             <span>CARDHOLDERS NAME</span>
                         </div>
                     </div>
@@ -234,10 +319,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
     <script>
         $('#card-number').inputmask("9999-9999-9999-9999");
+
         $('#exp').inputmask({
             alias: 'datetime',
             inputFormat: 'dd/mm',
             placeholder: 'DD/MM'
         });
+
+        $('#cvv2').inputmask("999");
     </script>
 {% endblock js %}
