@@ -23,7 +23,7 @@ class Transaction(models.Model):
     is_complete = models.BooleanField(default=False)
     manager = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE,
                                 related_name='manager_transactions')
-    comment = models.TextField()
+    comment = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"транзакція № {self.no}"

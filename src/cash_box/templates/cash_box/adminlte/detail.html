@@ -107,7 +107,9 @@
                     <td>Власник квартири</td>
                     <td>
                         {% if transaction.owner %}
-                            <a>{{ transaction.owner }}</a>
+                            <a href="{% url 'adminlte:flat-owners:detail' pk=transaction.owner.pk %}">
+                                {{ transaction.owner }}
+                            </a>
                         {% else %}
                             Не вказано
                         {% endif %}
@@ -117,7 +119,9 @@
                     <td>Особовий рахунок</td>
                     <td>
                         {% if transaction.personal_account %}
-                            <a>{{ transaction.personal_account }}</a>
+                            <a href="{% url 'adminlte:personal-accounts:detail' pk=transaction.personal_account.pk %}">
+                                {{ transaction.personal_account }}
+                            </a>
                         {% else %}
                             Не вказано
                         {% endif %}
@@ -125,7 +129,13 @@
                 </tr>
                 <tr>
                     <td>Стаття</td>
-                    <td>{{ transaction.payment_item }}</td>
+                    <td>
+                        {% if transaction.payment_item %}
+                            {{ transaction.payment_item }}
+                        {% else %}
+                            Не вказано
+                        {% endif %}
+                    </td>
                 </tr>
                 <tr>
                     <td>Квитанція</td>
@@ -142,9 +152,13 @@
                 <tr>
                     <td>Менеджер</td>
                     <td>
-                        <a href="{% url 'adminlte:system-settings:users:detail' pk=transaction.manager.pk %}">
-                            {{ transaction.manager }}
-                        </a>
+                        {% if transaction.manager %}
+                            <a href="{% url 'adminlte:system-settings:users:detail' pk=transaction.manager.pk %}">
+                                {{ transaction.manager }}
+                            </a>
+                        {% else %}
+                            Не вказано
+                        {% endif %}
                     </td>
                 </tr>
                 <tr>
@@ -153,7 +167,13 @@
                 </tr>
                 <tr>
                     <td>Коментар</td>
-                    <td>{{ transaction.comment }}</td>
+                    <td>
+                        {% if transaction.comment %}
+                        {{ transaction.comment }}
+                        {% else %}
+                            Не вказано
+                        {% endif %}
+                    </td>
                 </tr>
                 </tbody>
             </table>

@@ -107,7 +107,7 @@ class AdminCashBoxDatatableView(AjaxDatatableView):
 
         row['is_complete'] = 'Проведена' if obj.is_complete else 'Не проведена'
 
-        row['payment_item'] = obj.payment_item.name
+        row['payment_item'] = obj.payment_item.name if obj.payment_item else '(Не вказано)'
 
         row['owner'] = str(obj.owner) if obj.owner else '(Не вказано)'
 

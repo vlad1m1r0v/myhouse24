@@ -74,6 +74,6 @@ class AdminBalanceMixin:
 
         debt_paid = debt_paid_transactions.aggregate(Sum('amount'))['amount__sum'] or 0
 
-        context['receipt_debt'] = total_debt - debt_paid
+        context['receipt_debt'] = total_debt - float(debt_paid)
 
         return context
