@@ -1,4 +1,5 @@
 {% extends 'base_account.html' %}
+{% load l10n %}
 {% load static %}
 {% block title %}
     Оплата
@@ -256,6 +257,44 @@
                 font-size: 1.035vw;
             }
         }
+
+        #personal-account h3 {
+            margin: 10px 0;
+        }
+
+        #payment-information div:not(:last-child) {
+            margin-bottom: 5px;
+        }
+
+        #payment-information div:last-child {
+            margin-bottom: 10px;
+        }
+
+        .margin-top-15 {
+            margin-top: 15px;
+        }
+
+        .payment-choice {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .payment-choice input {
+            margin-right: 15px;
+        }
+
+        .payment-choice__image__container {
+            display: inline-block;
+            width: min(350px, 100%);
+            aspect-ratio: 5 / 3;
+            overflow: hidden;
+        }
+
+        .payment-choice__image__container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
     </style>
 {% endblock css %}
 {% block header %}
@@ -274,50 +313,140 @@
 {% block content %}
     <div class="box">
         <div class="box-body">
-            <div class="row">
-                <div class="col-sm-12 col-md-4"></div>
-                <div class="col-sm-6 col-md-4">
-                    <div class="itm-card__back">
-                        <div class="itm-card__back__magstripe"></div>
-                        <div class="itm-card__back__cvv2">
-                            <span>CVV2</span>
-                            <input id="cvv2" type="text">
+            <form id="payment-form" method="post">
+                {% csrf_token %}
+                <div class="row" id="personal-account">
+                    <div class="col-xs-12 col-lg-6">
+                        <div>
+                            <label>Назва компанії</label>
+                            <h3>{{ payment_credential.name }}</h3>
+                        </div>
+                        <div class="form-group">
+                            <label>Особовий рахунок</label>
+                            <input type="text" class="form-control" value="{{ receipt.personal_account.no }}" disabled>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" disabled checked>
+                                    Запам'ятати
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 margin-top-15">
+                        <div class="btn-group pull-right">
+                            <a href="{% url 'account:receipts:detail' pk=receipt.pk %}"
+                               class="btn btn-default">Назад</a>
+                            <button type="button" class="btn btn-default next-button">далі</button>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-md-4">
-                    <div class="itm-card__front">
-                        <div class="itm-card__front__bank">
+                <div class="row" id="payment-method" style="display: none">
+                    <div class="col-xs-12 col-lg-4">
+                        <div class="payment-choice">
+                            <input id="mastercard" type="radio" name="payment_method" checked>
+                            <label for="mastercard">
+                                <div class="payment-choice__image__container">
+                                    <img src="{% static 'img/atm_card/mastercard.png' %}" alt="mastercard">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-lg-4">
+                        <div class="payment-choice">
+                            <input id="visa" type="radio" name="payment_method">
+                            <label for="visa">
+                                <div class="payment-choice__image__container">
+                                    <img src="{% static 'img/atm_card/visa.webp' %}" alt="visa">
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-default prev-button">Назад</button>
+                            <button type="button" class="btn btn-default next-button">далі</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="bankcard" style="display: none">
+                    <div class="col-sm-12 col-md-4" id="payment-information">
+                        <div><b>Тип платежу:</b> Оплата комунальних послуг</div>
+                        <div><b>№ квитанції:</b> {{ receipt.no }}</div>
+                        <div><b>Назва компанії:</b> {{ payment_credential.name }}</div>
+                        <div><b>Інформація:</b> {{ payment_credential.information }}</div>
+                        <div><b>Сумарна вартість: </b>{{ receipt.total_price|unlocalize }} грн</div>
+                    </div>
+                    <div class="col-sm-6 col-md-4">
+                        <div class="itm-card__back">
+                            <div class="itm-card__back__magstripe"></div>
+                            <div class="itm-card__back__cvv2">
+                                <span>CVV2</span>
+                                <input name="cvv" id="cvv2" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4">
+                        <div class="itm-card__front">
+                            <div class="itm-card__front__bank">
                             <span>
                                 Bank
                             </span>
+                            </div>
+                            <div class="itm-card__front__chip">
+                                <img src="{% static 'img/atm_card/chip.png' %}" alt="">
+                            </div>
+                            <div class="itm-card__front__nfc">
+                                <img src="{% static 'img/atm_card/nfc.svg' %}" alt="">
+                            </div>
+                            <div class="itm-card__front__number">
+                                <input name="bankcard" id="card-number" type="text">
+                            </div>
+                            <div class="itm-card__front__exp">
+                                <span>Exp. Date</span>
+                                <input name="expiration_date" id="exp" type="text">
+                            </div>
+                            <div class="itm-card__front__cardholder">
+                                <span>CARDHOLDERS NAME</span>
+                            </div>
                         </div>
-                        <div class="itm-card__front__chip">
-                            <img src="{% static 'img/atm_card/chip.png' %}" alt="">
-                        </div>
-                        <div class="itm-card__front__nfc">
-                            <img src="{% static 'img/atm_card/nfc.svg' %}" alt="">
-                        </div>
-                        <div class="itm-card__front__number">
-                            <input id="card-number" type="text">
-                        </div>
-                        <div class="itm-card__front__exp">
-                            <span>Exp. Date</span>
-                            <input id="exp" type="text">
-                        </div>
-                        <div class="itm-card__front__cardholder">
-                            <span>CARDHOLDERS NAME</span>
+                    </div>
+                    <div class="col-xs-12 margin-top-15">
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-default prev-button">Назад</button>
+                            <button type="submit" class="btn btn-success">Оплатити</button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 {% endblock content %}
 {% block js %}
     <!--Input Mask-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.9/jquery.inputmask.min.js"></script>
+    <!--JQuery Validation-->
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <!--Extend JQuery Validation methods-->
+    <script src="{% static 'js/validation.js' %}"></script>
     <script>
+        $('.next-button').on('click', function () {
+            const $current_step = $(this).closest('.row[id]');
+            $current_step.hide();
+
+            const $next_step = $current_step.next('.row[id]');
+            $next_step.show();
+        });
+
+        $('.prev-button').on('click', function () {
+            const $current_step = $(this).closest('.row[id]');
+            $current_step.hide();
+
+            const $next_step = $current_step.prev('.row[id]');
+            $next_step.show();
+        });
+
         $('#card-number').inputmask("9999-9999-9999-9999");
 
         $('#exp').inputmask({
@@ -327,5 +456,49 @@
         });
 
         $('#cvv2').inputmask("999");
+
+        $(document).ready(function () {
+            const $form = $('#payment-form');
+            const $button = $('button[type=submit]');
+
+            $form.on('focus blur keyup', 'input', function () {
+                validate_form();
+            });
+
+            const validate_form = function () {
+                const is_valid = $form.validate({
+                    rules: {
+                        bankcard: {
+                            required: true,
+                            bankcard: true,
+                        },
+                        cvv: {
+                            required: true,
+                            cvv: true,
+                        },
+                        expiration_date: {
+                            required: true,
+                            expiration_date: true
+                        }
+                    },
+                    errorElement: 'small',
+                    errorPlacement: function (error, element) {
+                    },
+                    highlight: function (element) {
+                    },
+                    unhighlight: function (element) {
+                    }
+                }).checkForm();
+
+
+                if (is_valid) {
+                    $button.prop('disabled', false);
+                } else {
+                    $button.prop('disabled', 'disabled');
+                }
+            }
+
+            validate_form();
+        });
     </script>
 {% endblock js %}

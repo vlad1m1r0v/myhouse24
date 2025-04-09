@@ -89,3 +89,16 @@ $.validator.addMethod("hhmm", function (value, element) {
 $.validator.addMethod("full_name", function (value, element) {
     return this.optional(element) || /^[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+\s[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+(?:\s[А-ЯІЇЄҐA-Z][а-яіїєґa-z]+)?$/.test(value);
 }, "Введіть коректне ПІБ (Ім'я та Прізвище)");
+
+
+$.validator.addMethod("bankcard", function (value, element) {
+    return this.optional(element) || /^\d{4}-\d{4}-\d{4}-\d{4}$/.test(value);
+}, "Неправильний номер картки");
+
+$.validator.addMethod("cvv", function (value, element) {
+    return this.optional(element) || /^\d{3}$/.test(value);
+}, "Неправильний CVV2");
+
+$.validator.addMethod("expiration_date", function (value, element) {
+    return this.optional(element) || /^(0[1-9]|1[0-2])\/(\d{2})$/.test(value);
+}, "Неправильна дата");
