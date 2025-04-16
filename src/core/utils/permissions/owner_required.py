@@ -14,8 +14,11 @@ class OwnerRequiredMixin(UserPassesTestMixin):
 
     def test_func(self):
         user = self.request.user
+
+        if user.is_anonymous:
+            return False
+
         return all([
-            user.is_authenticated,
             not user.is_staff,
             not user.is_superuser,
             user.is_active,
@@ -23,13 +26,13 @@ class OwnerRequiredMixin(UserPassesTestMixin):
         ])
 
     def handle_no_permission(self):
-        if self.request.user.is_authenticated:
-            logout(self.request)
+        logout(self.request)
 
         if is_ajax(self.request):
             return JsonResponse(
                 status=403,
                 data={'success': False, 'message': self.permission_denied_message}
             )
+
         messages.error(self.request, self.permission_denied_message)
         return redirect(reverse_lazy(self.login_url))
