@@ -1,2 +1,3 @@
 from .piechart_year import AccountDashboardPiechartYearView
 from .piechart_month import AccountDashboardPiechartMonthView
+from .expenses_year import AccountMonthlyExpensesView

@@ -93,6 +93,16 @@
                 </div>
             </div>
         </div>
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"> Діаграма помісячних витрат за рік</h3>
+                </div>
+                <div class="box-body">
+                    <canvas width="100%" id="expenses"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
 {% block js %}
@@ -198,6 +208,75 @@
                     $text.css('text-align', 'center');
                     $canvas.parent().append($text);
                 }
+            }
+        })();
+
+        (async function () {
+            const response = await fetch("{% url 'account:dashboard:expenses' %}?flat_id=" + url_params.get('flat_id'),
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+
+                const labels = data.map(item => item.month);
+                const values = data.map(item => item.amount);
+
+                const ctx = document.getElementById('expenses').getContext('2d');
+
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Витрати (₴)',
+                            data: values,
+                            backgroundColor: '#00C951',
+                            borderColor: '#00A63E',
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Сума витрат, грн'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Місяць'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Щомісячні витрати за рік'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: context => `${context.parsed.y} ₴`
+                                }
+                            }
+                        }
+                    }
+                });
             }
         })();
     </script>

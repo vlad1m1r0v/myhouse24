@@ -30,10 +30,10 @@ class AccountDashboardView(OwnerRequiredMixin, TemplateView):
         if start_date and end_date:
             month_count = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month) + 1
 
-            total = expenses.aggregate(total=Sum('amount'))['total'] or 0
+            total = expenses.aggregate(total=Sum('amount'))['total'] or 0.0
             avg_per_month = total / month_count
         else:
-            avg_per_month = 0
+            avg_per_month = 0.0
 
         context['avg_per_month'] = avg_per_month
 
