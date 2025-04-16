@@ -29,8 +29,7 @@
     Заявки виклику майстра
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
-    <li class="active">Заявки виклику майстра</li>
+    <li><a href="{% url 'account:dashboard:index' %}?flat_id={{first_flat.id}}"><i class="fa fa-home"></i> Головна</a></li>    <li class="active">Заявки виклику майстра</li>
 {% endblock breadcrumb %}
 {% block content %}
     <div class="row">

@@ -16,8 +16,7 @@ class AdminFlatOwnersInviteView(FlatOwnerPermissionRequiredMixin,
 
     def form_valid(self, form):
         email = form.cleaned_data['email']
-        # TODO: change to account login url
-        login_path = reverse('authentication:adminlte:login')
+        login_path = reverse('authentication:account:login')
         login_url = self.request.build_absolute_uri(login_path)
 
         send_invitation_email.delay(email, login_url)

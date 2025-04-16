@@ -42,8 +42,7 @@
     Редагування профілю
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
-    <li><a href="{% url 'account:profile:index' %}">Профіль</a></li>
+    <li><a href="{% url 'account:dashboard:index' %}?flat_id={{first_flat.id}}"><i class="fa fa-home"></i> Головна</a></li>    <li><a href="{% url 'account:profile:index' %}">Профіль</a></li>
     <li class="active">Редагування</li>
 {% endblock breadcrumb %}
 {% block content %}

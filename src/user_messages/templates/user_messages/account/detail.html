@@ -11,8 +11,7 @@
     Повідомлення
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
-    <li><a href="{% url 'account:messages:list' %}">Повідомлення</a></li>
+    <li><a href="{% url 'account:dashboard:index' %}?flat_id={{first_flat.id}}"><i class="fa fa-home"></i> Головна</a></li>    <li><a href="{% url 'account:messages:list' %}">Повідомлення</a></li>
     <li class="active">Повідомлення</li>
 {% endblock breadcrumb %}
 {% block content %}

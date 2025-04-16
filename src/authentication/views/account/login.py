@@ -6,6 +6,12 @@ from django.views.generic import TemplateView
 
 from src.authentication.forms import AccountLoginForm
 from src.authentication.models import CustomUser
+from src.flats.models import Flat
+
+
+def statistics_redirect(account_id: str):
+    flat = Flat.objects.filter(owner=account_id).order_by('no').first()
+    return f"{reverse_lazy('account:dashboard:index')}?flat_id={flat.id}"
 
 
 class AccountLoginView(TemplateView):
@@ -30,15 +36,12 @@ class AccountLoginView(TemplateView):
                 user = CustomUser.objects.get(pk=account_id)
                 login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 messages.success(request, 'Адміністратор успішно увійшов в особистий кабінет користувача')
-                # TODO: change to first statistics page for account
-                return redirect('account:profile:index')
-
+                return redirect(statistics_redirect(account_id))
 
         if all([request.user.is_authenticated,
                 not request.user.is_staff,
                 not request.user.is_superuser]):
-            # TODO: change to first statistics page for account
-            return redirect('account:profile:index')
+            return redirect(statistics_redirect(account_id))
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, *args, **kwargs):
@@ -69,8 +72,7 @@ class AccountLoginView(TemplateView):
                     self.request.session.set_expiry(0)
 
                 messages.success(self.request, 'Користувач успішно увійшов в систему')
-                # TODO: change to first statistics page for account
-                return redirect('account:profile:index')
+                return redirect(statistics_redirect(user.pk))
 
         else:
             for _, errors in form.errors.items():

@@ -15,8 +15,7 @@
     Нова заявка
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
-    <li><a href="{% url 'account:master-call-requests:list' %}">Заявки виклику майстра</a></li>
+    <li><a href="{% url 'account:dashboard:index' %}?flat_id={{first_flat.id}}"><i class="fa fa-home"></i> Головна</a></li>    <li><a href="{% url 'account:master-call-requests:list' %}">Заявки виклику майстра</a></li>
     <li class="active">Нова заявка</li>
 {% endblock breadcrumb %}
 {% block content %}

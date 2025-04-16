@@ -12,8 +12,7 @@
     Квитанція № {{ receipt.no }}
 {% endblock header %}
 {% block breadcrumb %}
-    <li><a href=""><i class="fa fa-home"></i> Головна</a></li>
-    <li><a href="{% url 'account:receipts:list' %}">Квитанції на оплату</a></li>
+    <li><a href="{% url 'account:dashboard:index' %}?flat_id={{first_flat.id}}"><i class="fa fa-home"></i> Головна</a></li>    <li><a href="{% url 'account:receipts:list' %}">Квитанції на оплату</a></li>
     <li class="active">Квитанція № {{ receipt.no }}</li>
 {% endblock breadcrumb %}
 {% block content %}
