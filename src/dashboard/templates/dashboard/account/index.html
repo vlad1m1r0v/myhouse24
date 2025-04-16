@@ -2,18 +2,203 @@
 {% load l10n %}
 {% load static %}
 {% block title %}
+    Статистика - {{ flat.house.name }}, кв. № {{ flat.no }}
 {% endblock title %}
 {% block css %}
     <style>
     </style>
 {% endblock css %}
 {% block header %}
+    Статистика - {{ flat.house.name }}, кв. № {{ flat.no }}
 {% endblock header %}
 {% block breadcrumb %}
 {% endblock breadcrumb %}
 {% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-lg-4">
+            <div class="small-box bg-green">
+                <div class="inner">
+                    {% if account %}
+                        <h3>{{ account.balance|unlocalize }} грн</h3>
+                    {% else %}
+                        <h3>0.0 грн</h3>
+                    {% endif %}
+                    <p>Баланс по квартирі</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-money"></i>
+                </div>
+                <span class="small-box-footer">
+                &nbsp;
+            </span>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-4">
+            <div class="small-box bg-blue">
+                <div class="inner">
+                    <h3>{{ account.no }}</h3>
+                    {% if account %}
+                    {% else %}
+                        <h3>Не створено</h3>
+                    {% endif %}
+                    <p>Особовий рахунок</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-user"></i>
+                </div>
+                <span class="small-box-footer">
+                &nbsp;
+            </span>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6 col-lg-4">
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>{{ avg_per_month|unlocalize }} грн</h3>
+                    <p>Середня витрата на місяць</p>
+                </div>
+                <div class="icon">
+                    <i class="fa fa-pie-chart"></i>
+                </div>
+                <span class="small-box-footer">
+                &nbsp;
+            </span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+
+        </div>
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        Діаграма витрат
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-6">
+                            <canvas width="100%" id="piechart-month">
+
+                            </canvas>
+                        </div>
+                        <div class="col-xs-12 col-lg-6">
+                            <canvas width="100%" id="piechart-year">
+
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 {% block js %}
+    <!--ChartJS-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        const url_params = new URLSearchParams(window.location.search);
+
+        (async function () {
+            const response = await fetch("{% url 'account:dashboard:piechart-month' %}?flat_id=" + url_params.get('flat_id'),
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+
+                if (Object.keys(data).length) {
+                    const labels = Object.keys(data);
+                    const values = Object.values(data);
+
+                    const ctx = document.getElementById('piechart-month').getContext('2d');
+                    const chart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: values,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            cutout: '30%',
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Витрати за місяць',
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    const $canvas = $('#piechart-month');
+                    $canvas.hide();
+                    const $text = $("<p></p>").text("Недостатньо даних для відображення статистики");
+                    $text.css('text-align', 'center');
+                    $canvas.parent().append($text);
+                }
+            }
+        })();
+
+        (async function () {
+            const response = await fetch("{% url 'account:dashboard:piechart-year' %}?flat_id=" + url_params.get('flat_id'),
+                {
+                    method: 'GET',
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    }
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+
+                if (Object.keys(data).length) {
+                    const labels = Object.keys(data);
+                    const values = Object.values(data);
+
+                    const ctx = document.getElementById('piechart-year').getContext('2d');
+                    const chart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: values,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            cutout: '30%',
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Витрати за рік',
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    const $canvas = $('#piechart-year');
+                    $canvas.hide();
+                    const $text = $("<p></p>").text("Недостатньо даних для відображення статистики");
+                    $text.css('text-align', 'center');
+                    $canvas.parent().append($text);
+                }
+            }
+        })();
     </script>
 {% endblock js %}

@@ -17,10 +17,10 @@ class AccountDashboardView(OwnerRequiredMixin, TemplateView):
         flat = Flat.objects.select_related('house').get(id=flat_id)
         context['flat'] = flat
 
-        balance = PersonalAccount.objects.with_balance().get(flat_id=flat_id)
-        context['balance'] = balance
+        account = PersonalAccount.objects.with_balance().get(flat_id=flat_id)
+        context['account'] = account
 
-        expenses = Transaction.objects.filter(personal_account=balance.pk, type='expense', is_complete=True)
+        expenses = Transaction.objects.filter(personal_account=account.pk, type='expense', is_complete=True)
 
         dates = expenses.aggregate(start=Min('date'), end=Max('date'))
 
