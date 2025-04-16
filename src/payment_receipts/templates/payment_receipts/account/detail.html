@@ -50,6 +50,8 @@
                             <td>{{ service.total_price|unlocalize }}</td>
                         </tr>
                     {% endfor %}
+                    <td style="text-align: right" colspan="5"><b>Разом:</b></td>
+                    <td>{{ receipt.total_price|unlocalize }}</td>
                     </tbody>
                 </table>
             </div>
