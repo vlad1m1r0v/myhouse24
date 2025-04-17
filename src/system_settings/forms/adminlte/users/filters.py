@@ -6,13 +6,17 @@ from src.authentication.models import STATUS_CHOICES
 
 
 class AdminUsersFiltersForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['role'].choices = [(group.name, group.name) for group in Group.objects.all()] + [('', 'Виберіть...')]
+
     name = forms.CharField(
         widget=widgets.Input(attrs={"class": "form-control"})
     )
 
     role = forms.ChoiceField(
         widget=widgets.Select(attrs={"class": "form-control"}),
-        choices=[(group.name, group.name) for group in Group.objects.all()] + [('', 'Виберіть...')],
     )
 
     phone = forms.CharField(

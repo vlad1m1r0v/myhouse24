@@ -6,6 +6,11 @@ from src.master_call_requests.models import StatusChoices
 
 
 class AdminMasterCallRequestFiltersForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['master_type'].choices = [(group.id, group.name) for group in Group.objects.filter(name__in=['Сантехнік', 'Електрик'])]
+
     no = forms.CharField(
         widget=widgets.Input(attrs={"class": "form-control"})
     )
@@ -16,8 +21,6 @@ class AdminMasterCallRequestFiltersForm(forms.Form):
 
     master_type = forms.ChoiceField(
         widget=widgets.Select(attrs={"class": "form-control"}),
-        choices=[(group.id, group.name) for group in Group.objects.filter(name__in=['Сантехнік', 'Електрик'])] +
-                [('', 'Виберіть...')],
     )
 
     description = forms.CharField(
