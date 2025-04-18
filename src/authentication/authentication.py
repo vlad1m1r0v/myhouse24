@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 class EmailBackend(ModelBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):
         user_model = get_user_model()
+
         try:
             if email.isdigit():
                 user = user_model.objects.get(ID=int(email))
@@ -15,6 +16,7 @@ class EmailBackend(ModelBackend):
         else:
             if user.check_password(password):
                 return user
+            return None
 
     def get_user(self, user_id):
         user_model = get_user_model()

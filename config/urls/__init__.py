@@ -1,6 +1,7 @@
 from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 
@@ -10,6 +11,7 @@ sitemaps = {
     'static': StaticViewSitemap,
 }
 urlpatterns = [
+    path('admin/', admin.site.urls),
     path('', include('config.urls.authentication')),
     path('', include('config.urls.adminlte')),
     path('', include('config.urls.account')),
