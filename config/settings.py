@@ -109,11 +109,6 @@ STATIC_ROOT = str(BASE_DIR / "staticfiles")
 
 STATIC_URL = "/static/"
 
-# No longer needed as core is an app
-# STATICFILES_DIRS = [
-#     str(BASE_DIR / "src/core/static"),
-# ]
-
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
@@ -194,5 +189,6 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = env("EMAIL_HOST")
 EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+DEFAULT_FROM_EMAIL = env("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = env("EMAIL_USE_TLS")
+EMAIL_USE_TLS = env("EMAIL_USE_TLS") == 'True'
