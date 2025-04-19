@@ -109,9 +109,10 @@ STATIC_ROOT = str(BASE_DIR / "staticfiles")
 
 STATIC_URL = "/static/"
 
-STATICFILES_DIRS = [
-    str(BASE_DIR / "src/core/static"),
-]
+# No longer needed as core is an app
+# STATICFILES_DIRS = [
+#     str(BASE_DIR / "src/core/static"),
+# ]
 
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
