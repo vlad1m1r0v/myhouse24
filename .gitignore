@@ -127,9 +127,9 @@ fabric.properties
 # Distribution / packaging
 .Python
 env/
-build/
+#build/
 develop-eggs/
-dist/
+#dist/
 downloads/
 eggs/
 .eggs/
