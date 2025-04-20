@@ -1,10 +1,8 @@
 from django import forms
-from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.db import transaction
 
 from src.authentication.models import CustomUser, STATUS_CHOICES
-from src.system_settings.tasks import send_password_update_notification
 
 
 class AdminFlatOwnerForm(forms.ModelForm):
@@ -145,17 +143,6 @@ class AdminFlatOwnerForm(forms.ModelForm):
         # if we changed password in existing user
         if password and self.instance.pk:
             user.password = make_password(password)
-
-            send_password_update_notification.delay(
-                subject_template_name='system_settings/adminlte/users/password_change_subject.txt',
-                email_template_name='system_settings/adminlte/users/password_change_notification.html',
-                context={
-                    'email': user.email,
-                    'password': password,
-                },
-                from_email=settings.EMAIL_HOST_USER,
-                to_email=user.email
-            )
 
         if commit:
             user.save()
