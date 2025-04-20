@@ -7,7 +7,8 @@ WORKDIR /app
 
 RUN apt-get update && \
     apt-get install -y gcc libpq-dev netcat-openbsd \
-    libpango-1.0-0 libpangoft2-1.0-0 gir1.2-harfbuzz-0.0 && \
+    libpango-1.0-0 libpangoft2-1.0-0 gir1.2-harfbuzz-0.0 \
+    python3-lxml libcairo2 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info && \
     apt clean && \
     rm -rf /var/cache/apt/*
 
