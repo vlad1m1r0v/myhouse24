@@ -28,15 +28,10 @@ class AccountLoginView(TemplateView):
         account_id = request.GET.get('account_id')
 
         if account_id:
-            referer = request.META.get('HTTP_REFERER')
-            account_url = reverse_lazy('adminlte:flat-owners:detail', kwargs={'pk': account_id})
-            from_account_url = referer == request.build_absolute_uri(account_url)
-
-            if from_account_url:
-                user = CustomUser.objects.get(pk=account_id)
-                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                messages.success(request, 'Адміністратор успішно увійшов в особистий кабінет користувача')
-                return redirect(statistics_redirect(account_id))
+            user = CustomUser.objects.get(pk=account_id)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            messages.success(request, 'Адміністратор успішно увійшов в особистий кабінет користувача')
+            return redirect(statistics_redirect(account_id))
 
         if all([request.user.is_authenticated,
                 not request.user.is_staff,
