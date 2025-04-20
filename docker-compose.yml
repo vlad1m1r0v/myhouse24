@@ -46,6 +46,9 @@ services:
       context: .
       dockerfile: ./deploy/celery/Dockerfile
     command: celery -A config worker -l info
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     depends_on:
       - redis
       - db
