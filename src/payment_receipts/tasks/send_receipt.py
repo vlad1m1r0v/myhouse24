@@ -18,6 +18,7 @@ def send_receipt(receipt_id, template_id):
 
     email_message = EmailMessage(
         subject=subject,
+        body='У закріплених файлах Ви можете знайти PDF квитанції',
         from_email=settings.EMAIL_HOST_USER,
         to=[email],
     )
