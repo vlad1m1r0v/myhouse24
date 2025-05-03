@@ -116,7 +116,7 @@ class CashBoxExcelService:
 
         ws[f"D{row_idx}"].value = 'Проведена' if transaction.is_complete else 'Не проведена'
 
-        ws[f"E{row_idx}"].value = transaction.payment_item.name
+        ws[f"E{row_idx}"].value = transaction.payment_item.name if transaction.payment_item else 'Не вказано'
 
         ws[f"F{row_idx}"].value = transaction.receipt.no if transaction.receipt else "Не вказано"
 
